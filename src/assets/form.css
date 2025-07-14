@@ -1,0 +1,153 @@
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  padding: 16px;
+}
+
+.form-label {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 90%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #e0e7ff;
+  margin-top: 4px;
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-select {
+  background: #f8fafc;
+  color: #312e81;
+}
+
+.form-textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.form-rank-text {
+  margin-left: 8px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.form-submit {
+  margin-top: 8px;
+  padding: 10px 0;
+  border-radius: 6px;
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  width: 40%;
+  box-shadow: 0 1px 4px rgba(79, 70, 229, 0.08);
+  transition: background-color 0.2s;
+}
+
+.form-submit:hover {
+  background: var(--color-secondary);
+  color: white;
+}
+
+.form-cancel-btn {
+  margin-top: 12px;
+  margin-left: 12px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: var(--color-secondary);
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  width: 40%;
+  transition: background-color 0.2s;
+}
+
+.form-cancel-btn:hover {
+  background: var(--color-primary);
+}
+
+.tags-wrapper {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.tags-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--color-primary);
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-btn {
+  background: var(--color-secondary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tag-btn:hover {
+  background: var(--color-primary);
+}
+
+.quick-date-btn {
+  background: var(--color-secondary);
+  margin-right: 2px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quick-date-btn:hover {
+  background: var(--color-primary);
+}
+
+@media (max-width: 600px) {
+  .form-wrapper {
+    padding: 16px;
+  }
+
+  .form-actions-wrapper {
+    flex-direction: column;
+  }
+
+  .form-submit,
+  .form-cancel-btn {
+    width: 100%;
+  }
+}

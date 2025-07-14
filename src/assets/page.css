@@ -1,0 +1,160 @@
+.page-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.page-wrapper {
+  min-height: 100vh;
+}
+
+.page-title {
+  text-align: center;
+  color: #1a247e;
+  margin-bottom: 32px;
+}
+
+.page-body-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 4vw;
+  margin-bottom: 100px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 18px;
+  color: #6b7280;
+}
+
+.page-footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  background: var(--color-background);
+  border-top: 1px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: 120px;
+  padding: 16px 0 12px 16px;
+  height: 50px;
+  z-index: 1;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+}
+
+@media (max-width: 600px) {
+  .page-footer {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 0 12px 0;
+    height: fit-content;
+  }
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.primary-btn {
+  margin-right: 16px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  background: var(--color-secondary);
+  color: white;
+}
+
+.primary-btn.active {
+  background: var(--color-secondary);
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 24px 0;
+}
+
+.url-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.url-link:hover {
+  color: var(--color-secondary);
+}
+
+.item-tag {
+  display: inline-block;
+  background: #e0e7ff;
+  color: #1a247e;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-right: 6px;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.negative-btn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  background: var(--color-accent);
+  color: white;
+  transition: background 0.2s;
+}
+
+.negative-btn:hover {
+  background: var(--color-accent-secondary);
+}
+
+.csv-columns {
+  margin-bottom: 12px;
+}
+
+.csv-columns-label {
+  font-weight: 600;
+  margin-right: 8px;
+  color: black;
+}
+
+.csv-column-checkbox {
+  margin-right: 12px;
+  color: black;
+}
+
+.add-new-btn {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-new-btn:hover {
+  background: #2c369a;
+}

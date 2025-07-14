@@ -1,0 +1,20 @@
+.banner {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  z-index: 1;
+  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.15);
+}
+
+.banner-success {
+  background: #10b981;
+}
+.banner-error {
+  background: #b92910;
+}

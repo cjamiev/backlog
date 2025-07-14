@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 200 150">
+  <!-- Left page -->
+  <path d="M100 20 Q70 10 40 20 Q10 30 10 120 Q40 110 70 120 Q100 130 100 130 Z"
+        fill="#f4f1ee" stroke="#333" stroke-width="2"/>
+
+  <!-- Right page -->
+  <path d="M100 20 Q130 10 160 20 Q190 30 190 120 Q160 110 130 120 Q100 130 100 130 Z"
+        fill="#f4f1ee" stroke="#333" stroke-width="2"/>
+
+  <!-- Center spine line -->
+  <line x1="100" y1="20" x2="100" y2="130" stroke="#888" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Text lines (left page) -->
+  <line x1="30" y1="40" x2="90" y2="40" stroke="#aaa" stroke-width="1"/>
+  <line x1="30" y1="50" x2="90" y2="50" stroke="#aaa" stroke-width="1"/>
+  <line x1="30" y1="60" x2="90" y2="60" stroke="#aaa" stroke-width="1"/>
+  <line x1="30" y1="70" x2="90" y2="70" stroke="#aaa" stroke-width="1"/>
+
+  <!-- Text lines (right page) -->
+  <line x1="110" y1="40" x2="170" y2="40" stroke="#aaa" stroke-width="1"/>
+  <line x1="110" y1="50" x2="170" y2="50" stroke="#aaa" stroke-width="1"/>
+  <line x1="110" y1="60" x2="170" y2="60" stroke="#aaa" stroke-width="1"/>
+  <line x1="110" y1="70" x2="170" y2="70" stroke="#aaa" stroke-width="1"/>
+</svg>
