@@ -21,10 +21,7 @@ const wordPartSearchByOptions = [
   { value: 'value', label: 'Value' },
   { value: 'definition', label: 'Definition' }
 ];
-const wordPartSortByOptions = [
-  { value: 'value', label: 'Value' },
-  { value: 'type', label: 'Type' }
-];
+const wordPartSortByOptions: { value: string; label: string }[] = [];
 
 const WordPartPage: React.FC = () => {
   const { isBackendAvailable, isLoadingPing } = useStorage();
@@ -57,11 +54,7 @@ const WordPartPage: React.FC = () => {
   });
 
   const sortedWordParts = [...filteredWordParts].sort((a, b) => {
-    if (sortBy === 'value') {
-      return a.value.localeCompare(b.value);
-    } else {
-      return a.type - b.type;
-    }
+    return a.value.localeCompare(b.value);
   });
   const totalPages = Math.ceil(sortedWordParts.length / WORDPARTS_PER_PAGE);
   const paginatedWordParts = sortedWordParts.slice(

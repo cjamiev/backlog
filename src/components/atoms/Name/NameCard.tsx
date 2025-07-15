@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Name, GENDER_TYPE } from '../../../model/library';
+import { type Name } from '../../../model/library';
 
 interface NameCardProps {
   name: Name;
@@ -15,7 +15,7 @@ const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onClone, onDelete }) 
         <h2 className="card-title">{name.value}</h2>
       </div>
       <div>
-        <span className="card-label">Gender:</span> <span className="card-text">{GENDER_TYPE[name.gender]}</span>
+        <span className="card-label">Gender:</span> <span className="card-text">{name.gender}</span>
       </div>
       <div>
         <span className="card-label">Origin:</span> <span className="card-text">{name.origin}</span>

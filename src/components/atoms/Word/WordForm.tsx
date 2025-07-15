@@ -22,7 +22,7 @@ function WordForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: W
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === 'type' ? Number(value) : value
+      [name]: value
     }));
   };
 
@@ -60,9 +60,9 @@ function WordForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: W
       <label className="form-label">
         Type:
         <select className="form-input" name="type" value={form.type} onChange={handleChange}>
-          <option value={WORD_TYPE.noun}>Noun</option>
-          <option value={WORD_TYPE.adjective}>Adjective</option>
-          <option value={WORD_TYPE.verb}>Verb</option>
+          <option value={WORD_TYPE.NOUN}>Noun</option>
+          <option value={WORD_TYPE.ADJECTIVE}>Adjective</option>
+          <option value={WORD_TYPE.VERB}>Verb</option>
         </select>
       </label>
       <label className="form-label">

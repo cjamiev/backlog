@@ -22,10 +22,7 @@ const favoriteSearchByOptions = [
   { value: 'tags', label: 'Tags' },
   { value: 'notes', label: 'Notes' }
 ];
-const favoriteSortByOptions = [
-  { value: 'name', label: 'Name' },
-  { value: 'type', label: 'Type' }
-];
+const favoriteSortByOptions: { value: string; label: string }[] = [];
 
 const FavoritePage: React.FC = () => {
   const { isBackendAvailable, isLoadingPing } = useStorage();
@@ -60,11 +57,7 @@ const FavoritePage: React.FC = () => {
   });
 
   const sortedFavorites = [...filteredFavorites].sort((a, b) => {
-    if (sortBy === 'name') {
-      return a.name.localeCompare(b.name);
-    } else {
-      return a.type - b.type;
-    }
+    return a.name.localeCompare(b.name);
   });
   const totalPages = Math.ceil(sortedFavorites.length / FAVORITES_PER_PAGE);
   const paginatedFavorites = sortedFavorites.slice(
@@ -148,12 +141,12 @@ const FavoritePage: React.FC = () => {
       const updatedFavorites = prev.map((f) =>
         f.name === form.name && f.link === form.link
           ? {
-              name: form.name,
-              link: form.link,
-              type: form.type,
-              tags: form.tags,
-              notes: form.notes
-            }
+            name: form.name,
+            link: form.link,
+            type: form.type,
+            tags: form.tags,
+            notes: form.notes
+          }
           : f
       );
 

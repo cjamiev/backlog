@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import WordCard from '../atoms/Word/WordCard';
 import WordForm from '../atoms/Word/WordForm';
-import { DefaultWord, type Word, WORD_TYPE } from '../../model/library';
+import { DefaultWord, type Word } from '../../model/library';
 import { fakeWords } from '../../mocked/words';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
@@ -45,24 +45,18 @@ const WordPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
   const [currentPage, setCurrentPage] = useState(1);
 
-  console.log(words);
-
   const filteredWords = words.filter((w: Word) => {
     if (searchBy === 'tags') {
       return w.tags.split(',').some((tag) => tag.toLowerCase().includes(search.toLowerCase()));
     } else if (searchBy === 'type') {
-      return WORD_TYPE[w.type].toLowerCase().includes(search.toLowerCase());
+      return w.type.toLowerCase().includes(search.toLowerCase());
     } else {
       return w.value.toLowerCase().includes(search.toLowerCase());
     }
   });
 
   const sortedWords = [...filteredWords].sort((a, b) => {
-    if (sortBy === 'value') {
-      return a.value.localeCompare(b.value);
-    } else {
-      return a.type - b.type;
-    }
+    return a.value.localeCompare(b.value);
   });
   const totalPages = Math.ceil(sortedWords.length / WORDS_PER_PAGE);
   const paginatedWords = sortedWords.slice((currentPage - 1) * WORDS_PER_PAGE, currentPage * WORDS_PER_PAGE);

@@ -18,7 +18,13 @@ const SettingsPage: React.FC = () => {
   };
 
   const backupRecords = () => {
-    backupAllRecords().then((response) => console.log(response))
+    backupAllRecords().then(() => {
+      setShowBanner({ show: true, type: 'success', message: `Backed up Data'}` });
+      setTimeout(() => setShowBanner({ show: false, type: '', message: '' }), 2500);
+    }).catch(() => {
+      setShowBanner({ show: true, type: 'error', message: `Failed to back up Data'}` });
+      setTimeout(() => setShowBanner({ show: false, type: '', message: '' }), 2500);
+    })
   }
 
   return (

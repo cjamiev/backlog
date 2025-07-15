@@ -20,7 +20,7 @@ function FavoriteForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: name === 'type' ? Number(value) : value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -34,25 +34,6 @@ function FavoriteForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags 
     if (!currentTags.includes(tag)) {
       const newTags = [...currentTags, tag].join(', ');
       setForm((prev) => ({ ...prev, tags: newTags }));
-    }
-  };
-
-  const getTypeLabel = (type: FAVORITE_TYPE): string => {
-    switch (type) {
-      case FAVORITE_TYPE.art:
-        return 'Art';
-      case FAVORITE_TYPE.music:
-        return 'Music';
-      case FAVORITE_TYPE.game:
-        return 'Game';
-      case FAVORITE_TYPE.programming:
-        return 'Programming';
-      case FAVORITE_TYPE.entertainment:
-        return 'Entertainment';
-      case FAVORITE_TYPE.other:
-        return 'Other';
-      default:
-        return 'Unknown';
     }
   };
 
@@ -78,10 +59,9 @@ function FavoriteForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags 
         Type:
         <select className="form-input" name="type" value={form.type} onChange={handleChange} required>
           {Object.values(FAVORITE_TYPE)
-            .filter((value) => typeof value === 'number')
             .map((type) => (
               <option key={type} value={type}>
-                {getTypeLabel(type as FAVORITE_TYPE)}
+                {type}
               </option>
             ))}
         </select>

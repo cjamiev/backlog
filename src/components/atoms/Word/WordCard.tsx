@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Word, WORD_TYPE } from '../../../model/library';
+import { type Word } from '../../../model/library';
 
 interface WordCardProps {
   word: Word;
@@ -19,7 +19,7 @@ const WordCard: React.FC<WordCardProps> = ({ word, onEdit, onClone, onDelete, on
         <span className="card-label">Definition:</span> <span className="card-text">{word.definition}</span>
       </div>
       <div>
-        <span className="card-label">Type:</span> <span className="card-text">{WORD_TYPE[word.type]}</span>
+        <span className="card-label">Type:</span> <span className="card-text">{word.type}</span>
       </div>
       <a
         className="url-link"

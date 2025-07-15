@@ -1,7 +1,7 @@
 export enum GENDER_TYPE {
-  male,
-  female,
-  other
+  MALE = 'Male',
+  FEMALE = 'Female',
+  OTHER = 'Other'
 }
 
 export interface Name {
@@ -12,14 +12,14 @@ export interface Name {
 
 export const DefaultName: Name = {
   value: '',
-  gender: GENDER_TYPE.male,
+  gender: GENDER_TYPE.MALE,
   origin: ''
 };
 
 export enum WORD_TYPE {
-  noun,
-  adjective,
-  verb
+  NOUN = 'Noun',
+  ADJECTIVE = 'Adjective',
+  VERB = 'Verb'
 }
 
 export interface Word {
@@ -32,15 +32,15 @@ export interface Word {
 export const DefaultWord: Word = {
   value: '',
   definition: '',
-  type: WORD_TYPE.noun,
+  type: WORD_TYPE.NOUN,
   tags: ''
 };
 
 export enum WORD_PART_TYPE {
-  suffix,
-  prefix,
-  vowel,
-  consonant,
+  SUFFIX = 'Suffix',
+  PREFIX = 'Prefix',
+  VOWEL = 'Vowel',
+  CONSONANT = 'Consonant',
 }
 
 export interface WordPart {
@@ -52,7 +52,7 @@ export interface WordPart {
 export const DefaultWordPart: WordPart = {
   value: '',
   definition: '',
-  type: WORD_PART_TYPE.prefix,
+  type: WORD_PART_TYPE.PREFIX,
 };
 
 export interface Phrase {
@@ -154,12 +154,12 @@ export const DefaultGame: Game = {
 }
 
 export enum FAVORITE_TYPE {
-  art,
-  music,
-  game,
-  programming,
-  entertainment,
-  other
+  ART = 'Art',
+  MUSIC = 'Music',
+  GAME = 'Game',
+  PROGRAMMING = 'Programming',
+  ENTERTAINMENT = 'Entertainment',
+  OTHER = 'Other'
 }
 
 export interface Favorite {
@@ -173,7 +173,7 @@ export interface Favorite {
 export const DefaultFavorite: Favorite = {
   name: '',
   link: '',
-  type: FAVORITE_TYPE.other,
+  type: FAVORITE_TYPE.OTHER,
   tags: '',
   notes: ''
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Favorite, FAVORITE_TYPE } from '../../../model/library';
+import { type Favorite } from '../../../model/library';
 
 interface FavoriteCardProps {
   favorite: Favorite;
@@ -10,50 +10,12 @@ interface FavoriteCardProps {
 }
 
 const FavoriteCard: React.FC<FavoriteCardProps> = ({ favorite, onEdit, onClone, onDelete, onHandleClickTag }) => {
-  const getTypeLabel = (type: FAVORITE_TYPE): string => {
-    switch (type) {
-      case FAVORITE_TYPE.art:
-        return 'Art';
-      case FAVORITE_TYPE.music:
-        return 'Music';
-      case FAVORITE_TYPE.game:
-        return 'Game';
-      case FAVORITE_TYPE.programming:
-        return 'Programming';
-      case FAVORITE_TYPE.entertainment:
-        return 'Entertainment';
-      case FAVORITE_TYPE.other:
-        return 'Other';
-      default:
-        return 'Unknown';
-    }
-  };
-
-  const getTypeIcon = (type: FAVORITE_TYPE): string => {
-    switch (type) {
-      case FAVORITE_TYPE.art:
-        return '🎨';
-      case FAVORITE_TYPE.music:
-        return '🎵';
-      case FAVORITE_TYPE.game:
-        return '🎮';
-      case FAVORITE_TYPE.programming:
-        return '💻';
-      case FAVORITE_TYPE.entertainment:
-        return '🎬';
-      case FAVORITE_TYPE.other:
-        return '⭐';
-      default:
-        return '📌';
-    }
-  };
-
   return (
     <div className="card-wrapper">
       <div className="card-header">
         <h2 className="card-title">{favorite.name}</h2>
         <span className="card-type">
-          {getTypeIcon(favorite.type)} {getTypeLabel(favorite.type)}
+          {favorite.type}
         </span>
       </div>
       {favorite.notes && (

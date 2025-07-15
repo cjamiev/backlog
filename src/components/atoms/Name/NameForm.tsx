@@ -21,7 +21,7 @@ function NameForm({ onSubmit, initialValues, isEditing, cancelEdit }: NameFormPr
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === 'gender' ? Number(value) : value
+      [name]: value
     }));
   };
 
@@ -40,9 +40,9 @@ function NameForm({ onSubmit, initialValues, isEditing, cancelEdit }: NameFormPr
       <label className="form-label">
         Gender:
         <select className="form-input" name="gender" value={form.gender} onChange={handleChange}>
-          <option value={GENDER_TYPE.male}>Male</option>
-          <option value={GENDER_TYPE.female}>Female</option>
-          <option value={GENDER_TYPE.other}>Other</option>
+          <option value={GENDER_TYPE.MALE}>Male</option>
+          <option value={GENDER_TYPE.FEMALE}>Female</option>
+          <option value={GENDER_TYPE.OTHER}>Other</option>
         </select>
       </label>
       <label className="form-label">
