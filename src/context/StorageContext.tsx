@@ -11,10 +11,10 @@ interface StorageContextType {
 const StorageContext = createContext<StorageContextType>({
   isBackendAvailable: false,
   isLoadingPing: true,
-  refreshStorageStatus: () => {}
+  refreshStorageStatus: () => { }
 });
 
-export const useStorage = () => useContext(StorageContext);
+export const useStorageContext = () => useContext(StorageContext);
 
 export const StorageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isLoadingPing, setIsLoadingPing] = useState(true);

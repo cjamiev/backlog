@@ -13,7 +13,7 @@ import { DefaultGame, type Game } from '../../model/library';
 import { fakeGames } from '../../mocked/games';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const GAMES_PER_PAGE = 24;
@@ -27,7 +27,7 @@ const gameSortByOptions = [
 ];
 
 const GamePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingGames, setIsLoadingGames] = useState<boolean>(true);
   const [games, setGames] = useState<Game[]>([]);
 
@@ -141,11 +141,11 @@ const GamePage: React.FC = () => {
       const updatedGames = prev.map((g) =>
         g.name === form.name
           ? {
-              name: form.name,
-              rank: form.rank,
-              lowestPrice: form.lowestPrice,
-              tags: form.tags
-            }
+            name: form.name,
+            rank: form.rank,
+            lowestPrice: form.lowestPrice,
+            tags: form.tags
+          }
           : g
       );
 

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import Banner from '../atoms/Banner';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 
 const HomePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingReadme, setIsLoadingReadme] = useState<boolean>(true);
   const [readme, setReadme] = useState<string>("");
   const [editValue, setEditValue] = useState(readme);

@@ -13,7 +13,7 @@ import { DefaultWord, type Word } from '../../model/library';
 import { fakeWords } from '../../mocked/words';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const WORDS_PER_PAGE = 24;
@@ -24,7 +24,7 @@ const wordSearchByOptions = [
 const wordSortByOptions: { value: string; label: string }[] = [];
 
 const WordPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingWords, setIsLoadingWords] = useState<boolean>(true);
   const [words, setWords] = useState<Word[]>([]);
 

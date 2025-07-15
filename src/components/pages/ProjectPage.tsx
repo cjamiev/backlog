@@ -13,7 +13,7 @@ import { DefaultProject, type Project } from '../../model/library';
 import { fakeProjects } from '../../mocked/projects';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const PROJECTS_PER_PAGE = 24;
@@ -27,7 +27,7 @@ const projectSortByOptions = [
 ];
 
 const ProjectPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingProjects, setIsLoadingProjects] = useState<boolean>(true);
   const [projects, setProjects] = useState<Project[]>([]);
 
@@ -133,11 +133,11 @@ const ProjectPage: React.FC = () => {
       const updatedProjects = prev.map((p) =>
         p.id === form.id
           ? {
-              id: p.id,
-              name: form.name,
-              details: form.details,
-              rank: form.rank
-            }
+            id: p.id,
+            name: form.name,
+            details: form.details,
+            rank: form.rank
+          }
           : p
       );
 

@@ -13,7 +13,7 @@ import { DefaultFilm, type Film } from '../../model/library';
 import { fakeFilms } from '../../mocked/films';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const FILMS_PER_PAGE = 24;
@@ -27,7 +27,7 @@ const filmSortByOptions = [
 ];
 
 const FilmPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingFilms, setIsLoadingFilms] = useState<boolean>(true);
   const [films, setFilms] = useState<Film[]>([]);
 
@@ -140,10 +140,10 @@ const FilmPage: React.FC = () => {
       const updatedFilms = prev.map((f) =>
         f.name === form.name
           ? {
-              name: form.name,
-              rank: form.rank,
-              tags: form.tags
-            }
+            name: form.name,
+            rank: form.rank,
+            tags: form.tags
+          }
           : f
       );
 

@@ -13,7 +13,7 @@ import { DefaultBook, type Book } from '../../model/library';
 import { fakeBooks } from '../../mocked/books';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const BOOKS_PER_PAGE = 24;
@@ -24,7 +24,7 @@ const bookSearchByOptions = [
 const bookSortByOptions: { value: string; label: string }[] = [];
 
 const BookPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingBooks, setIsLoadingBooks] = useState<boolean>(true);
   const [books, setBooks] = useState<Book[]>([]);
 
@@ -132,9 +132,9 @@ const BookPage: React.FC = () => {
       const updatedBooks = prev.map((b) =>
         b.name === form.name
           ? {
-              name: form.name,
-              tags: form.tags
-            }
+            name: form.name,
+            tags: form.tags
+          }
           : b
       );
 

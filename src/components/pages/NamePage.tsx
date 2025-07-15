@@ -13,7 +13,7 @@ import { DefaultName, type Name } from '../../model/library';
 import { fakeNames } from '../../mocked/names';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const NAMES_PER_PAGE = 24;
@@ -24,7 +24,7 @@ const nameSearchByOptions = [
 const nameSortByOptions: { value: string; label: string }[] = [];
 
 const NamePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingNames, setIsLoadingNames] = useState<boolean>(true);
   const [names, setNames] = useState<Name[]>([]);
 
@@ -122,10 +122,10 @@ const NamePage: React.FC = () => {
       const updatedNames = prev.map((n) =>
         n.value === form.value
           ? {
-              value: form.value,
-              gender: form.gender,
-              origin: form.origin
-            }
+            value: form.value,
+            gender: form.gender,
+            origin: form.origin
+          }
           : n
       );
 

@@ -13,7 +13,7 @@ import { DefaultShow, type Show } from '../../model/library';
 import { fakeShows } from '../../mocked/shows';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const SHOWS_PER_PAGE = 24;
@@ -27,7 +27,7 @@ const showSortByOptions = [
 ];
 
 const ShowsPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingShows, setIsLoadingShows] = useState<boolean>(true);
   const [shows, setShows] = useState<Show[]>([]);
 
@@ -140,10 +140,10 @@ const ShowsPage: React.FC = () => {
       const updatedShows = prev.map((s) =>
         s.name === form.name
           ? {
-              name: form.name,
-              rank: form.rank,
-              tags: form.tags
-            }
+            name: form.name,
+            rank: form.rank,
+            tags: form.tags
+          }
           : s
       );
 

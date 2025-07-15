@@ -13,7 +13,7 @@ import { DefaultReference, type Reference } from '../../model/library';
 import { fakeReferences } from '../../mocked/references';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const REFERENCES_PER_PAGE = 24;
@@ -26,7 +26,7 @@ const referenceSearchByOptions = [
 const referenceSortByOptions: { value: string; label: string }[] = [];
 
 const ReferencePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingReferences, setIsLoadingReferences] = useState<boolean>(true);
   const [references, setReferences] = useState<Reference[]>([]);
 
@@ -144,12 +144,12 @@ const ReferencePage: React.FC = () => {
       const updatedReferences = prev.map((r) =>
         r.id === form.id
           ? {
-              id: r.id,
-              value: form.value,
-              origin: form.origin,
-              definition: form.definition,
-              tags: form.tags
-            }
+            id: r.id,
+            value: form.value,
+            origin: form.origin,
+            definition: form.definition,
+            tags: form.tags
+          }
           : r
       );
 

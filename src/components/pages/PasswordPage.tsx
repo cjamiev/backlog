@@ -13,7 +13,7 @@ import { DefaultPassword, type Password } from '../../model/library';
 import { fakePasswords } from '../../mocked/passwords';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const PASSWORDS_PER_PAGE = 24;
@@ -27,7 +27,7 @@ const passwordSortByOptions = [
 ];
 
 const PasswordPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingPasswords, setIsLoadingPasswords] = useState<boolean>(true);
   const [passwords, setPasswords] = useState<Password[]>([]);
 
@@ -134,12 +134,12 @@ const PasswordPage: React.FC = () => {
       const updatedPasswords = prev.map((p) =>
         p.name === form.name && p.username === form.username
           ? {
-              name: form.name,
-              username: form.username,
-              password: form.password,
-              updatedDate: form.updatedDate,
-              link: form.link
-            }
+            name: form.name,
+            username: form.username,
+            password: form.password,
+            updatedDate: form.updatedDate,
+            link: form.link
+          }
           : p
       );
 

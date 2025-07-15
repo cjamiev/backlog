@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { clearStorage } from '../../utils/storage';
 import Banner from '../atoms/Banner';
 import { backupAllRecords } from '../../api/library-service';
 
 const SettingsPage: React.FC = () => {
-  const { isBackendAvailable } = useStorage();
+  const { isBackendAvailable } = useStorageContext();
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string; message: string }>({
     show: false,
     type: 'success',

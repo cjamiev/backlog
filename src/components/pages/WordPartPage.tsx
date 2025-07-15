@@ -13,7 +13,7 @@ import { DefaultWordPart, type WordPart } from '../../model/library';
 import { fakeWordParts } from '../../mocked/wordParts';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const WORDPARTS_PER_PAGE = 24;
@@ -24,7 +24,7 @@ const wordPartSearchByOptions = [
 const wordPartSortByOptions: { value: string; label: string }[] = [];
 
 const WordPartPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingWordParts, setIsLoadingWordParts] = useState<boolean>(true);
   const [wordParts, setWordParts] = useState<WordPart[]>([]);
 

@@ -13,7 +13,7 @@ import { DefaultFavorite, type Favorite } from '../../model/library';
 import { fakeFavorites } from '../../mocked/favorites';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const FAVORITES_PER_PAGE = 24;
@@ -25,7 +25,7 @@ const favoriteSearchByOptions = [
 const favoriteSortByOptions: { value: string; label: string }[] = [];
 
 const FavoritePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingFavorites, setIsLoadingFavorites] = useState<boolean>(true);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
 

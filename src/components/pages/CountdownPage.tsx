@@ -13,7 +13,7 @@ import { DefaultCountdown, type Countdown } from '../../model/library';
 import { fakeCountdowns } from '../../mocked/countdowns';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const COUNTDOWNS_PER_PAGE = 24;
@@ -24,7 +24,7 @@ const countdownSortByOptions = [
 ];
 
 const CountdownPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingCountdowns, setIsLoadingCountdowns] = useState<boolean>(true);
   const [countdowns, setCountdowns] = useState<Countdown[]>([]);
 
@@ -125,10 +125,10 @@ const CountdownPage: React.FC = () => {
       const updatedCountdowns = prev.map((c) =>
         c.id === form.id
           ? {
-              id: c.id,
-              name: form.name,
-              date: form.date
-            }
+            id: c.id,
+            name: form.name,
+            date: form.date
+          }
           : c
       );
 

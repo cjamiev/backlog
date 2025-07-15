@@ -13,7 +13,7 @@ import { DefaultPhrase, type Phrase } from '../../model/library';
 import { fakePhrases } from '../../mocked/phrases';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const PHRASES_PER_PAGE = 24;
@@ -25,7 +25,7 @@ const phraseSearchByOptions = [
 const phraseSortByOptions: { value: string; label: string }[] = [];
 
 const PhrasePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingPhrases, setIsLoadingPhrases] = useState<boolean>(true);
   const [phrases, setPhrases] = useState<Phrase[]>([]);
 
@@ -137,11 +137,11 @@ const PhrasePage: React.FC = () => {
       const updatedPhrases = prev.map((p) =>
         p.id === form.id
           ? {
-              id: p.id,
-              value: form.value,
-              origin: form.origin,
-              tags: form.tags
-            }
+            id: p.id,
+            value: form.value,
+            origin: form.origin,
+            tags: form.tags
+          }
           : p
       );
 

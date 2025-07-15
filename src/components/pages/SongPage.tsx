@@ -13,7 +13,7 @@ import { DefaultSong, type Song } from '../../model/library';
 import { fakeSongs } from '../../mocked/songs';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorage } from '../../context/StorageContext';
+import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const SONGS_PER_PAGE = 24;
@@ -29,7 +29,7 @@ const songSortByOptions = [
 ];
 
 const SongPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorage();
+  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingSongs, setIsLoadingSongs] = useState<boolean>(true);
   const [songs, setSongs] = useState<Song[]>([]);
 
@@ -151,14 +151,14 @@ const SongPage: React.FC = () => {
       const updatedSongs = prev.map((s) =>
         s.id === form.id
           ? {
-              id: s.id,
-              name: form.name,
-              album: form.album,
-              band: form.band,
-              rank: form.rank,
-              link: form.link,
-              tags: form.tags
-            }
+            id: s.id,
+            name: form.name,
+            album: form.album,
+            band: form.band,
+            rank: form.rank,
+            link: form.link,
+            tags: form.tags
+          }
           : s
       );
 
