@@ -79,14 +79,16 @@ const HomePage: React.FC = () => {
               rows={4}
             />
             <div>
-              <button className="add-new-btn" onClick={handleSave} style={{ marginRight: 8 }}>Save</button>
-              <button className="sidebar-close-btn" onClick={handleCancel}>Cancel</button>
+              <button className="primary-btn" onClick={handleSave} style={{ marginRight: 8 }}>Save</button>
+              <button className="negative-btn" onClick={handleCancel}>Cancel</button>
             </div>
           </>
         ) : (
           <>
-            <div className="readme-view">{readme}</div>
-            <button className="add-new-btn" onClick={handleEdit}>Edit</button>
+            <button className="primary-btn" onClick={handleEdit}>Edit</button>
+            <div className="readme-view">
+              {readme.split('\n').map(sentence => <div key={sentence}>{sentence}</div>)}
+            </div>
           </>
         )}
       </div>
