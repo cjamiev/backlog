@@ -6,9 +6,10 @@ interface ProjectCardProps {
   onEdit: () => void;
   onClone: () => void;
   onDelete: () => void;
+  onHandleClickTag: (tag: string) => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onDelete }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -28,6 +29,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onD
       >
         Google
       </a>
+      <div>
+        {project.tags.length ? (
+          <div className="tags-container">
+            <span className="card-label">Tags:</span>
+            {project.tags.split(',').map((tag, i) => (
+              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                {tag}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>
           Clone

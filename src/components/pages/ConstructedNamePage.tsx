@@ -19,7 +19,8 @@ import { getRecordsFromStorage } from '../../utils/storage';
 const NAMES_PER_PAGE = 24;
 const nameSearchByOptions = [
   { value: 'value', label: 'Name' },
-  { value: 'origin', label: 'Origin' }
+  { value: 'origin', label: 'Origin' },
+  { value: 'tags', label: 'Tags' },
 ];
 const nameSortByOptions: { value: string; label: string }[] = [];
 
@@ -48,6 +49,8 @@ const ConstructedNamePage: React.FC = () => {
   const filteredNames = names.filter((n: Name) => {
     if (searchBy === 'origin') {
       return n.origin.toLowerCase().includes(search.toLowerCase());
+    } else if (searchBy === 'tags') {
+      return n.tags.toLowerCase().includes(search.toLowerCase());
     } else {
       return n.value.toLowerCase().includes(search.toLowerCase());
     }
@@ -58,6 +61,17 @@ const ConstructedNamePage: React.FC = () => {
   });
   const totalPages = Math.ceil(sortedNames.length / NAMES_PER_PAGE);
   const paginatedNames = sortedNames.slice((currentPage - 1) * NAMES_PER_PAGE, currentPage * NAMES_PER_PAGE);
+
+  const allTags = Array.from(
+    new Set(
+      names.flatMap((name) =>
+        name.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+      )
+    )
+  ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
     if (isBackendAvailable && isLoadingNames) {
@@ -103,7 +117,8 @@ const ConstructedNamePage: React.FC = () => {
     const newName = {
       value: form.value,
       gender: form.gender,
-      origin: form.origin
+      origin: form.origin,
+      tags: form.tags
     };
     setNames((prev) => {
       const updatedNames = [newName, ...prev];
@@ -124,7 +139,8 @@ const ConstructedNamePage: React.FC = () => {
           ? {
             value: form.value,
             gender: form.gender,
-            origin: form.origin
+            origin: form.origin,
+            tags: form.tags
           }
           : n
       );
@@ -142,7 +158,8 @@ const ConstructedNamePage: React.FC = () => {
     setEditForm({
       value: selectedName.value,
       gender: selectedName.gender,
-      origin: selectedName.origin
+      origin: selectedName.origin,
+      tags: selectedName.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -183,6 +200,11 @@ const ConstructedNamePage: React.FC = () => {
   const cancelDeleteName = () => {
     setShowDeleteModal(false);
     setNameToDelete(null);
+  };
+
+  const handleClickTag = (tag: string) => {
+    setSearchBy('tags');
+    setSearch(tag);
   };
 
   const handleChangeSearchBy = (filter: string) => {
@@ -235,6 +257,7 @@ const ConstructedNamePage: React.FC = () => {
                   startEdit(name, true);
                 }}
                 onDelete={() => handleDeleteName(name)}
+                onHandleClickTag={handleClickTag}
               />
             ))}
           </div>
@@ -299,6 +322,7 @@ const ConstructedNamePage: React.FC = () => {
           initialValues={editForm}
           isEditing={isEditing}
           cancelEdit={cancelEdit}
+          allTags={allTags}
         />
       </Sidepanel>
     </div>

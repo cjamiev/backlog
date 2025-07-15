@@ -6,9 +6,10 @@ interface CountdownCardProps {
   onEdit: () => void;
   onClone: () => void;
   onDelete: () => void;
+  onHandleClickTag: (tag: string) => void;
 }
 
-const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClone, onDelete }) => {
+const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClone, onDelete, onHandleClickTag }) => {
   const [timeLeft, setTimeLeft] = useState<string>('');
 
   useEffect(() => {
@@ -66,6 +67,18 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClon
       <div>
         <span className="card-label">Time Remaining:</span>
         <span className={`card-text ${isOverdue ? 'overdue-text' : 'countdown-text'}`}>{timeLeft}</span>
+      </div>
+      <div>
+        {countdown.tags.length ? (
+          <div className="tags-container">
+            <span className="card-label">Tags:</span>
+            {countdown.tags.split(',').map((tag, i) => (
+              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                {tag}
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

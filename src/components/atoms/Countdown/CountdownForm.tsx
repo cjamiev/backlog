@@ -6,9 +6,10 @@ interface CountdownFormProps {
   initialValues?: Countdown;
   isEditing: boolean;
   cancelEdit: () => void;
+  allTags: string[];
 }
 
-function CountdownForm({ onSubmit, initialValues, isEditing, cancelEdit }: CountdownFormProps) {
+function CountdownForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: CountdownFormProps) {
   const [form, setForm] = useState<Countdown>(DefaultCountdown);
 
   useEffect(() => {
@@ -33,6 +34,14 @@ function CountdownForm({ onSubmit, initialValues, isEditing, cancelEdit }: Count
     date.setDate(date.getDate() + daysFromNow);
     const dateString = date.toISOString().split('T')[0];
     setForm((prev) => ({ ...prev, date: dateString }));
+  };
+
+  const handleTagClick = (tag: string) => {
+    const currentTags = form.tags ? form.tags.split(',').map((t) => t.trim()) : [];
+    if (!currentTags.includes(tag)) {
+      const newTags = [...currentTags, tag].join(', ');
+      setForm((prev) => ({ ...prev, tags: newTags }));
+    }
   };
 
   return (
@@ -60,6 +69,20 @@ function CountdownForm({ onSubmit, initialValues, isEditing, cancelEdit }: Count
           <button type="button" className="quick-date-btn" onClick={() => setQuickDate(365)}>
             Next Year
           </button>
+        </div>
+      </div>
+      <label className="form-label">
+        Tags (comma separated):
+        <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
+      </label>
+      <div className="tags-wrapper">
+        <div className="tags-title">Available Tags:</div>
+        <div className="tags-container">
+          {allTags.map((tag, idx) => (
+            <button key={idx} className="tag-btn" type="button" onClick={() => handleTagClick(tag)}>
+              {tag}
+            </button>
+          ))}
         </div>
       </div>
       <div className="form-actions-wrapper">

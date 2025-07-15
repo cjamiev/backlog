@@ -6,9 +6,10 @@ interface ProjectFormProps {
   initialValues?: Project;
   isEditing: boolean;
   cancelEdit: () => void;
+  allTags: string[];
 }
 
-function ProjectForm({ onSubmit, initialValues, isEditing, cancelEdit }: ProjectFormProps) {
+function ProjectForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: ProjectFormProps) {
   const [form, setForm] = useState<Project>(DefaultProject);
 
   useEffect(() => {
@@ -26,6 +27,14 @@ function ProjectForm({ onSubmit, initialValues, isEditing, cancelEdit }: Project
     e.preventDefault();
     onSubmit(form);
     setForm(DefaultProject);
+  };
+
+  const handleTagClick = (tag: string) => {
+    const currentTags = form.tags ? form.tags.split(',').map((t) => t.trim()) : [];
+    if (!currentTags.includes(tag)) {
+      const newTags = [...currentTags, tag].join(', ');
+      setForm((prev) => ({ ...prev, tags: newTags }));
+    }
   };
 
   return (
@@ -57,6 +66,20 @@ function ProjectForm({ onSubmit, initialValues, isEditing, cancelEdit }: Project
           onChange={handleChange}
         />
       </label>
+      <label className="form-label">
+        Tags (comma separated):
+        <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
+      </label>
+      <div className="tags-wrapper">
+        <div className="tags-title">Available Tags:</div>
+        <div className="tags-container">
+          {allTags.map((tag, idx) => (
+            <button key={idx} className="tag-btn" type="button" onClick={() => handleTagClick(tag)}>
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="form-actions-wrapper">
         <button className="form-submit" type="submit">
           Submit

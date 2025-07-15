@@ -19,7 +19,8 @@ import { getRecordsFromStorage } from '../../utils/storage';
 const PASSWORDS_PER_PAGE = 24;
 const passwordSearchByOptions = [
   { value: 'name', label: 'Name' },
-  { value: 'username', label: 'Username' }
+  { value: 'username', label: 'Username' },
+  { value: 'tags', label: 'Tags' },
 ];
 const passwordSortByOptions = [
   { value: 'name', label: 'Name' },
@@ -51,6 +52,8 @@ const PasswordPage: React.FC = () => {
   const filteredPasswords = passwords.filter((p: Password) => {
     if (searchBy === 'username') {
       return p.username.toLowerCase().includes(search.toLowerCase());
+    } else if (searchBy === 'tags') {
+      return p.tags.toLowerCase().includes(search.toLowerCase());
     } else {
       return p.name.toLowerCase().includes(search.toLowerCase());
     }
@@ -68,6 +71,17 @@ const PasswordPage: React.FC = () => {
     (currentPage - 1) * PASSWORDS_PER_PAGE,
     currentPage * PASSWORDS_PER_PAGE
   );
+
+  const allTags = Array.from(
+    new Set(
+      passwords.flatMap((password) =>
+        password.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+      )
+    )
+  ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
     if (isBackendAvailable && isLoadingPasswords) {
@@ -115,7 +129,8 @@ const PasswordPage: React.FC = () => {
       username: form.username,
       password: form.password,
       updatedDate: form.updatedDate,
-      link: form.link
+      link: form.link,
+      tags: form.tags
     };
     setPasswords((prev) => {
       const updatedPasswords = [newPassword, ...prev];
@@ -138,7 +153,8 @@ const PasswordPage: React.FC = () => {
             username: form.username,
             password: form.password,
             updatedDate: form.updatedDate,
-            link: form.link
+            link: form.link,
+            tags: form.tags
           }
           : p
       );
@@ -158,7 +174,8 @@ const PasswordPage: React.FC = () => {
       username: selectedPassword.username,
       password: selectedPassword.password,
       updatedDate: selectedPassword.updatedDate,
-      link: selectedPassword.link
+      link: selectedPassword.link,
+      tags: selectedPassword.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -201,6 +218,11 @@ const PasswordPage: React.FC = () => {
   const cancelDeletePassword = () => {
     setShowDeleteModal(false);
     setPasswordToDelete(null);
+  };
+
+  const handleClickTag = (tag: string) => {
+    setSearchBy('tags');
+    setSearch(tag);
   };
 
   const handleChangeSearchBy = (filter: string) => {
@@ -253,6 +275,7 @@ const PasswordPage: React.FC = () => {
                   startEdit(password, true);
                 }}
                 onDelete={() => handleDeletePassword(password)}
+                onHandleClickTag={handleClickTag}
               />
             ))}
           </div>
@@ -319,6 +342,7 @@ const PasswordPage: React.FC = () => {
           initialValues={editForm}
           isEditing={isEditing}
           cancelEdit={cancelEdit}
+          allTags={allTags}
         />
       </Sidepanel>
     </div>

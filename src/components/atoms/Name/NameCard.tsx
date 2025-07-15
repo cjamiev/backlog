@@ -6,9 +6,10 @@ interface NameCardProps {
   onEdit: () => void;
   onClone: () => void;
   onDelete: () => void;
+  onHandleClickTag: (tag: string) => void;
 }
 
-const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onClone, onDelete }) => {
+const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onClone, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -28,6 +29,18 @@ const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onClone, onDelete }) 
       >
         Google
       </a>
+      <div>
+        {name.tags.length ? (
+          <div className="tags-container">
+            <span className="card-label">Tags:</span>
+            {name.tags.split(',').map((tag, i) => (
+              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                {tag}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>
           Clone

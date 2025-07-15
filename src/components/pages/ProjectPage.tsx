@@ -19,7 +19,8 @@ import { getRecordsFromStorage } from '../../utils/storage';
 const PROJECTS_PER_PAGE = 24;
 const projectSearchByOptions = [
   { value: 'name', label: 'Name' },
-  { value: 'details', label: 'Details' }
+  { value: 'details', label: 'Details' },
+  { value: 'tags', label: 'Tags' },
 ];
 const projectSortByOptions = [
   { value: 'name', label: 'Name' },
@@ -51,6 +52,8 @@ const ProjectPage: React.FC = () => {
   const filteredProjects = projects.filter((p: Project) => {
     if (searchBy === 'details') {
       return p.details.toLowerCase().includes(search.toLowerCase());
+    } else if (searchBy === 'tags') {
+      return p.tags.toLowerCase().includes(search.toLowerCase());
     } else {
       return p.name.toLowerCase().includes(search.toLowerCase());
     }
@@ -68,6 +71,17 @@ const ProjectPage: React.FC = () => {
     (currentPage - 1) * PROJECTS_PER_PAGE,
     currentPage * PROJECTS_PER_PAGE
   );
+
+  const allTags = Array.from(
+    new Set(
+      projects.flatMap((project) =>
+        project.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+      )
+    )
+  ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
     if (isBackendAvailable && isLoadingProjects) {
@@ -114,7 +128,8 @@ const ProjectPage: React.FC = () => {
       id: String(projects.length + 1),
       name: form.name,
       details: form.details,
-      rank: form.rank
+      rank: form.rank,
+      tags: form.tags
     };
     setProjects((prev) => {
       const updatedProjects = [newProject, ...prev];
@@ -136,7 +151,8 @@ const ProjectPage: React.FC = () => {
             id: p.id,
             name: form.name,
             details: form.details,
-            rank: form.rank
+            rank: form.rank,
+            tags: form.tags
           }
           : p
       );
@@ -155,7 +171,8 @@ const ProjectPage: React.FC = () => {
       id: isClone ? String(projects.length + 1) : selectedProject.id,
       name: selectedProject.name,
       details: selectedProject.details,
-      rank: selectedProject.rank
+      rank: selectedProject.rank,
+      tags: selectedProject.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -196,6 +213,11 @@ const ProjectPage: React.FC = () => {
   const cancelDeleteProject = () => {
     setShowDeleteModal(false);
     setProjectToDelete(null);
+  };
+
+  const handleClickTag = (tag: string) => {
+    setSearchBy('tags');
+    setSearch(tag);
   };
 
   const handleChangeSearchBy = (filter: string) => {
@@ -248,6 +270,7 @@ const ProjectPage: React.FC = () => {
                   startEdit(project, true);
                 }}
                 onDelete={() => handleDeleteProject(project)}
+                onHandleClickTag={handleClickTag}
               />
             ))}
           </div>
@@ -312,6 +335,7 @@ const ProjectPage: React.FC = () => {
           initialValues={editForm}
           isEditing={isEditing}
           cancelEdit={cancelEdit}
+          allTags={allTags}
         />
       </Sidepanel>
     </div>

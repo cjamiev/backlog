@@ -6,9 +6,10 @@ interface PasswordCardProps {
   onEdit: () => void;
   onClone: () => void;
   onDelete: () => void;
+  onHandleClickTag: (tag: string) => void;
 }
 
-const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onClone, onDelete }) => {
+const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onClone, onDelete, onHandleClickTag }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -53,6 +54,18 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onClone, 
           Visit Site
         </a>
       )}
+      <div>
+        {password.tags.length ? (
+          <div className="tags-container">
+            <span className="card-label">Tags:</span>
+            {password.tags.split(',').map((tag, i) => (
+              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                {tag}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>
           Clone

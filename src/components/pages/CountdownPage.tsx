@@ -17,7 +17,8 @@ import { useStorageContext } from '../../context/StorageContext';
 import { getRecordsFromStorage } from '../../utils/storage';
 
 const COUNTDOWNS_PER_PAGE = 24;
-const countdownSearchByOptions = [{ value: 'name', label: 'Name' }];
+const countdownSearchByOptions = [{ value: 'name', label: 'Name' },
+{ value: 'tags', label: 'Tags' },];
 const countdownSortByOptions = [
   { value: 'name', label: 'Name' },
   { value: 'date', label: 'Date' }
@@ -46,7 +47,11 @@ const CountdownPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredCountdowns = countdowns.filter((c: Countdown) => {
-    return c.name.toLowerCase().includes(search.toLowerCase());
+    if (searchBy === 'name') {
+      return c.name.toLowerCase().includes(search.toLowerCase());
+    } else {
+      return c.tags.toLowerCase().includes(search.toLowerCase());
+    }
   });
 
   const sortedCountdowns = [...filteredCountdowns].sort((a, b) => {
@@ -61,6 +66,17 @@ const CountdownPage: React.FC = () => {
     (currentPage - 1) * COUNTDOWNS_PER_PAGE,
     currentPage * COUNTDOWNS_PER_PAGE
   );
+
+  const allTags = Array.from(
+    new Set(
+      countdowns.flatMap((countdown) =>
+        countdown.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter(Boolean)
+      )
+    )
+  ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
     if (isBackendAvailable && isLoadingCountdowns) {
@@ -106,7 +122,8 @@ const CountdownPage: React.FC = () => {
     const newCountdown = {
       id: String(countdowns.length + 1),
       name: form.name,
-      date: form.date
+      date: form.date,
+      tags: form.tags
     };
     setCountdowns((prev) => {
       const updatedCountdowns = [newCountdown, ...prev];
@@ -127,7 +144,8 @@ const CountdownPage: React.FC = () => {
           ? {
             id: c.id,
             name: form.name,
-            date: form.date
+            date: form.date,
+            tags: form.tags
           }
           : c
       );
@@ -145,7 +163,8 @@ const CountdownPage: React.FC = () => {
     setEditForm({
       id: isClone ? String(countdowns.length + 1) : selectedCountdown.id,
       name: selectedCountdown.name,
-      date: selectedCountdown.date
+      date: selectedCountdown.date,
+      tags: selectedCountdown.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -186,6 +205,11 @@ const CountdownPage: React.FC = () => {
   const cancelDeleteCountdown = () => {
     setShowDeleteModal(false);
     setCountdownToDelete(null);
+  };
+
+  const handleClickTag = (tag: string) => {
+    setSearchBy('tags');
+    setSearch(tag);
   };
 
   const handleChangeSearchBy = (filter: string) => {
@@ -238,6 +262,7 @@ const CountdownPage: React.FC = () => {
                   startEdit(countdown, true);
                 }}
                 onDelete={() => handleDeleteCountdown(countdown)}
+                onHandleClickTag={handleClickTag}
               />
             ))}
           </div>
@@ -304,6 +329,7 @@ const CountdownPage: React.FC = () => {
           initialValues={editForm}
           isEditing={isEditing}
           cancelEdit={cancelEdit}
+          allTags={allTags}
         />
       </Sidepanel>
     </div>

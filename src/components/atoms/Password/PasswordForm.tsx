@@ -6,9 +6,10 @@ interface PasswordFormProps {
   initialValues?: Password;
   isEditing: boolean;
   cancelEdit: () => void;
+  allTags: string[];
 }
 
-function PasswordForm({ onSubmit, initialValues, isEditing, cancelEdit }: PasswordFormProps) {
+function PasswordForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: PasswordFormProps) {
   const [form, setForm] = useState<Password>(DefaultPassword);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -46,6 +47,14 @@ function PasswordForm({ onSubmit, initialValues, isEditing, cancelEdit }: Passwo
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
+  };
+
+  const handleTagClick = (tag: string) => {
+    const currentTags = form.tags ? form.tags.split(',').map((t) => t.trim()) : [];
+    if (!currentTags.includes(tag)) {
+      const newTags = [...currentTags, tag].join(', ');
+      setForm((prev) => ({ ...prev, tags: newTags }));
+    }
   };
 
   return (
@@ -114,6 +123,20 @@ function PasswordForm({ onSubmit, initialValues, isEditing, cancelEdit }: Passwo
           placeholder="https://example.com"
         />
       </label>
+      <label className="form-label">
+        Tags (comma separated):
+        <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
+      </label>
+      <div className="tags-wrapper">
+        <div className="tags-title">Available Tags:</div>
+        <div className="tags-container">
+          {allTags.map((tag, idx) => (
+            <button key={idx} className="tag-btn" type="button" onClick={() => handleTagClick(tag)}>
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="form-actions-wrapper">
         <button className="form-submit" type="submit">
           Submit

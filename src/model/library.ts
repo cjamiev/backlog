@@ -8,12 +8,14 @@ export interface Name {
   value: string;
   gender: GENDER_TYPE;
   origin: string;
+  tags: string;
 }
 
 export const DefaultName: Name = {
   value: '',
   gender: GENDER_TYPE.MALE,
-  origin: ''
+  origin: '',
+  tags: ''
 };
 
 export enum WORD_TYPE {
@@ -183,25 +185,29 @@ export interface Project {
   name: string;
   details: string;
   rank: number;
+  tags: string;
 }
 
 export const DefaultProject: Project = {
   id: '',
   name: '',
   details: '',
-  rank: 1
+  rank: 1,
+  tags: ''
 }
 
 export interface Countdown {
   id: string;
   name: string;
   date: string;
+  tags: string;
 }
 
 export const DefaultCountdown: Countdown = {
   id: '',
   name: '',
-  date: ''
+  date: '',
+  tags: ''
 }
 
 export interface Password {
@@ -210,6 +216,7 @@ export interface Password {
   password: string;
   updatedDate: string;
   link: string;
+  tags: string;
 }
 
 export const DefaultPassword: Password = {
@@ -218,4 +225,5 @@ export const DefaultPassword: Password = {
   password: '',
   updatedDate: '',
   link: '',
+  tags: '',
 }

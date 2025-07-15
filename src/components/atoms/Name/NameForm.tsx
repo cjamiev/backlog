@@ -6,9 +6,10 @@ interface NameFormProps {
   initialValues?: Name;
   isEditing: boolean;
   cancelEdit: () => void;
+  allTags: string[];
 }
 
-function NameForm({ onSubmit, initialValues, isEditing, cancelEdit }: NameFormProps) {
+function NameForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: NameFormProps) {
   const [form, setForm] = useState<Name>(DefaultName);
 
   useEffect(() => {
@@ -31,6 +32,14 @@ function NameForm({ onSubmit, initialValues, isEditing, cancelEdit }: NameFormPr
     setForm(DefaultName);
   };
 
+  const handleTagClick = (tag: string) => {
+    const currentTags = form.tags ? form.tags.split(',').map((t) => t.trim()) : [];
+    if (!currentTags.includes(tag)) {
+      const newTags = [...currentTags, tag].join(', ');
+      setForm((prev) => ({ ...prev, tags: newTags }));
+    }
+  };
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
@@ -49,6 +58,20 @@ function NameForm({ onSubmit, initialValues, isEditing, cancelEdit }: NameFormPr
         Origin:
         <input className="form-input" type="text" name="origin" value={form.origin} onChange={handleChange} required />
       </label>
+      <label className="form-label">
+        Tags (comma separated):
+        <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
+      </label>
+      <div className="tags-wrapper">
+        <div className="tags-title">Available Tags:</div>
+        <div className="tags-container">
+          {allTags.map((tag, idx) => (
+            <button key={idx} className="tag-btn" type="button" onClick={() => handleTagClick(tag)}>
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
       <div className="form-actions-wrapper">
         <button className="form-submit" type="submit">
           Submit
