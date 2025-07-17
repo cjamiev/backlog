@@ -1,7 +1,7 @@
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SongPage from './pages/SongPage';
 import HomePage from './pages/HomePage';
 import SettingsPage from './pages/SettingsPage';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import WordPage from './pages/WordPage';
 import ConstructedWordPage from './pages/ConstructedWordPage';
 import NamePage from './pages/NamePage';
@@ -18,7 +18,7 @@ import CountdownPage from './pages/CountdownPage';
 import FavoritePage from './pages/FavoritePage';
 import WordPartPage from './pages/WordPartPage';
 
-function App() {
+function AppRouter() {
   return (
     <Router>
       <nav className="page-nav">
@@ -65,4 +65,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppRouter;

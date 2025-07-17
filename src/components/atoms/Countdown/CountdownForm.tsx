@@ -4,12 +4,11 @@ import { DefaultCountdown, type Countdown } from '../../../model/library';
 interface CountdownFormProps {
   onSubmit: (form: Countdown) => void;
   initialValues?: Countdown;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function CountdownForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: CountdownFormProps) {
+function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags }: CountdownFormProps) {
   const [form, setForm] = useState<Countdown>(DefaultCountdown);
 
   useEffect(() => {
@@ -89,11 +88,9 @@ function CountdownForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

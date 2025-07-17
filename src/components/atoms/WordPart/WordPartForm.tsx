@@ -4,11 +4,10 @@ import { DefaultWordPart, type WordPart, WORD_PART_TYPE } from '../../../model/l
 interface WordPartFormProps {
   onSubmit: (form: WordPart) => void;
   initialValues?: WordPart;
-  isEditing: boolean;
   cancelEdit: () => void;
 }
 
-function WordPartForm({ onSubmit, initialValues, isEditing, cancelEdit }: WordPartFormProps) {
+function WordPartForm({ onSubmit, initialValues, cancelEdit }: WordPartFormProps) {
   const [form, setForm] = useState<WordPart>(DefaultWordPart);
 
   useEffect(() => {
@@ -28,21 +27,6 @@ function WordPartForm({ onSubmit, initialValues, isEditing, cancelEdit }: WordPa
     setForm(DefaultWordPart);
   };
 
-  const getTypeLabel = (type: WORD_PART_TYPE): string => {
-    switch (type) {
-      case WORD_PART_TYPE.suffix:
-        return 'Suffix';
-      case WORD_PART_TYPE.prefix:
-        return 'Prefix';
-      case WORD_PART_TYPE.vowel:
-        return 'Vowel';
-      case WORD_PART_TYPE.consonant:
-        return 'Consonant';
-      default:
-        return 'Unknown';
-    }
-  };
-
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
@@ -53,10 +37,9 @@ function WordPartForm({ onSubmit, initialValues, isEditing, cancelEdit }: WordPa
         Type:
         <select className="form-input" name="type" value={form.type} onChange={handleChange} required>
           {Object.values(WORD_PART_TYPE)
-            .filter((value) => typeof value === 'number')
             .map((type) => (
               <option key={type} value={type}>
-                {getTypeLabel(type as WORD_PART_TYPE)}
+                {type}
               </option>
             ))}
         </select>
@@ -76,11 +59,9 @@ function WordPartForm({ onSubmit, initialValues, isEditing, cancelEdit }: WordPa
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
-        )}
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

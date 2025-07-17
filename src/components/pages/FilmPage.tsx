@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import FilmCard from '../atoms/Film/FilmCard';
 import FilmForm from '../atoms/Film/FilmForm';
 import { DefaultFilm, type Film } from '../../model/library';
-import { fakeFilms } from '../../mocked/films';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const FILMS_PER_PAGE = 24;
 const filmSearchByOptions = [
@@ -27,7 +24,6 @@ const filmSortByOptions = [
 ];
 
 const FilmPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingFilms, setIsLoadingFilms] = useState<boolean>(true);
   const [films, setFilms] = useState<Film[]>([]);
 
@@ -78,27 +74,19 @@ const FilmPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingFilms) {
-      loadRecordsByType('films').then((records: Film[]) => {
+    if ( isLoadingFilms) {
+      loadRecordsByType<Film>('films').then((records: Film[]) => {
         setFilms(records);
         setIsLoadingFilms(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedFilms = getRecordsFromStorage('films', [...fakeFilms]);
-      setFilms(savedFilms);
-      setIsLoadingFilms(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingFilms]);
+  }, [isLoadingFilms]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, films.length]);
 
   const handleSubmit = async (payload: Film[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('films', JSON.stringify(payload));
-    } else {
       updateRecordsByType(JSON.stringify(payload), 'films')
         .then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -114,7 +102,6 @@ const FilmPage: React.FC = () => {
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
           console.error('Error:', error);
         });
-    }
   };
 
   const handleAddFilm = (form: Film) => {
@@ -321,7 +308,6 @@ const FilmPage: React.FC = () => {
         <FilmForm
           onSubmit={isEditing ? handleEditFilm : handleAddFilm}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

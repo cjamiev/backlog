@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
-import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
 import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';
 import Footer from '../atoms/Footer';
-import Pagination from '../atoms/Pagination';
 import FavoriteForm from '../atoms/Favorite/FavoriteForm';
 import { DefaultFavorite, type Favorite } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
+import { getRecordsFromStorage } from '../../utils/storage';
+import { fakeFavorites, fakeFavoriteTypes } from '../../mocked/favorites';
+import FavoriteList from '../atoms/Favorite/FavoriteList';
+import AddFavoriteCard from '../atoms/Favorite/AddFavoriteCard';
 
-const FAVORITES_PER_PAGE = 24;
 const favoriteSearchByOptions = [
   { value: 'name', label: 'Name' },
   { value: 'tags', label: 'Tags' },
@@ -20,8 +20,9 @@ const favoriteSearchByOptions = [
 ];
 const favoriteSortByOptions: { value: string; label: string }[] = [];
 
-const FavoritePage: React.FC = () => {
+const FavoriteDemoPage: React.FC = () => {
   const [isLoadingFavorites, setIsLoadingFavorites] = useState<boolean>(true);
+  const [isLoadingFavoriteTypes, setIsLoadingFavoriteTypes] = useState<boolean>(true);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
 
   const [search, setSearch] = useState('');
@@ -39,7 +40,11 @@ const FavoritePage: React.FC = () => {
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
-  const [currentPage, setCurrentPage] = useState(1);
+  const [newTypeModalOpen, setNewTypeModalOpen] = useState(false);
+  const [newTypeInput, setNewTypeInput] = useState('');
+  const [favoriteTypes, setFavoriteTypesTypes] = useState<string[]>([]);
+  const [removeTypeModalOpen, setRemoveTypeModalOpen] = useState(false);
+  const [selectedTypeToRemove, setSelectedTypeToRemove] = useState('');
 
   const filteredFavorites = favorites.filter((f: Favorite) => {
     if (searchBy === 'tags') {
@@ -50,15 +55,6 @@ const FavoritePage: React.FC = () => {
       return f.name.toLowerCase().includes(search.toLowerCase());
     }
   });
-
-  const sortedFavorites = [...filteredFavorites].sort((a, b) => {
-    return a.name.localeCompare(b.name);
-  });
-  const totalPages = Math.ceil(sortedFavorites.length / FAVORITES_PER_PAGE);
-  const paginatedFavorites = sortedFavorites.slice(
-    (currentPage - 1) * FAVORITES_PER_PAGE,
-    currentPage * FAVORITES_PER_PAGE
-  );
 
   const allTags = Array.from(
     new Set(
@@ -73,33 +69,24 @@ const FavoritePage: React.FC = () => {
 
   useEffect(() => {
     if (isLoadingFavorites) {
-      loadRecordsByType<Favorite>('favorites').then((records: Favorite[]) => {
-        setFavorites(records);
-        setIsLoadingFavorites(false);
-      });
+      const savedFavorites = getRecordsFromStorage('favorites', [...fakeFavorites]);
+      setFavorites(savedFavorites);
+      setIsLoadingFavorites(false);
     }
   }, [isLoadingFavorites]);
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [search, searchBy, sortBy, favorites.length]);
+    if (isLoadingFavoriteTypes) {
+      const savedFavoriteTypes = getRecordsFromStorage('favorite-types', [...fakeFavoriteTypes]);
+      setFavoriteTypesTypes(savedFavoriteTypes);
+      setIsLoadingFavoriteTypes(false);
+    }
+  }, [isLoadingFavoriteTypes]);
 
   const handleSubmit = async (payload: Favorite[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'favorites')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    localStorage.setItem('favorites', JSON.stringify(payload));
+    setShowBanner({ show: true, type: 'success' });
+    setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
   };
 
   const handleAddFavorite = (form: Favorite) => {
@@ -145,36 +132,11 @@ const FavoritePage: React.FC = () => {
     setEditForm(DefaultFavorite);
   };
 
-  const startEdit = (selectedFavorite: Favorite, isClone?: boolean) => {
-    setEditForm({
-      name: selectedFavorite.name,
-      link: selectedFavorite.link,
-      type: selectedFavorite.type,
-      tags: selectedFavorite.tags,
-      notes: selectedFavorite.notes
-    });
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
-    setIsPanelOpen(true);
-  };
-
-  const startAdd = () => {
-    setEditForm(DefaultFavorite);
-    setIsEditing(false);
-    setIsAddMode(true);
-    setIsPanelOpen(true);
-  };
-
   const cancelEdit = () => {
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
     setEditForm(DefaultFavorite);
-  };
-
-  const handleDeleteFavorite = (favorite: Favorite) => {
-    setFavoriteToDelete(favorite);
-    setShowDeleteModal(true);
   };
 
   const confirmDeleteFavorite = () => {
@@ -196,11 +158,6 @@ const FavoritePage: React.FC = () => {
     setFavoriteToDelete(null);
   };
 
-  const handleClickTag = (tag: string) => {
-    setSearchBy('tags');
-    setSearch(tag);
-  };
-
   const handleChangeSearchBy = (filter: string) => {
     setSearchBy(filter);
   };
@@ -212,14 +169,39 @@ const FavoritePage: React.FC = () => {
   const handleOpenJSONModal = () => setShowJSONModal(true);
   const handleCloseJSONModal = () => setShowJSONModal(false);
 
-  const handlePrevious = () => {
-    setCurrentPage((p) => Math.max(1, p - 1));
+  const handleAddNewType = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!favoriteTypes.includes(newTypeInput)) {
+      const updatedFavoriteTypes = favoriteTypes.concat(newTypeInput);
+      localStorage.setItem('favorite-types', JSON.stringify(updatedFavoriteTypes));
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    } else {
+      setShowBanner({ show: true, type: 'fail' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+    setNewTypeInput('');
+    setNewTypeModalOpen(false);
   };
-  const handlePageSelect = (pageIndex: number) => {
-    setCurrentPage(pageIndex);
+
+  const handleRemoveType = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedTypeToRemove && favoriteTypes.includes(selectedTypeToRemove)) {
+      const updatedFavoriteTypes = favoriteTypes.filter(type => type !== selectedTypeToRemove);
+      localStorage.setItem('favorite-types', JSON.stringify(updatedFavoriteTypes));
+      setFavoriteTypesTypes(updatedFavoriteTypes);
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+    setSelectedTypeToRemove('');
+    setRemoveTypeModalOpen(false);
   };
-  const handleNext = () => {
-    setCurrentPage((p) => Math.min(totalPages, p + 1));
+
+  const startAdd = () => {
+    setEditForm(DefaultFavorite);
+    setIsEditing(false);
+    setIsAddMode(true);
+    setIsPanelOpen(true);
   };
 
   return (
@@ -237,8 +219,80 @@ const FavoritePage: React.FC = () => {
         sortByOptions={favoriteSortByOptions}
       />
       <div className="page-body-layout">
+        <div className='favorites-action-wrapper'>
+          <AddFavoriteCard onClick={startAdd} />
+          <div className='favorites-type-btn-wrapper'>
+            <button
+              className="primary-btn"
+              onClick={() => setNewTypeModalOpen(true)}
+            >
+              + Type
+            </button>
+            <button
+              className="negative-btn"
+              onClick={() => setRemoveTypeModalOpen(true)}
+            >
+              - Type
+            </button>
+          </div>
+        </div>
+        <Modal isOpen={newTypeModalOpen} onClose={() => setNewTypeModalOpen(false)} title="Add New Favorite Type">
+          <form onSubmit={handleAddNewType} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <input
+              type="text"
+              value={newTypeInput}
+              onChange={e => setNewTypeInput(e.target.value)}
+              placeholder="Enter new type name"
+              autoFocus
+              required
+            />
+            <div className="form-actions-wrapper">
+
+              <button className="form-submit" type="submit">
+                Submit
+              </button>
+              <button className="form-cancel-btn" onClick={() => setNewTypeModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </Modal>
+        <Modal isOpen={removeTypeModalOpen} onClose={() => setRemoveTypeModalOpen(false)} title="Remove Favorite Type">
+          <form onSubmit={handleRemoveType} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <select
+              value={selectedTypeToRemove}
+              onChange={e => setSelectedTypeToRemove(e.target.value)}
+              required
+            >
+              <option value="">Select a type to remove</option>
+              {favoriteTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+            <div className="form-actions-wrapper">
+
+              <button className="form-submit" type="submit">
+                Submit
+              </button>
+              <button className="form-cancel-btn" onClick={() => setRemoveTypeModalOpen(false)}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        </Modal>
         {!isLoadingFavorites ? (
-          <div className="cards-container">
+          <div className="favorite-cards-container">
+            {favoriteTypes.map(type => (
+              <FavoriteList
+                type={type}
+                filteredFavorites={filteredFavorites}
+                onEditFavorite={(favorite: Favorite) => {
+                  setEditForm(favorite);
+                  setIsEditing(true);
+                  setIsAddMode(false);
+                  setIsPanelOpen(true);
+                }}
+              />))}
           </div>
         ) : (
           <div className="loading-container">Loading...</div>
@@ -253,13 +307,6 @@ const FavoritePage: React.FC = () => {
             Show JSON
           </button>
         </div>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          handlePrevious={handlePrevious}
-          handlePageSelect={handlePageSelect}
-          handleNext={handleNext}
-        />
       </Footer>
       <Modal
         isOpen={showDeleteModal}
@@ -302,7 +349,7 @@ const FavoritePage: React.FC = () => {
           onSubmit={isEditing ? handleEditFavorite : handleAddFavorite}
           initialValues={editForm}
           cancelEdit={cancelEdit}
-          favoriteTypes={[]}
+          favoriteTypes={favoriteTypes}
           allTags={allTags}
         />
       </Sidepanel>
@@ -310,4 +357,4 @@ const FavoritePage: React.FC = () => {
   );
 };
 
-export default FavoritePage;
+export default FavoriteDemoPage;

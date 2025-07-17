@@ -4,12 +4,11 @@ import { DefaultPassword, type Password } from '../../../model/library';
 interface PasswordFormProps {
   onSubmit: (form: Password) => void;
   initialValues?: Password;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function PasswordForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: PasswordFormProps) {
+function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags }: PasswordFormProps) {
   const [form, setForm] = useState<Password>(DefaultPassword);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -141,11 +140,9 @@ function PasswordForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags 
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

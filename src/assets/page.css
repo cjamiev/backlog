@@ -38,7 +38,6 @@
   border-top: 1px solid var(--color-primary);
   display: flex;
   align-items: center;
-  gap: 120px;
   padding: 16px 0 12px 16px;
   height: 50px;
   z-index: 1;

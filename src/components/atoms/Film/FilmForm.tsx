@@ -4,12 +4,11 @@ import { DefaultFilm, type Film } from '../../../model/library';
 interface FilmFormProps {
   onSubmit: (form: Film) => void;
   initialValues?: Film;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function FilmForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: FilmFormProps) {
+function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProps) {
   const [form, setForm] = useState<Film>(DefaultFilm);
 
   useEffect(() => {
@@ -73,11 +72,9 @@ function FilmForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: F
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

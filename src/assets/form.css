@@ -104,6 +104,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  max-height: 150px;
+  overflow: auto;
 }
 
 .tag-btn {

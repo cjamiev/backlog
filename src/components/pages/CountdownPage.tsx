@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import CountdownCard from '../atoms/Countdown/CountdownCard';
 import CountdownForm from '../atoms/Countdown/CountdownForm';
 import { DefaultCountdown, type Countdown } from '../../model/library';
-import { fakeCountdowns } from '../../mocked/countdowns';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const COUNTDOWNS_PER_PAGE = 24;
 const countdownSearchByOptions = [{ value: 'name', label: 'Name' },
@@ -25,7 +22,6 @@ const countdownSortByOptions = [
 ];
 
 const CountdownPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingCountdowns, setIsLoadingCountdowns] = useState<boolean>(true);
   const [countdowns, setCountdowns] = useState<Countdown[]>([]);
 
@@ -79,43 +75,34 @@ const CountdownPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingCountdowns) {
-      loadRecordsByType('countdowns').then((records: Countdown[]) => {
+    if (isLoadingCountdowns) {
+      loadRecordsByType<Countdown>('countdowns').then((records: Countdown[]) => {
         setCountdowns(records);
         setIsLoadingCountdowns(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedCountdowns = getRecordsFromStorage('countdowns', [...fakeCountdowns]);
-      setCountdowns(savedCountdowns);
-      setIsLoadingCountdowns(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingCountdowns]);
+  }, [isLoadingCountdowns]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, countdowns.length]);
 
   const handleSubmit = async (payload: Countdown[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('countdowns', JSON.stringify(payload));
-    } else {
-      updateRecordsByType(JSON.stringify(payload), 'countdowns')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
+    updateRecordsByType(JSON.stringify(payload), 'countdowns')
+      .then((isSuccess: boolean) => {
+        if (isSuccess) {
+          setShowBanner({ show: true, type: 'success' });
+          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        } else {
           setShowBanner({ show: true, type: 'error' });
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
-    }
+        }
+      })
+      .catch((error: unknown) => {
+        setShowBanner({ show: true, type: 'error' });
+        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        console.error('Error:', error);
+      });
   };
 
   const handleAddCountdown = (form: Countdown) => {
@@ -327,7 +314,6 @@ const CountdownPage: React.FC = () => {
         <CountdownForm
           onSubmit={isEditing ? handleEditCountdown : handleAddCountdown}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

@@ -11,13 +11,13 @@ interface WordPartCardProps {
 const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onClone, onDelete }) => {
   const getTypeLabel = (type: WORD_PART_TYPE): string => {
     switch (type) {
-      case WORD_PART_TYPE.suffix:
+      case WORD_PART_TYPE.SUFFIX:
         return 'Suffix';
-      case WORD_PART_TYPE.prefix:
+      case WORD_PART_TYPE.PREFIX:
         return 'Prefix';
-      case WORD_PART_TYPE.vowel:
+      case WORD_PART_TYPE.VOWEL:
         return 'Vowel';
-      case WORD_PART_TYPE.consonant:
+      case WORD_PART_TYPE.CONSONANT:
         return 'Consonant';
       default:
         return 'Unknown';
@@ -26,13 +26,13 @@ const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onClone, 
 
   const getTypeIcon = (type: WORD_PART_TYPE): string => {
     switch (type) {
-      case WORD_PART_TYPE.suffix:
+      case WORD_PART_TYPE.SUFFIX:
         return '🔚';
-      case WORD_PART_TYPE.prefix:
+      case WORD_PART_TYPE.PREFIX:
         return '🔛';
-      case WORD_PART_TYPE.vowel:
+      case WORD_PART_TYPE.VOWEL:
         return '🔊';
-      case WORD_PART_TYPE.consonant:
+      case WORD_PART_TYPE.CONSONANT:
         return '🔇';
       default:
         return '📝';

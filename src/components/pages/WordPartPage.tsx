@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import WordPartCard from '../atoms/WordPart/WordPartCard';
 import WordPartForm from '../atoms/WordPart/WordPartForm';
 import { DefaultWordPart, type WordPart } from '../../model/library';
-import { fakeWordParts } from '../../mocked/wordParts';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const WORDPARTS_PER_PAGE = 24;
 const wordPartSearchByOptions = [
@@ -24,7 +21,6 @@ const wordPartSearchByOptions = [
 const wordPartSortByOptions: { value: string; label: string }[] = [];
 
 const WordPartPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingWordParts, setIsLoadingWordParts] = useState<boolean>(true);
   const [wordParts, setWordParts] = useState<WordPart[]>([]);
 
@@ -63,27 +59,19 @@ const WordPartPage: React.FC = () => {
   );
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingWordParts) {
-      loadRecordsByType('word-parts').then((records: WordPart[]) => {
+    if (isLoadingWordParts) {
+      loadRecordsByType<WordPart>('word-parts').then((records: WordPart[]) => {
         setWordParts(records);
         setIsLoadingWordParts(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedWordParts = getRecordsFromStorage('word-parts', [...fakeWordParts]);
-      setWordParts(savedWordParts);
-      setIsLoadingWordParts(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingWordParts]);
+  }, [isLoadingWordParts]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, wordParts.length]);
 
   const handleSubmit = async (payload: WordPart[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('word-parts', JSON.stringify(payload));
-    } else {
       updateRecordsByType(JSON.stringify(payload), 'word-parts')
         .then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -99,7 +87,6 @@ const WordPartPage: React.FC = () => {
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
           console.error('Error:', error);
         });
-    }
   };
 
   const handleAddWordPart = (form: WordPart) => {
@@ -302,7 +289,6 @@ const WordPartPage: React.FC = () => {
         <WordPartForm
           onSubmit={isEditing ? handleEditWordPart : handleAddWordPart}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
         />
       </Sidepanel>

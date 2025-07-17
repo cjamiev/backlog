@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import ProjectCard from '../atoms/Project/ProjectCard';
 import ProjectForm from '../atoms/Project/ProjectForm';
 import { DefaultProject, type Project } from '../../model/library';
-import { fakeProjects } from '../../mocked/projects';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const PROJECTS_PER_PAGE = 24;
 const projectSearchByOptions = [
@@ -28,7 +25,6 @@ const projectSortByOptions = [
 ];
 
 const ProjectPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingProjects, setIsLoadingProjects] = useState<boolean>(true);
   const [projects, setProjects] = useState<Project[]>([]);
 
@@ -84,27 +80,19 @@ const ProjectPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingProjects) {
-      loadRecordsByType('projects').then((records: Project[]) => {
+    if (isLoadingProjects) {
+      loadRecordsByType<Project>('projects').then((records: Project[]) => {
         setProjects(records);
         setIsLoadingProjects(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedProjects = getRecordsFromStorage('projects', [...fakeProjects]);
-      setProjects(savedProjects);
-      setIsLoadingProjects(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingProjects]);
+  }, [isLoadingProjects]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, projects.length]);
 
   const handleSubmit = async (payload: Project[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('projects', JSON.stringify(payload));
-    } else {
       updateRecordsByType(JSON.stringify(payload), 'projects')
         .then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -120,7 +108,6 @@ const ProjectPage: React.FC = () => {
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
           console.error('Error:', error);
         });
-    }
   };
 
   const handleAddProject = (form: Project) => {
@@ -333,7 +320,6 @@ const ProjectPage: React.FC = () => {
         <ProjectForm
           onSubmit={isEditing ? handleEditProject : handleAddProject}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

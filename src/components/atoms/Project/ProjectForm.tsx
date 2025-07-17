@@ -4,12 +4,11 @@ import { DefaultProject, type Project } from '../../../model/library';
 interface ProjectFormProps {
   onSubmit: (form: Project) => void;
   initialValues?: Project;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function ProjectForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: ProjectFormProps) {
+function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags }: ProjectFormProps) {
   const [form, setForm] = useState<Project>(DefaultProject);
 
   useEffect(() => {
@@ -84,11 +83,9 @@ function ProjectForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

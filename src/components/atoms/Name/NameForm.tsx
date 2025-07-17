@@ -4,12 +4,11 @@ import { DefaultName, type Name, GENDER_TYPE } from '../../../model/library';
 interface NameFormProps {
   onSubmit: (form: Name) => void;
   initialValues?: Name;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function NameForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: NameFormProps) {
+function NameForm({ onSubmit, initialValues, cancelEdit, allTags }: NameFormProps) {
   const [form, setForm] = useState<Name>(DefaultName);
 
   useEffect(() => {
@@ -76,11 +75,9 @@ function NameForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: N
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

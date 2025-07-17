@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import WordCard from '../atoms/Word/WordCard';
 import WordForm from '../atoms/Word/WordForm';
 import { DefaultWord, type Word } from '../../model/library';
-import { fakeWords } from '../../mocked/words';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const WORDS_PER_PAGE = 24;
 const wordSearchByOptions = [
@@ -24,7 +21,6 @@ const wordSearchByOptions = [
 const wordSortByOptions: { value: string; label: string }[] = [];
 
 const WordPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingWords, setIsLoadingWords] = useState<boolean>(true);
   const [words, setWords] = useState<Word[]>([]);
 
@@ -73,27 +69,19 @@ const WordPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingWords) {
-      loadRecordsByType('words').then((records: Word[]) => {
+    if (isLoadingWords) {
+      loadRecordsByType<Word>('words').then((records: Word[]) => {
         setWords(records);
         setIsLoadingWords(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedWords = getRecordsFromStorage('words', [...fakeWords]);
-      setWords(savedWords);
-      setIsLoadingWords(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingWords]);
+  }, [isLoadingWords]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, words.length]);
 
   const handleSubmit = async (payload: Word[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('words', JSON.stringify(payload));
-    } else {
       updateRecordsByType(JSON.stringify(payload), 'words')
         .then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -109,7 +97,6 @@ const WordPage: React.FC = () => {
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
           console.error('Error:', error);
         });
-    }
   };
 
   const handleAddWord = (form: Word) => {
@@ -319,7 +306,6 @@ const WordPage: React.FC = () => {
         <WordForm
           onSubmit={isEditing ? handleEditWord : handleAddWord}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

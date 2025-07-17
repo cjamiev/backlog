@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import PasswordCard from '../atoms/Password/PasswordCard';
 import PasswordForm from '../atoms/Password/PasswordForm';
 import { DefaultPassword, type Password } from '../../model/library';
-import { fakePasswords } from '../../mocked/passwords';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const PASSWORDS_PER_PAGE = 24;
 const passwordSearchByOptions = [
@@ -28,7 +25,6 @@ const passwordSortByOptions = [
 ];
 
 const PasswordPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingPasswords, setIsLoadingPasswords] = useState<boolean>(true);
   const [passwords, setPasswords] = useState<Password[]>([]);
 
@@ -84,43 +80,34 @@ const PasswordPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingPasswords) {
-      loadRecordsByType('passwords').then((records: Password[]) => {
+    if (isLoadingPasswords) {
+      loadRecordsByType<Password>('passwords').then((records: Password[]) => {
         setPasswords(records);
         setIsLoadingPasswords(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedPasswords = getRecordsFromStorage('passwords', [...fakePasswords]);
-      setPasswords(savedPasswords);
-      setIsLoadingPasswords(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingPasswords]);
+  }, [isLoadingPasswords]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, passwords.length]);
 
   const handleSubmit = async (payload: Password[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('passwords', JSON.stringify(payload));
-    } else {
-      updateRecordsByType(JSON.stringify(payload), 'passwords')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
+    updateRecordsByType(JSON.stringify(payload), 'passwords')
+      .then((isSuccess: boolean) => {
+        if (isSuccess) {
+          setShowBanner({ show: true, type: 'success' });
+          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        } else {
           setShowBanner({ show: true, type: 'error' });
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
-    }
+        }
+      })
+      .catch((error: unknown) => {
+        setShowBanner({ show: true, type: 'error' });
+        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        console.error('Error:', error);
+      });
   };
 
   const handleAddPassword = (form: Password) => {
@@ -340,7 +327,6 @@ const PasswordPage: React.FC = () => {
         <PasswordForm
           onSubmit={isEditing ? handleEditPassword : handleAddPassword}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

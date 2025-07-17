@@ -4,12 +4,11 @@ import { DefaultGame, type Game } from '../../../model/library';
 interface GameFormProps {
   onSubmit: (form: Game) => void;
   initialValues?: Game;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function GameForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: GameFormProps) {
+function GameForm({ onSubmit, initialValues, cancelEdit, allTags }: GameFormProps) {
   const [form, setForm] = useState<Game>(DefaultGame);
 
   useEffect(() => {
@@ -84,11 +83,9 @@ function GameForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: G
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

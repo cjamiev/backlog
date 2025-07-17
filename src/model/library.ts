@@ -155,19 +155,10 @@ export const DefaultGame: Game = {
   tags: ''
 }
 
-export enum FAVORITE_TYPE {
-  ART = 'Art',
-  MUSIC = 'Music',
-  GAME = 'Game',
-  PROGRAMMING = 'Programming',
-  ENTERTAINMENT = 'Entertainment',
-  OTHER = 'Other'
-}
-
 export interface Favorite {
   name: string;
   link: string;
-  type: FAVORITE_TYPE;
+  type: string;
   tags: string;
   notes: string;
 }
@@ -175,7 +166,7 @@ export interface Favorite {
 export const DefaultFavorite: Favorite = {
   name: '',
   link: '',
-  type: FAVORITE_TYPE.OTHER,
+  type: '',
   tags: '',
   notes: ''
 }

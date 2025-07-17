@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import ShowCard from '../atoms/Show/ShowCard';
 import ShowForm from '../atoms/Show/ShowForm';
 import { DefaultShow, type Show } from '../../model/library';
-import { fakeShows } from '../../mocked/shows';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const SHOWS_PER_PAGE = 24;
 const showSearchByOptions = [
@@ -27,7 +24,6 @@ const showSortByOptions = [
 ];
 
 const ShowsPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingShows, setIsLoadingShows] = useState<boolean>(true);
   const [shows, setShows] = useState<Show[]>([]);
 
@@ -78,27 +74,19 @@ const ShowsPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingShows) {
-      loadRecordsByType('shows').then((records: Show[]) => {
+    if ( isLoadingShows) {
+      loadRecordsByType<Show>('shows').then((records: Show[]) => {
         setShows(records);
         setIsLoadingShows(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedShows = getRecordsFromStorage('shows', [...fakeShows]);
-      setShows(savedShows);
-      setIsLoadingShows(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingShows]);
+  }, [isLoadingShows]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, shows.length]);
 
   const handleSubmit = async (payload: Show[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('shows', JSON.stringify(payload));
-    } else {
       updateRecordsByType(JSON.stringify(payload), 'shows')
         .then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -114,7 +102,6 @@ const ShowsPage: React.FC = () => {
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
           console.error('Error:', error);
         });
-    }
   };
 
   const handleAddShow = (form: Show) => {
@@ -321,7 +308,6 @@ const ShowsPage: React.FC = () => {
         <ShowForm
           onSubmit={isEditing ? handleEditShow : handleAddShow}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

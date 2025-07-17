@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import NameCard from '../atoms/Name/NameCard';
 import NameForm from '../atoms/Name/NameForm';
 import { DefaultName, type Name } from '../../model/library';
-import { fakeNames } from '../../mocked/names';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const NAMES_PER_PAGE = 24;
 const nameSearchByOptions = [
@@ -25,7 +22,6 @@ const nameSearchByOptions = [
 const nameSortByOptions: { value: string; label: string }[] = [];
 
 const NamePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingNames, setIsLoadingNames] = useState<boolean>(true);
   const [names, setNames] = useState<Name[]>([]);
 
@@ -74,43 +70,34 @@ const NamePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingNames) {
-      loadRecordsByType('names').then((records: Name[]) => {
+    if (isLoadingNames) {
+      loadRecordsByType<Name>('names').then((records: Name[]) => {
         setNames(records);
         setIsLoadingNames(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedNames = getRecordsFromStorage('names', [...fakeNames]);
-      setNames(savedNames);
-      setIsLoadingNames(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingNames]);
+  }, [isLoadingNames]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, names.length]);
 
   const handleSubmit = async (payload: Name[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('names', JSON.stringify(payload));
-    } else {
-      updateRecordsByType(JSON.stringify(payload), 'names')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
+    updateRecordsByType(JSON.stringify(payload), 'names')
+      .then((isSuccess: boolean) => {
+        if (isSuccess) {
+          setShowBanner({ show: true, type: 'success' });
+          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        } else {
           setShowBanner({ show: true, type: 'error' });
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
-    }
+        }
+      })
+      .catch((error: unknown) => {
+        setShowBanner({ show: true, type: 'error' });
+        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        console.error('Error:', error);
+      });
   };
 
   const handleAddName = (form: Name) => {
@@ -320,7 +307,6 @@ const NamePage: React.FC = () => {
         <NameForm
           onSubmit={isEditing ? handleEditName : handleAddName}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import PhraseCard from '../atoms/Phrase/PhraseCard';
 import PhraseForm from '../atoms/Phrase/PhraseForm';
 import { DefaultPhrase, type Phrase } from '../../model/library';
-import { fakePhrases } from '../../mocked/phrases';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const PHRASES_PER_PAGE = 24;
 const phraseSearchByOptions = [
@@ -25,7 +22,6 @@ const phraseSearchByOptions = [
 const phraseSortByOptions: { value: string; label: string }[] = [];
 
 const PhrasePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingPhrases, setIsLoadingPhrases] = useState<boolean>(true);
   const [phrases, setPhrases] = useState<Phrase[]>([]);
 
@@ -74,27 +70,19 @@ const PhrasePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingPhrases) {
-      loadRecordsByType('phrases').then((records: Phrase[]) => {
+    if (isLoadingPhrases) {
+      loadRecordsByType<Phrase>('phrases').then((records: Phrase[]) => {
         setPhrases(records);
         setIsLoadingPhrases(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedPhrases = getRecordsFromStorage('phrases', [...fakePhrases]);
-      setPhrases(savedPhrases);
-      setIsLoadingPhrases(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingPhrases]);
+  }, [isLoadingPhrases]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, phrases.length]);
 
   const handleSubmit = async (payload: Phrase[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('phrases', JSON.stringify(payload));
-    } else {
       updateRecordsByType(JSON.stringify(payload), 'phrases')
         .then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -110,7 +98,6 @@ const PhrasePage: React.FC = () => {
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
           console.error('Error:', error);
         });
-    }
   };
 
   const handleAddPhrase = (form: Phrase) => {
@@ -320,7 +307,6 @@ const PhrasePage: React.FC = () => {
         <PhraseForm
           onSubmit={isEditing ? handleEditPhrase : handleAddPhrase}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

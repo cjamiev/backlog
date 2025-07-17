@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -7,72 +6,68 @@ import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';
 import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
-import SongCard from '../atoms/Song/SongCard';
-import SongForm from '../atoms/Song/SongForm';
-import { DefaultSong, type Song } from '../../model/library';
+import CountdownCard from '../atoms/Countdown/CountdownCard';
+import CountdownForm from '../atoms/Countdown/CountdownForm';
+import { DefaultCountdown, type Countdown } from '../../model/library';
+import { fakeCountdowns } from '../../mocked/countdowns';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
+import { getRecordsFromStorage } from '../../utils/storage';
 
-const SONGS_PER_PAGE = 24;
-const songSearchByOptions = [
+const COUNTDOWNS_PER_PAGE = 10;
+const countdownSearchByOptions = [{ value: 'name', label: 'Name' },
+{ value: 'tags', label: 'Tags' },];
+const countdownSortByOptions = [
   { value: 'name', label: 'Name' },
-  { value: 'tags', label: 'Tags' },
-  { value: 'band', label: 'Band' }
-];
-const songSortByOptions = [
-  { value: 'name', label: 'Name' },
-  { value: 'rank', label: 'Rank' },
-  { value: 'band', label: 'Band' }
+  { value: 'date', label: 'Date' }
 ];
 
-const SongPage: React.FC = () => {
-  const [isLoadingSongs, setIsLoadingSongs] = useState<boolean>(true);
-  const [songs, setSongs] = useState<Song[]>([]);
+const CountdownDemoPage: React.FC = () => {
+  const [isLoadingCountdowns, setIsLoadingCountdowns] = useState<boolean>(true);
+  const [countdowns, setCountdowns] = useState<Countdown[]>([]);
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
   const [sortBy, setSortBy] = useState<string>('name');
 
-  const [editForm, setEditForm] = useState<Song>(DefaultSong);
+  const [editForm, setEditForm] = useState<Countdown>(DefaultCountdown);
 
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isAddMode, setIsAddMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [songToDelete, setSongToDelete] = useState<Song | null>(null);
+  const [countdownToDelete, setCountdownToDelete] = useState<Countdown | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredSongs = songs.filter((s: Song) => {
-    if (searchBy === 'tags') {
-      return s.tags.split(',').some((tag) => tag.toLowerCase().includes(search.toLowerCase()));
-    } else if (searchBy === 'band') {
-      return s.band.toLowerCase().includes(search.toLowerCase());
+  const filteredCountdowns = countdowns.filter((c: Countdown) => {
+    if (searchBy === 'name') {
+      return c.name.toLowerCase().includes(search.toLowerCase());
     } else {
-      return s.name.toLowerCase().includes(search.toLowerCase());
+      return c.tags.toLowerCase().includes(search.toLowerCase());
     }
   });
 
-  const sortedSongs = [...filteredSongs].sort((a, b) => {
+  const sortedCountdowns = [...filteredCountdowns].sort((a, b) => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);
-    }
-    if (sortBy === 'band') {
-      return a.band.localeCompare(b.band);
     } else {
-      return a.rank - b.rank;
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
     }
   });
-  const totalPages = Math.ceil(sortedSongs.length / SONGS_PER_PAGE);
-  const paginatedSongs = sortedSongs.slice((currentPage - 1) * SONGS_PER_PAGE, currentPage * SONGS_PER_PAGE);
+  const totalPages = Math.ceil(sortedCountdowns.length / COUNTDOWNS_PER_PAGE);
+  const paginatedCountdowns = sortedCountdowns.slice(
+    (currentPage - 1) * COUNTDOWNS_PER_PAGE,
+    currentPage * COUNTDOWNS_PER_PAGE
+  );
 
   const allTags = Array.from(
     new Set(
-      songs.flatMap((song) =>
-        song.tags
+      countdowns.flatMap((countdown) =>
+        countdown.tags
           .split(',')
           .map((tag) => tag.trim())
           .filter(Boolean)
@@ -81,92 +76,70 @@ const SongPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingSongs) {
-      loadRecordsByType<Song>('songs').then((records: Song[]) => {
-        setSongs(records);
-        setIsLoadingSongs(false);
-      });
+    if (isLoadingCountdowns) {
+      const savedCountdowns = getRecordsFromStorage('countdowns', [...fakeCountdowns]);
+      setCountdowns(savedCountdowns);
+      setIsLoadingCountdowns(false);
     }
-  }, [isLoadingSongs]);
+  }, [isLoadingCountdowns]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, searchBy, sortBy, songs.length]);
+  }, [search, searchBy, sortBy, countdowns.length]);
 
-  const handleSubmit = async (payload: Song[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'songs')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+  const handleSubmit = async (payload: Countdown[]) => {
+    localStorage.setItem('countdowns', JSON.stringify(payload));
+    setShowBanner({ show: true, type: 'success' });
+    setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
   };
 
-  const handleAddSong = (form: Song) => {
-    const newSong = {
-      id: String(songs.length + 1),
+  const handleAddCountdown = (form: Countdown) => {
+    const newCountdown = {
+      id: String(countdowns.length + 1),
       name: form.name,
-      album: form.album,
-      band: form.band,
-      rank: form.rank,
-      link: form.link,
+      date: form.date,
       tags: form.tags
     };
-    setSongs((prev) => {
-      const updatedSongs = [newSong, ...prev];
-      handleSubmit(updatedSongs);
-      return updatedSongs;
+    setCountdowns((prev) => {
+      const updatedCountdowns = [newCountdown, ...prev];
+      handleSubmit(updatedCountdowns);
+      return updatedCountdowns;
     });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
-    setEditForm(DefaultSong);
+    setEditForm(DefaultCountdown);
     setSearch('');
   };
 
-  const handleEditSong = (form: Song) => {
-    setSongs((prev) => {
-      const updatedSongs = prev.map((s) =>
-        s.id === form.id
+  const handleEditCountdown = (form: Countdown) => {
+    setCountdowns((prev) => {
+      const updatedCountdowns = prev.map((c) =>
+        c.id === form.id
           ? {
-            id: s.id,
+            id: c.id,
             name: form.name,
-            album: form.album,
-            band: form.band,
-            rank: form.rank,
-            link: form.link,
+            date: form.date,
             tags: form.tags
           }
-          : s
+          : c
       );
 
-      handleSubmit(updatedSongs);
-      return updatedSongs;
+      handleSubmit(updatedCountdowns);
+      return updatedCountdowns;
     });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
-    setEditForm(DefaultSong);
+    setEditForm(DefaultCountdown);
   };
 
-  const startEdit = (selectedSong: Song, isClone?: boolean) => {
+  const startEdit = (selectedCountdown: Countdown, isClone?: boolean) => {
     setEditForm({
-      id: isClone ? String(songs.length + 1) : selectedSong.id,
-      name: selectedSong.name,
-      album: selectedSong.album,
-      band: selectedSong.band,
-      rank: selectedSong.rank,
-      link: selectedSong.link,
-      tags: selectedSong.tags
+      id: isClone ? String(countdowns.length + 1) : selectedCountdown.id,
+      name: selectedCountdown.name,
+      date: selectedCountdown.date,
+      tags: selectedCountdown.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -174,7 +147,7 @@ const SongPage: React.FC = () => {
   };
 
   const startAdd = () => {
-    setEditForm(DefaultSong);
+    setEditForm(DefaultCountdown);
     setIsEditing(false);
     setIsAddMode(true);
     setIsPanelOpen(true);
@@ -184,29 +157,29 @@ const SongPage: React.FC = () => {
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
-    setEditForm(DefaultSong);
+    setEditForm(DefaultCountdown);
   };
 
-  const handleDeleteSong = (song: Song) => {
-    setSongToDelete(song);
+  const handleDeleteCountdown = (countdown: Countdown) => {
+    setCountdownToDelete(countdown);
     setShowDeleteModal(true);
   };
 
-  const confirmDeleteSong = () => {
-    if (songToDelete) {
-      setSongs((prev) => {
-        const updatedSongs = prev.filter((s) => s.id !== songToDelete.id);
-        handleSubmit(updatedSongs);
-        return updatedSongs;
+  const confirmDeleteCountdown = () => {
+    if (countdownToDelete) {
+      setCountdowns((prev) => {
+        const updatedCountdowns = prev.filter((c) => c.id !== countdownToDelete.id);
+        handleSubmit(updatedCountdowns);
+        return updatedCountdowns;
       });
       setShowDeleteModal(false);
-      setSongToDelete(null);
+      setCountdownToDelete(null);
     }
   };
 
-  const cancelDeleteSong = () => {
+  const cancelDeleteCountdown = () => {
     setShowDeleteModal(false);
-    setSongToDelete(null);
+    setCountdownToDelete(null);
   };
 
   const handleClickTag = (tag: string) => {
@@ -238,7 +211,7 @@ const SongPage: React.FC = () => {
   return (
     <div className="page-wrapper">
       <Banner isVisible={showBanner.show} type={showBanner.type} />
-      <h1 className="page-title">Songs</h1>
+      <h1 className="page-title">Countdowns</h1>
       <Search
         search={search}
         onSearchChange={setSearch}
@@ -246,24 +219,24 @@ const SongPage: React.FC = () => {
         handleChangeSearchBy={handleChangeSearchBy}
         sortBy={sortBy}
         handleChangeSortBy={handleChangeSortBy}
-        searchByOptions={songSearchByOptions}
-        sortByOptions={songSortByOptions}
+        searchByOptions={countdownSearchByOptions}
+        sortByOptions={countdownSortByOptions}
       />
       <div className="page-body-layout">
-        {!isLoadingSongs ? (
+        {!isLoadingCountdowns ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
-            {paginatedSongs.map((song, idx) => (
-              <SongCard
+            {paginatedCountdowns.map((countdown, idx) => (
+              <CountdownCard
                 key={idx}
-                song={song}
+                countdown={countdown}
                 onEdit={() => {
-                  startEdit(song);
+                  startEdit(countdown);
                 }}
                 onClone={() => {
-                  startEdit(song, true);
+                  startEdit(countdown, true);
                 }}
-                onDelete={() => handleDeleteSong(song)}
+                onDelete={() => handleDeleteCountdown(countdown)}
                 onHandleClickTag={handleClickTag}
               />
             ))}
@@ -291,43 +264,45 @@ const SongPage: React.FC = () => {
       </Footer>
       <Modal
         isOpen={showDeleteModal}
-        onClose={cancelDeleteSong}
-        title={songToDelete ? `Are you sure you want to delete "${songToDelete.name}"?` : 'Error missing song'}
+        onClose={cancelDeleteCountdown}
+        title={
+          countdownToDelete ? `Are you sure you want to delete "${countdownToDelete.name}"?` : 'Error missing countdown'
+        }
       >
         <div className="modal-actions">
-          <button className="form-submit" onClick={confirmDeleteSong}>
+          <button className="form-submit" onClick={confirmDeleteCountdown}>
             Confirm
           </button>
-          <button className="form-cancel-btn" onClick={cancelDeleteSong}>
+          <button className="form-cancel-btn" onClick={cancelDeleteCountdown}>
             Cancel
           </button>
         </div>
       </Modal>
       <Modal isOpen={showCSVModal} onClose={handleCloseCSVModal} title="CSV Export">
         <div className="modal-data-display">
-          <button onClick={() => copyContents(getCSV(songs))} className="modal-copy-btn">
+          <button onClick={() => copyContents(getCSV(countdowns))} className="modal-copy-btn">
             Copy
           </button>
-          <pre className="modal-data-content">{getCSV(songs)}</pre>
+          <pre className="modal-data-content">{getCSV(countdowns)}</pre>
         </div>
       </Modal>
       <Modal isOpen={showJSONModal} onClose={handleCloseJSONModal} title="JSON Export">
         <div className="modal-data-display">
-          <button onClick={() => copyContents(getJSON(songs))} className="modal-copy-btn">
+          <button onClick={() => copyContents(getJSON(countdowns))} className="modal-copy-btn">
             Copy
           </button>
-          <pre className="modal-data-content">{getJSON(songs)}</pre>
+          <pre className="modal-data-content">{getJSON(countdowns)}</pre>
         </div>
       </Modal>
       <Sidepanel
         isOpen={isPanelOpen && (isAddMode || isEditing)}
         onClose={cancelEdit}
-        title={isEditing ? 'Updating existing' : 'Add a New Song'}
+        title={isEditing ? 'Updating existing' : 'Add a New Countdown'}
       >
-        <SongForm
-          onSubmit={isEditing ? handleEditSong : handleAddSong}
+        <CountdownForm
+          onSubmit={isEditing ? handleEditCountdown : handleAddCountdown}
           initialValues={editForm}
-          isEditing={isEditing}
+          cancelEdit={cancelEdit}
           allTags={allTags}
         />
       </Sidepanel>
@@ -335,4 +310,4 @@ const SongPage: React.FC = () => {
   );
 };
 
-export default SongPage;
+export default CountdownDemoPage;

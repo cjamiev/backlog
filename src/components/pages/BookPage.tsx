@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import BookCard from '../atoms/Book/BookCard';
 import BookForm from '../atoms/Book/BookForm';
 import { DefaultBook, type Book } from '../../model/library';
-import { fakeBooks } from '../../mocked/books';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const BOOKS_PER_PAGE = 24;
 const bookSearchByOptions = [
@@ -24,7 +21,6 @@ const bookSearchByOptions = [
 const bookSortByOptions: { value: string; label: string }[] = [];
 
 const BookPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingBooks, setIsLoadingBooks] = useState<boolean>(true);
   const [books, setBooks] = useState<Book[]>([]);
 
@@ -71,43 +67,34 @@ const BookPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingBooks) {
-      loadRecordsByType('books').then((records: Book[]) => {
+    if (isLoadingBooks) {
+      loadRecordsByType<Book>('books').then((records: Book[]) => {
         setBooks(records);
         setIsLoadingBooks(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedBooks = getRecordsFromStorage('books', [...fakeBooks]);
-      setBooks(savedBooks);
-      setIsLoadingBooks(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingBooks]);
+  }, [isLoadingBooks]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, books.length]);
 
   const handleSubmit = async (payload: Book[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('books', JSON.stringify(payload));
-    } else {
-      updateRecordsByType(JSON.stringify(payload), 'books')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
+    updateRecordsByType(JSON.stringify(payload), 'books')
+      .then((isSuccess: boolean) => {
+        if (isSuccess) {
+          setShowBanner({ show: true, type: 'success' });
+          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        } else {
           setShowBanner({ show: true, type: 'error' });
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
-    }
+        }
+      })
+      .catch((error: unknown) => {
+        setShowBanner({ show: true, type: 'error' });
+        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        console.error('Error:', error);
+      });
   };
 
   const handleAddBook = (form: Book) => {
@@ -311,7 +298,6 @@ const BookPage: React.FC = () => {
         <BookForm
           onSubmit={isEditing ? handleEditBook : handleAddBook}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

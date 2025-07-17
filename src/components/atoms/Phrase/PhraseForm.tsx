@@ -4,12 +4,11 @@ import { DefaultPhrase, type Phrase } from '../../../model/library';
 interface PhraseFormProps {
   onSubmit: (form: Phrase) => void;
   initialValues?: Phrase;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function PhraseForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: PhraseFormProps) {
+function PhraseForm({ onSubmit, initialValues, cancelEdit, allTags }: PhraseFormProps) {
   const [form, setForm] = useState<Phrase>(DefaultPhrase);
 
   useEffect(() => {
@@ -65,11 +64,9 @@ function PhraseForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }:
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

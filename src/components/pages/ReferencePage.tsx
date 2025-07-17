@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import ReferenceCard from '../atoms/Reference/ReferenceCard';
 import ReferenceForm from '../atoms/Reference/ReferenceForm';
 import { DefaultReference, type Reference } from '../../model/library';
-import { fakeReferences } from '../../mocked/references';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const REFERENCES_PER_PAGE = 24;
 const referenceSearchByOptions = [
@@ -26,7 +23,6 @@ const referenceSearchByOptions = [
 const referenceSortByOptions: { value: string; label: string }[] = [];
 
 const ReferencePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingReferences, setIsLoadingReferences] = useState<boolean>(true);
   const [references, setReferences] = useState<Reference[]>([]);
 
@@ -80,27 +76,19 @@ const ReferencePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingReferences) {
-      loadRecordsByType('references').then((records: Reference[]) => {
+    if (isLoadingReferences) {
+      loadRecordsByType<Reference>('references').then((records: Reference[]) => {
         setReferences(records);
         setIsLoadingReferences(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedReferences = getRecordsFromStorage('references', [...fakeReferences]);
-      setReferences(savedReferences);
-      setIsLoadingReferences(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingReferences]);
+  }, [isLoadingReferences]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, references.length]);
 
   const handleSubmit = async (payload: Reference[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('references', JSON.stringify(payload));
-    } else {
       updateRecordsByType(JSON.stringify(payload), 'references')
         .then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -116,7 +104,6 @@ const ReferencePage: React.FC = () => {
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
           console.error('Error:', error);
         });
-    }
   };
 
   const handleAddReference = (form: Reference) => {
@@ -333,7 +320,6 @@ const ReferencePage: React.FC = () => {
         <ReferenceForm
           onSubmit={isEditing ? handleEditReference : handleAddReference}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

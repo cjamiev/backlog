@@ -4,12 +4,11 @@ import { DefaultReference, type Reference } from '../../../model/library';
 interface ReferenceFormProps {
   onSubmit: (form: Reference) => void;
   initialValues?: Reference;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function ReferenceForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: ReferenceFormProps) {
+function ReferenceForm({ onSubmit, initialValues, cancelEdit, allTags }: ReferenceFormProps) {
   const [form, setForm] = useState<Reference>(DefaultReference);
 
   useEffect(() => {
@@ -76,11 +75,9 @@ function ReferenceForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

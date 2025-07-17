@@ -4,12 +4,11 @@ import { DefaultBook, type Book } from '../../../model/library';
 interface BookFormProps {
   onSubmit: (form: Book) => void;
   initialValues?: Book;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function BookForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: BookFormProps) {
+function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProps) {
   const [form, setForm] = useState<Book>(DefaultBook);
 
   useEffect(() => {
@@ -61,11 +60,9 @@ function BookForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: B
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

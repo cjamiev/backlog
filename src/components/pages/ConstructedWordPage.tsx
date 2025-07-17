@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import WordCard from '../atoms/Word/WordCard';
 import WordForm from '../atoms/Word/WordForm';
 import { DefaultWord, type Word } from '../../model/library';
-import { fakeWords } from '../../mocked/words';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const WORDS_PER_PAGE = 24;
 const wordSearchByOptions = [
@@ -24,7 +21,6 @@ const wordSearchByOptions = [
 const wordSortByOptions: { value: string; label: string }[] = [];
 
 const ConstructedWordPage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingWords, setIsLoadingWords] = useState<boolean>(true);
   const [words, setWords] = useState<Word[]>([]);
 
@@ -73,43 +69,34 @@ const ConstructedWordPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingWords) {
-      loadRecordsByType('constructed-words').then((records: Word[]) => {
+    if (isLoadingWords) {
+      loadRecordsByType<Word>('constructed-words').then((records: Word[]) => {
         setWords(records);
         setIsLoadingWords(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedWords = getRecordsFromStorage('constructed-words', [...fakeWords]);
-      setWords(savedWords);
-      setIsLoadingWords(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingWords]);
+  }, [isLoadingWords]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, words.length]);
 
   const handleSubmit = async (payload: Word[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('constructed-words', JSON.stringify(payload));
-    } else {
-      updateRecordsByType(JSON.stringify(payload), 'constructed-words')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
+    updateRecordsByType(JSON.stringify(payload), 'constructed-words')
+      .then((isSuccess: boolean) => {
+        if (isSuccess) {
+          setShowBanner({ show: true, type: 'success' });
+          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        } else {
           setShowBanner({ show: true, type: 'error' });
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
-    }
+        }
+      })
+      .catch((error: unknown) => {
+        setShowBanner({ show: true, type: 'error' });
+        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        console.error('Error:', error);
+      });
   };
 
   const handleAddWord = (form: Word) => {
@@ -319,7 +306,6 @@ const ConstructedWordPage: React.FC = () => {
         <WordForm
           onSubmit={isEditing ? handleEditWord : handleAddWord}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

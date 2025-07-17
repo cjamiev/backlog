@@ -10,11 +10,8 @@ import Pagination from '../atoms/Pagination';
 import GameCard from '../atoms/Game/GameCard';
 import GameForm from '../atoms/Game/GameForm';
 import { DefaultGame, type Game } from '../../model/library';
-import { fakeGames } from '../../mocked/games';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
-import { useStorageContext } from '../../context/StorageContext';
-import { getRecordsFromStorage } from '../../utils/storage';
 
 const GAMES_PER_PAGE = 24;
 const gameSearchByOptions = [
@@ -27,7 +24,6 @@ const gameSortByOptions = [
 ];
 
 const GamePage: React.FC = () => {
-  const { isBackendAvailable, isLoadingPing } = useStorageContext();
   const [isLoadingGames, setIsLoadingGames] = useState<boolean>(true);
   const [games, setGames] = useState<Game[]>([]);
 
@@ -78,43 +74,34 @@ const GamePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isBackendAvailable && isLoadingGames) {
-      loadRecordsByType('games').then((records: Game[]) => {
+    if (isLoadingGames) {
+      loadRecordsByType<Game>('games').then((records: Game[]) => {
         setGames(records);
         setIsLoadingGames(false);
       });
     }
-    if (!isBackendAvailable && !isLoadingPing) {
-      const savedGames = getRecordsFromStorage('games', [...fakeGames]);
-      setGames(savedGames);
-      setIsLoadingGames(false);
-    }
-  }, [isBackendAvailable, isLoadingPing, isLoadingGames]);
+  }, [isLoadingGames]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, games.length]);
 
   const handleSubmit = async (payload: Game[]) => {
-    if (!isBackendAvailable && !isLoadingPing) {
-      localStorage.setItem('games', JSON.stringify(payload));
-    } else {
-      updateRecordsByType(JSON.stringify(payload), 'games')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
+    updateRecordsByType(JSON.stringify(payload), 'games')
+      .then((isSuccess: boolean) => {
+        if (isSuccess) {
+          setShowBanner({ show: true, type: 'success' });
+          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        } else {
           setShowBanner({ show: true, type: 'error' });
           setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
-    }
+        }
+      })
+      .catch((error: unknown) => {
+        setShowBanner({ show: true, type: 'error' });
+        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+        console.error('Error:', error);
+      });
   };
 
   const handleAddGame = (form: Game) => {
@@ -324,7 +311,6 @@ const GamePage: React.FC = () => {
         <GameForm
           onSubmit={isEditing ? handleEditGame : handleAddGame}
           initialValues={editForm}
-          isEditing={isEditing}
           cancelEdit={cancelEdit}
           allTags={allTags}
         />

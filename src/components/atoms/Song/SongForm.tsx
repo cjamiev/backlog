@@ -5,11 +5,10 @@ interface SongFormProps {
   onSubmit: (form: Song) => void;
   initialValues?: Song;
   isEditing: boolean;
-  cancelEdit: () => void;
   allTags: string[];
 }
 
-function SongForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: SongFormProps) {
+function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProps) {
   const [form, setForm] = useState<Song>(DefaultSong);
 
   useEffect(() => {
@@ -85,11 +84,9 @@ function SongForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: S
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

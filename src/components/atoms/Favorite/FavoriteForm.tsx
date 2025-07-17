@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultFavorite, type Favorite, FAVORITE_TYPE } from '../../../model/library';
+import { DefaultFavorite, type Favorite } from '../../../model/library';
 
 interface FavoriteFormProps {
   onSubmit: (form: Favorite) => void;
   initialValues?: Favorite;
-  isEditing: boolean;
   cancelEdit: () => void;
+  favoriteTypes: string[];
   allTags: string[];
 }
 
-function FavoriteForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: FavoriteFormProps) {
+function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allTags }: FavoriteFormProps) {
   const [form, setForm] = useState<Favorite>(DefaultFavorite);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ function FavoriteForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags 
       <label className="form-label">
         Type:
         <select className="form-input" name="type" value={form.type} onChange={handleChange} required>
-          {Object.values(FAVORITE_TYPE)
+          {favoriteTypes
             .map((type) => (
               <option key={type} value={type}>
                 {type}
@@ -95,11 +95,9 @@ function FavoriteForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags 
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );

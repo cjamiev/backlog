@@ -4,12 +4,11 @@ import { DefaultWord, type Word, WORD_TYPE } from '../../../model/library';
 interface WordFormProps {
   onSubmit: (form: Word) => void;
   initialValues?: Word;
-  isEditing: boolean;
   cancelEdit: () => void;
   allTags: string[];
 }
 
-function WordForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: WordFormProps) {
+function WordForm({ onSubmit, initialValues, cancelEdit, allTags }: WordFormProps) {
   const [form, setForm] = useState<Word>(DefaultWord);
 
   useEffect(() => {
@@ -83,11 +82,9 @@ function WordForm({ onSubmit, initialValues, isEditing, cancelEdit, allTags }: W
         <button className="form-submit" type="submit">
           Submit
         </button>
-        {isEditing && (
           <button className="form-cancel-btn" onClick={cancelEdit}>
             Cancel
           </button>
-        )}
       </div>
     </form>
   );
