@@ -10,7 +10,7 @@ import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
 import FavoriteList from '../atoms/Favorite/FavoriteList';
 import AddFavoriteCard from '../atoms/Favorite/AddFavoriteCard';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 
 const favoriteSearchByOptions = [
   { value: 'name', label: 'Name' },
@@ -20,10 +20,11 @@ const favoriteSearchByOptions = [
 const favoriteSortByOptions: { value: string; label: string }[] = [];
 
 const FavoritePage: React.FC = () => {
-  const [isLoadingFavorites, setIsLoadingFavorites] = useState<boolean>(true);
-  const [isLoadingFavoriteTypes, setIsLoadingFavoriteTypes] = useState<boolean>(true);
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
-  const [favoriteTypes, setFavoriteTypes] = useState<string[]>([]);
+  const { data: favorites = [], isLoading: isLoadingFavorites } = useLoadRecordsByType<Favorite>('favorites');
+  const { data: favoriteTypes = [], isLoading: isLoadingFavoriteTypes } = useLoadRecordsByType<string>('favorite-types');
+  const { mutate: mutateFavorites, isSuccess: isFavoritesUpdateSuccess, isError: isFavoritesUpdateError } = useUpdateRecordsByType();
+  const { mutate: mutateFavoriteTypes, isSuccess: isFavoriteTypesUpdateSuccess, isError: isFavoriteTypesUpdateError } = useUpdateRecordsByType();
+
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -68,57 +69,39 @@ const FavoritePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingFavorites) {
-      loadRecordsByType<Favorite>('favorites').then((records: Favorite[]) => {
-        setFavorites(records);
-        setIsLoadingFavorites(false);
-      });
+    if (isFavoritesUpdateSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
     }
-  }, [isLoadingFavorites]);
+  }, [isFavoritesUpdateSuccess]);
 
   useEffect(() => {
-    if (isLoadingFavoriteTypes) {
-      loadRecordsByType<string>('favorite-types').then((records: string[]) => {
-        setFavoriteTypes(records);
-        setIsLoadingFavoriteTypes(false);
-      });
+    if (isFavoritesUpdateError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
     }
-  }, [isLoadingFavoriteTypes]);
+  }, [isFavoritesUpdateError]);
+
+  useEffect(() => {
+    if (isFavoriteTypesUpdateSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isFavoriteTypesUpdateSuccess]);
+
+  useEffect(() => {
+    if (isFavoriteTypesUpdateError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isFavoriteTypesUpdateError]);
 
   const handleSubmit = async (payload: Favorite[]) => {
-    updateRecordsByType(JSON.stringify(payload), 'favorites')
-      .then((isSuccess: boolean) => {
-        if (isSuccess) {
-          setShowBanner({ show: true, type: 'success' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        } else {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        }
-      })
-      .catch((error: unknown) => {
-        setShowBanner({ show: true, type: 'error' });
-        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        console.error('Error:', error);
-      });
+    mutateFavorites({ payload: JSON.stringify(payload), type: 'favorites' })
   };
 
   const handleTypesSubmit = async (payload: string[]) => {
-    updateRecordsByType(JSON.stringify(payload), 'favorite-types')
-      .then((isSuccess: boolean) => {
-        if (isSuccess) {
-          setShowBanner({ show: true, type: 'success' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        } else {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        }
-      })
-      .catch((error: unknown) => {
-        setShowBanner({ show: true, type: 'error' });
-        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        console.error('Error:', error);
-      });
+    mutateFavoriteTypes({ payload: JSON.stringify(payload), type: 'favorite-types' })
   };
 
   const handleAddFavorite = (form: Favorite) => {
@@ -129,12 +112,9 @@ const FavoritePage: React.FC = () => {
       tags: form.tags,
       notes: form.notes
     };
+    const updatedFavorites = [newFavorite, ...favorites];
+    handleSubmit(updatedFavorites);
 
-    setFavorites((prev) => {
-      const updatedFavorites = [newFavorite, ...prev];
-      handleSubmit(updatedFavorites);
-      return updatedFavorites;
-    });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -143,22 +123,19 @@ const FavoritePage: React.FC = () => {
   };
 
   const handleEditFavorite = (form: Favorite) => {
-    setFavorites((prev) => {
-      const updatedFavorites = prev.map((f) =>
-        f.name === form.name && f.link === form.link
-          ? {
-            name: form.name,
-            link: form.link,
-            type: form.type,
-            tags: form.tags,
-            notes: form.notes
-          }
-          : f
-      );
+    const updatedFavorites = favorites.map((f) =>
+      f.name === form.name && f.link === form.link
+        ? {
+          name: form.name,
+          link: form.link,
+          type: form.type,
+          tags: form.tags,
+          notes: form.notes
+        }
+        : f
+    );
+    handleSubmit(updatedFavorites);
 
-      handleSubmit(updatedFavorites);
-      return updatedFavorites;
-    });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -174,13 +151,11 @@ const FavoritePage: React.FC = () => {
 
   const confirmDeleteFavorite = () => {
     if (favoriteToDelete) {
-      setFavorites((prev) => {
-        const updatedFavorites = prev.filter(
-          (f) => !(f.name === favoriteToDelete.name && f.link === favoriteToDelete.link)
-        );
-        handleSubmit(updatedFavorites);
-        return updatedFavorites;
-      });
+      const updatedFavorites = favorites.filter(
+        (f) => !(f.name === favoriteToDelete.name && f.link === favoriteToDelete.link)
+      );
+      handleSubmit(updatedFavorites);
+
       setShowDeleteModal(false);
       setFavoriteToDelete(null);
     }
@@ -210,8 +185,6 @@ const FavoritePage: React.FC = () => {
       const updatedFavoriteTypes = favoriteTypes.concat(newTypeInput);
       handleTypesSubmit(updatedFavoriteTypes);
 
-      setFavoriteTypes(updatedFavoriteTypes);
-
       setShowBanner({ show: true, type: 'success' });
       setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
     } else {
@@ -227,8 +200,6 @@ const FavoritePage: React.FC = () => {
     if (selectedTypeToRemove && favoriteTypes.includes(selectedTypeToRemove)) {
       const updatedFavoriteTypes = favoriteTypes.filter(type => type !== selectedTypeToRemove);
       handleTypesSubmit(updatedFavoriteTypes);
-
-      setFavoriteTypes(updatedFavoriteTypes);
 
       setShowBanner({ show: true, type: 'success' });
       setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
@@ -259,7 +230,7 @@ const FavoritePage: React.FC = () => {
         sortByOptions={favoriteSortByOptions}
       />
       <div className="page-body-layout">
-        <div className='favorites-action-wrapper'>
+        {!isLoadingFavoriteTypes ? (<div className='favorites-action-wrapper'>
           <AddFavoriteCard onClick={startAdd} />
           <div className='favorites-type-btn-wrapper'>
             <button
@@ -275,7 +246,9 @@ const FavoritePage: React.FC = () => {
               - Type
             </button>
           </div>
-        </div>
+        </div>) : (
+          <div className="loading-container">Loading...</div>
+        )}
         {!isLoadingFavorites ? (
           <div className="favorite-cards-container">
             {favoriteTypes.map(type => (
