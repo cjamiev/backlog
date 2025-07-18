@@ -17,51 +17,64 @@ import PasswordPage from './pages/PasswordPage';
 import CountdownPage from './pages/CountdownPage';
 import FavoritePage from './pages/FavoritePage';
 import WordPartPage from './pages/WordPartPage';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 600000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function AppRouter() {
   return (
-    <Router>
-      <nav className="page-nav">
-        <Link to="/">Home</Link>
-        <Link to="/words">Words</Link>
-        <Link to="/constructed-words">Constructed Words</Link>
-        <Link to="/wordparts">Word Parts</Link>
-        <Link to="/phrases">Phrases</Link>
-        <Link to="/references">References</Link>
-        <Link to="/names">Names</Link>
-        <Link to="/constructed-names">Construced Names</Link>
-        <Link to="/games">Games</Link>
-        <Link to="/songs">Songs</Link>
-        <Link to="/films">Films</Link>
-        <Link to="/shows">Shows</Link>
-        <Link to="/books">Books</Link>
-        <Link to="/projects">Projects</Link>
-        <Link to="/passwords">Passwords</Link>
-        <Link to="/countdowns">Countdowns</Link>
-        <Link to="/favorites">Favorites</Link>
-        <Link to="/settings">Settings</Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/words" element={<WordPage />} />
-        <Route path="/constructed-words" element={<ConstructedWordPage />} />
-        <Route path="/wordparts" element={<WordPartPage />} />
-        <Route path="/phrases" element={<PhrasePage />} />
-        <Route path="/references" element={<ReferencePage />} />
-        <Route path="/names" element={<NamePage />} />
-        <Route path="/constructed-names" element={<ConstructedNamePage />} />
-        <Route path="/games" element={<GamePage />} />
-        <Route path="/songs" element={<SongPage />} />
-        <Route path="/films" element={<FilmPage />} />
-        <Route path="/shows" element={<ShowsPage />} />
-        <Route path="/books" element={<BookPage />} />
-        <Route path="/projects" element={<ProjectPage />} />
-        <Route path="/passwords" element={<PasswordPage />} />
-        <Route path="/countdowns" element={<CountdownPage />} />
-        <Route path="/favorites" element={<FavoritePage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Routes>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <nav className="page-nav">
+          <Link to="/">Home</Link>
+          <Link to="/words">Words</Link>
+          <Link to="/constructed-words">Constructed Words</Link>
+          <Link to="/wordparts">Word Parts</Link>
+          <Link to="/phrases">Phrases</Link>
+          <Link to="/references">References</Link>
+          <Link to="/names">Names</Link>
+          <Link to="/constructed-names">Construced Names</Link>
+          <Link to="/games">Games</Link>
+          <Link to="/songs">Songs</Link>
+          <Link to="/films">Films</Link>
+          <Link to="/shows">Shows</Link>
+          <Link to="/books">Books</Link>
+          <Link to="/projects">Projects</Link>
+          <Link to="/passwords">Passwords</Link>
+          <Link to="/countdowns">Countdowns</Link>
+          <Link to="/favorites">Favorites</Link>
+          <Link to="/settings">Settings</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/words" element={<WordPage />} />
+          <Route path="/constructed-words" element={<ConstructedWordPage />} />
+          <Route path="/wordparts" element={<WordPartPage />} />
+          <Route path="/phrases" element={<PhrasePage />} />
+          <Route path="/references" element={<ReferencePage />} />
+          <Route path="/names" element={<NamePage />} />
+          <Route path="/constructed-names" element={<ConstructedNamePage />} />
+          <Route path="/games" element={<GamePage />} />
+          <Route path="/songs" element={<SongPage />} />
+          <Route path="/films" element={<FilmPage />} />
+          <Route path="/shows" element={<ShowsPage />} />
+          <Route path="/books" element={<BookPage />} />
+          <Route path="/projects" element={<ProjectPage />} />
+          <Route path="/passwords" element={<PasswordPage />} />
+          <Route path="/countdowns" element={<CountdownPage />} />
+          <Route path="/favorites" element={<FavoritePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
   );
 }
 

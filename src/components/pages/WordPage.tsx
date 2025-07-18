@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -21,8 +21,8 @@ const wordSearchByOptions = [
 const wordSortByOptions: { value: string; label: string }[] = [];
 
 const WordPage: React.FC = () => {
-  const [isLoadingWords, setIsLoadingWords] = useState<boolean>(true);
-  const [words, setWords] = useState<Word[]>([]);
+  const { data: words = [], isLoading: isLoadingWords } = useLoadRecordsByType<Word>('words');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('value');
@@ -69,34 +69,25 @@ const WordPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingWords) {
-      loadRecordsByType<Word>('words').then((records: Word[]) => {
-        setWords(records);
-        setIsLoadingWords(false);
-      });
-    }
-  }, [isLoadingWords]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, words.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Word[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'words')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'words' })
   };
 
   const handleAddWord = (form: Word) => {
@@ -106,11 +97,9 @@ const WordPage: React.FC = () => {
       type: form.type,
       tags: form.tags
     };
-    setWords((prev) => {
-      const updatedWords = [newWord, ...prev];
-      handleSubmit(updatedWords);
-      return updatedWords;
-    });
+    const updatedWords = [newWord, ...words];
+    mutate({ payload: JSON.stringify(updatedWords), type: 'words' });
+    handleSubmit(updatedWords);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -119,21 +108,18 @@ const WordPage: React.FC = () => {
   };
 
   const handleEditWord = (form: Word) => {
-    setWords((prev) => {
-      const updatedWords = prev.map((w) =>
-        w.value === form.value
-          ? {
-            value: form.value,
-            definition: form.definition,
-            type: form.type,
-            tags: form.tags
-          }
-          : w
-      );
+    const updatedWords = words.map((w) =>
+      w.value === form.value
+        ? {
+          value: form.value,
+          definition: form.definition,
+          type: form.type,
+          tags: form.tags
+        }
+        : w
+    );
 
-      handleSubmit(updatedWords);
-      return updatedWords;
-    });
+    mutate({ payload: JSON.stringify(updatedWords), type: 'words' });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -173,11 +159,9 @@ const WordPage: React.FC = () => {
 
   const confirmDeleteWord = () => {
     if (wordToDelete) {
-      setWords((prev) => {
-        const updatedWords = prev.filter((w) => w.value !== wordToDelete.value);
-        handleSubmit(updatedWords);
-        return updatedWords;
-      });
+      const updatedWords = words.filter((w) => w.value !== wordToDelete.value);
+
+      mutate({ payload: JSON.stringify(updatedWords), type: 'words' });
       setShowDeleteModal(false);
       setWordToDelete(null);
     }
