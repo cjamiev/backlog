@@ -14,9 +14,12 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
 
   useEffect(() => {
     if (initialValues) {
-      setForm(initialValues);
+      setForm({
+        ...initialValues,
+        type: favoriteTypes[0],
+      });
     }
-  }, [initialValues]);
+  }, [initialValues, favoriteTypes]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -95,9 +98,9 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

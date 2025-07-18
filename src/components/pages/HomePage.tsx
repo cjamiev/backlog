@@ -67,7 +67,7 @@ const HomePage: React.FC = () => {
               rows={4}
             />
             <div>
-              <button className="primary-btn" onClick={handleSave} style={{ marginRight: 8 }}>Save</button>
+              <button className="primary-btn" onClick={handleSave}>Save</button>
               <button className="negative-btn" onClick={handleCancel}>Cancel</button>
             </div>
           </>

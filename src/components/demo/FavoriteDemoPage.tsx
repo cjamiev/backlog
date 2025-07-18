@@ -37,6 +37,7 @@ const FavoriteDemoPage: React.FC = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [favoriteToDelete, setFavoriteToDelete] = useState<Favorite | null>(null);
+  const [showTypeModal, setShowTypeModal] = useState(false);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
@@ -164,6 +165,8 @@ const FavoriteDemoPage: React.FC = () => {
 
   const handleChangeSortBy = (val: string) => setSortBy(val);
 
+  const handleOpenTypeModal = () => setShowTypeModal(true);
+  const handleCloseTypeModal = () => setShowTypeModal(false);
   const handleOpenCSVModal = () => setShowCSVModal(true);
   const handleCloseCSVModal = () => setShowCSVModal(false);
   const handleOpenJSONModal = () => setShowJSONModal(true);
@@ -236,56 +239,13 @@ const FavoriteDemoPage: React.FC = () => {
             </button>
           </div>
         </div>
-        <Modal isOpen={newTypeModalOpen} onClose={() => setNewTypeModalOpen(false)} title="Add New Favorite Type">
-          <form onSubmit={handleAddNewType} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <input
-              type="text"
-              value={newTypeInput}
-              onChange={e => setNewTypeInput(e.target.value)}
-              placeholder="Enter new type name"
-              autoFocus
-              required
-            />
-            <div className="form-actions-wrapper">
-
-              <button className="form-submit" type="submit">
-                Submit
-              </button>
-              <button className="form-cancel-btn" onClick={() => setNewTypeModalOpen(false)}>
-                Cancel
-              </button>
-            </div>
-          </form>
-        </Modal>
-        <Modal isOpen={removeTypeModalOpen} onClose={() => setRemoveTypeModalOpen(false)} title="Remove Favorite Type">
-          <form onSubmit={handleRemoveType} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <select
-              value={selectedTypeToRemove}
-              onChange={e => setSelectedTypeToRemove(e.target.value)}
-              required
-            >
-              <option value="">Select a type to remove</option>
-              {favoriteTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
-            <div className="form-actions-wrapper">
-
-              <button className="form-submit" type="submit">
-                Submit
-              </button>
-              <button className="form-cancel-btn" onClick={() => setRemoveTypeModalOpen(false)}>
-                Cancel
-              </button>
-            </div>
-          </form>
-        </Modal>
         {!isLoadingFavorites ? (
           <div className="favorite-cards-container">
             {favoriteTypes.map(type => (
               <FavoriteList
+                key={type}
                 type={type}
-                filteredFavorites={filteredFavorites}
+                filteredFavorites={filteredFavorites.filter(favorite => favorite.type === type)}
                 onEditFavorite={(favorite: Favorite) => {
                   setEditForm(favorite);
                   setIsEditing(true);
@@ -298,16 +258,49 @@ const FavoriteDemoPage: React.FC = () => {
           <div className="loading-container">Loading...</div>
         )}
       </div>
-      <Footer>
-        <div>
-          <button className="primary-btn" onClick={handleOpenCSVModal}>
-            Show CSV
-          </button>
-          <button className="primary-btn" onClick={handleOpenJSONModal}>
-            Show JSON
-          </button>
-        </div>
-      </Footer>
+      <Modal isOpen={newTypeModalOpen} onClose={() => setNewTypeModalOpen(false)} title="Add New Favorite Type">
+        <form className='favorite-type-modal-form' onSubmit={handleAddNewType}>
+          <input
+            type="text"
+            value={newTypeInput}
+            onChange={e => setNewTypeInput(e.target.value)}
+            placeholder="Enter new type name"
+            autoFocus
+            required
+          />
+          <div className="form-actions-wrapper">
+            <button className="form-submit" type="submit">
+              Submit
+            </button>
+            <button className="form-cancel-btn" onClick={() => setNewTypeModalOpen(false)}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
+      <Modal isOpen={removeTypeModalOpen} onClose={() => setRemoveTypeModalOpen(false)} title="Remove Favorite Type">
+        <form className='favorite-type-modal-form' onSubmit={handleRemoveType}>
+          <select
+            value={selectedTypeToRemove}
+            onChange={e => setSelectedTypeToRemove(e.target.value)}
+            required
+          >
+            <option value="">Select a type to remove</option>
+            {favoriteTypes.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
+          <div className="form-actions-wrapper">
+
+            <button className="form-submit" type="submit">
+              Submit
+            </button>
+            <button className="form-cancel-btn" onClick={() => setRemoveTypeModalOpen(false)}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
       <Modal
         isOpen={showDeleteModal}
         onClose={cancelDeleteFavorite}
@@ -322,6 +315,11 @@ const FavoriteDemoPage: React.FC = () => {
           <button className="form-cancel-btn" onClick={cancelDeleteFavorite}>
             Cancel
           </button>
+        </div>
+      </Modal>
+      <Modal isOpen={showTypeModal} onClose={handleCloseTypeModal} title="Favorite Type List">
+        <div className="modal-data-display">
+          <pre className="modal-data-content">{favoriteTypes.map(type => <div key={type}>{type}</div>)}</pre>
         </div>
       </Modal>
       <Modal isOpen={showCSVModal} onClose={handleCloseCSVModal} title="CSV Export">
@@ -353,6 +351,19 @@ const FavoriteDemoPage: React.FC = () => {
           allTags={allTags}
         />
       </Sidepanel>
+      <Footer>
+        <div>
+          <button className="primary-btn" onClick={handleOpenTypeModal}>
+            Show Type List
+          </button>
+          <button className="primary-btn" onClick={handleOpenCSVModal}>
+            Show CSV
+          </button>
+          <button className="primary-btn" onClick={handleOpenJSONModal}>
+            Show JSON
+          </button>
+        </div>
+      </Footer>
     </div>
   );
 };
