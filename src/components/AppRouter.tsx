@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SongPage from './pages/SongPage';
 import HomePage from './pages/HomePage';
 import SettingsPage from './pages/SettingsPage';
@@ -17,7 +18,8 @@ import PasswordPage from './pages/PasswordPage';
 import CountdownPage from './pages/CountdownPage';
 import FavoritePage from './pages/FavoritePage';
 import WordPartPage from './pages/WordPartPage';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ContactPage from './pages/ContactPage';
+import NotePage from './pages/NotePage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +53,8 @@ function AppRouter() {
           <Link to="/passwords">Passwords</Link>
           <Link to="/countdowns">Countdowns</Link>
           <Link to="/favorites">Favorites</Link>
+          <Link to="/contacts">Contacts</Link>
+          <Link to="/notes">Notes</Link>
           <Link to="/settings">Settings</Link>
         </nav>
         <Routes>
@@ -71,6 +75,8 @@ function AppRouter() {
           <Route path="/passwords" element={<PasswordPage />} />
           <Route path="/countdowns" element={<CountdownPage />} />
           <Route path="/favorites" element={<FavoritePage />} />
+          <Route path="/contacts" element={<ContactPage />} />
+          <Route path="/notes" element={<NotePage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </Router>
