@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -23,8 +23,8 @@ const referenceSearchByOptions = [
 const referenceSortByOptions: { value: string; label: string }[] = [];
 
 const ReferencePage: React.FC = () => {
-  const [isLoadingReferences, setIsLoadingReferences] = useState<boolean>(true);
-  const [references, setReferences] = useState<Reference[]>([]);
+  const { data: references = [], isLoading: isLoadingReferences } = useLoadRecordsByType<Reference>('references');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('value');
@@ -76,34 +76,25 @@ const ReferencePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingReferences) {
-      loadRecordsByType<Reference>('references').then((records: Reference[]) => {
-        setReferences(records);
-        setIsLoadingReferences(false);
-      });
-    }
-  }, [isLoadingReferences]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, references.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Reference[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'references')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'references' });
   };
 
   const handleAddReference = (form: Reference) => {
@@ -114,11 +105,8 @@ const ReferencePage: React.FC = () => {
       definition: form.definition,
       tags: form.tags
     };
-    setReferences((prev) => {
-      const updatedReferences = [newReference, ...prev];
-      handleSubmit(updatedReferences);
-      return updatedReferences;
-    });
+    const updatedReferences = [newReference, ...references];
+    handleSubmit(updatedReferences);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -127,22 +115,18 @@ const ReferencePage: React.FC = () => {
   };
 
   const handleEditReference = (form: Reference) => {
-    setReferences((prev) => {
-      const updatedReferences = prev.map((r) =>
-        r.id === form.id
-          ? {
-            id: r.id,
-            value: form.value,
-            origin: form.origin,
-            definition: form.definition,
-            tags: form.tags
-          }
-          : r
-      );
-
-      handleSubmit(updatedReferences);
-      return updatedReferences;
-    });
+    const updatedReferences = references.map((r) =>
+      r.id === form.id
+        ? {
+          id: r.id,
+          value: form.value,
+          origin: form.origin,
+          definition: form.definition,
+          tags: form.tags
+        }
+        : r
+    );
+    handleSubmit(updatedReferences);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -183,11 +167,8 @@ const ReferencePage: React.FC = () => {
 
   const confirmDeleteReference = () => {
     if (referenceToDelete) {
-      setReferences((prev) => {
-        const updatedReferences = prev.filter((r) => r.id !== referenceToDelete.id);
-        handleSubmit(updatedReferences);
-        return updatedReferences;
-      });
+      const updatedReferences = references.filter((r) => r.id !== referenceToDelete.id);
+      handleSubmit(updatedReferences);
       setShowDeleteModal(false);
       setReferenceToDelete(null);
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -25,8 +25,8 @@ const passwordSortByOptions = [
 ];
 
 const PasswordPage: React.FC = () => {
-  const [isLoadingPasswords, setIsLoadingPasswords] = useState<boolean>(true);
-  const [passwords, setPasswords] = useState<Password[]>([]);
+  const { data: passwords = [], isLoading: isLoadingPasswords } = useLoadRecordsByType<Password>('passwords');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -80,34 +80,25 @@ const PasswordPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingPasswords) {
-      loadRecordsByType<Password>('passwords').then((records: Password[]) => {
-        setPasswords(records);
-        setIsLoadingPasswords(false);
-      });
-    }
-  }, [isLoadingPasswords]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, passwords.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Password[]) => {
-    updateRecordsByType(JSON.stringify(payload), 'passwords')
-      .then((isSuccess: boolean) => {
-        if (isSuccess) {
-          setShowBanner({ show: true, type: 'success' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        } else {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        }
-      })
-      .catch((error: unknown) => {
-        setShowBanner({ show: true, type: 'error' });
-        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        console.error('Error:', error);
-      });
+    mutate({ payload: JSON.stringify(payload), type: 'passwords' });
   };
 
   const handleAddPassword = (form: Password) => {
@@ -119,11 +110,8 @@ const PasswordPage: React.FC = () => {
       link: form.link,
       tags: form.tags
     };
-    setPasswords((prev) => {
-      const updatedPasswords = [newPassword, ...prev];
-      handleSubmit(updatedPasswords);
-      return updatedPasswords;
-    });
+    const updatedPasswords = [newPassword, ...passwords];
+    handleSubmit(updatedPasswords);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -132,23 +120,19 @@ const PasswordPage: React.FC = () => {
   };
 
   const handleEditPassword = (form: Password) => {
-    setPasswords((prev) => {
-      const updatedPasswords = prev.map((p) =>
-        p.name === form.name && p.username === form.username
-          ? {
-            name: form.name,
-            username: form.username,
-            password: form.password,
-            updatedDate: form.updatedDate,
-            link: form.link,
-            tags: form.tags
-          }
-          : p
-      );
-
-      handleSubmit(updatedPasswords);
-      return updatedPasswords;
-    });
+    const updatedPasswords = passwords.map((p) =>
+      p.name === form.name && p.username === form.username
+        ? {
+          name: form.name,
+          username: form.username,
+          password: form.password,
+          updatedDate: form.updatedDate,
+          link: form.link,
+          tags: form.tags
+        }
+        : p
+    );
+    handleSubmit(updatedPasswords);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -190,13 +174,10 @@ const PasswordPage: React.FC = () => {
 
   const confirmDeletePassword = () => {
     if (passwordToDelete) {
-      setPasswords((prev) => {
-        const updatedPasswords = prev.filter(
-          (p) => !(p.name === passwordToDelete.name && p.username === passwordToDelete.username)
-        );
-        handleSubmit(updatedPasswords);
-        return updatedPasswords;
-      });
+      const updatedPasswords = passwords.filter(
+        (p) => !(p.name === passwordToDelete.name && p.username === passwordToDelete.username)
+      );
+      handleSubmit(updatedPasswords);
       setShowDeleteModal(false);
       setPasswordToDelete(null);
     }

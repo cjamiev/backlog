@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -22,8 +22,8 @@ const nameSearchByOptions = [
 const nameSortByOptions: { value: string; label: string }[] = [];
 
 const ConstructedNamePage: React.FC = () => {
-  const [isLoadingNames, setIsLoadingNames] = useState<boolean>(true);
-  const [names, setNames] = useState<Name[]>([]);
+  const { data: names = [], isLoading: isLoadingNames } = useLoadRecordsByType<Name>('constructed-names');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('value');
@@ -70,34 +70,25 @@ const ConstructedNamePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingNames) {
-      loadRecordsByType<Name>('constructed-names').then((records: Name[]) => {
-        setNames(records);
-        setIsLoadingNames(false);
-      });
-    }
-    }, [isLoadingNames]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, names.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Name[]) => {
-    updateRecordsByType(JSON.stringify(payload), 'constructed-names')
-      .then((isSuccess: boolean) => {
-        if (isSuccess) {
-          setShowBanner({ show: true, type: 'success' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        } else {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        }
-      })
-      .catch((error: unknown) => {
-        setShowBanner({ show: true, type: 'error' });
-        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        console.error('Error:', error);
-      });
+    mutate({ payload: JSON.stringify(payload), type: 'constructed-names' });
   };
 
   const handleAddName = (form: Name) => {
@@ -107,11 +98,8 @@ const ConstructedNamePage: React.FC = () => {
       origin: form.origin,
       tags: form.tags
     };
-    setNames((prev) => {
-      const updatedNames = [newName, ...prev];
-      handleSubmit(updatedNames);
-      return updatedNames;
-    });
+    const updatedNames = [newName, ...names];
+    handleSubmit(updatedNames);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -120,21 +108,17 @@ const ConstructedNamePage: React.FC = () => {
   };
 
   const handleEditName = (form: Name) => {
-    setNames((prev) => {
-      const updatedNames = prev.map((n) =>
-        n.value === form.value
-          ? {
-            value: form.value,
-            gender: form.gender,
-            origin: form.origin,
-            tags: form.tags
-          }
-          : n
-      );
-
-      handleSubmit(updatedNames);
-      return updatedNames;
-    });
+    const updatedNames = names.map((n) =>
+      n.value === form.value
+        ? {
+          value: form.value,
+          gender: form.gender,
+          origin: form.origin,
+          tags: form.tags
+        }
+        : n
+    );
+    handleSubmit(updatedNames);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -174,11 +158,8 @@ const ConstructedNamePage: React.FC = () => {
 
   const confirmDeleteName = () => {
     if (nameToDelete) {
-      setNames((prev) => {
-        const updatedNames = prev.filter((n) => n.value !== nameToDelete.value);
-        handleSubmit(updatedNames);
-        return updatedNames;
-      });
+      const updatedNames = names.filter((n) => n.value !== nameToDelete.value);
+      handleSubmit(updatedNames);
       setShowDeleteModal(false);
       setNameToDelete(null);
     }

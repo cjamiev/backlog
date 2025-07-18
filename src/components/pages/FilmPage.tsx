@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -24,8 +24,8 @@ const filmSortByOptions = [
 ];
 
 const FilmPage: React.FC = () => {
-  const [isLoadingFilms, setIsLoadingFilms] = useState<boolean>(true);
-  const [films, setFilms] = useState<Film[]>([]);
+  const { data: films = [], isLoading: isLoadingFilms } = useLoadRecordsByType<Film>('films');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -74,34 +74,25 @@ const FilmPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if ( isLoadingFilms) {
-      loadRecordsByType<Film>('films').then((records: Film[]) => {
-        setFilms(records);
-        setIsLoadingFilms(false);
-      });
-    }
-  }, [isLoadingFilms]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, films.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Film[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'films')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'films' });
   };
 
   const handleAddFilm = (form: Film) => {
@@ -110,11 +101,8 @@ const FilmPage: React.FC = () => {
       rank: form.rank,
       tags: form.tags
     };
-    setFilms((prev) => {
-      const updatedFilms = [newFilm, ...prev];
-      handleSubmit(updatedFilms);
-      return updatedFilms;
-    });
+    const updatedFilms = [newFilm, ...films];
+    handleSubmit(updatedFilms);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -123,20 +111,16 @@ const FilmPage: React.FC = () => {
   };
 
   const handleEditFilm = (form: Film) => {
-    setFilms((prev) => {
-      const updatedFilms = prev.map((f) =>
-        f.name === form.name
-          ? {
-            name: form.name,
-            rank: form.rank,
-            tags: form.tags
-          }
-          : f
-      );
-
-      handleSubmit(updatedFilms);
-      return updatedFilms;
-    });
+    const updatedFilms = films.map((f) =>
+      f.name === form.name
+        ? {
+          name: form.name,
+          rank: form.rank,
+          tags: form.tags
+        }
+        : f
+    );
+    handleSubmit(updatedFilms);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -175,11 +159,8 @@ const FilmPage: React.FC = () => {
 
   const confirmDeleteFilm = () => {
     if (filmToDelete) {
-      setFilms((prev) => {
-        const updatedFilms = prev.filter((f) => f.name !== filmToDelete.name);
-        handleSubmit(updatedFilms);
-        return updatedFilms;
-      });
+      const updatedFilms = films.filter((f) => f.name !== filmToDelete.name);
+      handleSubmit(updatedFilms);
       setShowDeleteModal(false);
       setFilmToDelete(null);
     }

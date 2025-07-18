@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -24,8 +24,8 @@ const showSortByOptions = [
 ];
 
 const ShowsPage: React.FC = () => {
-  const [isLoadingShows, setIsLoadingShows] = useState<boolean>(true);
-  const [shows, setShows] = useState<Show[]>([]);
+  const { data: shows = [], isLoading: isLoadingShows } = useLoadRecordsByType<Show>('shows');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -74,34 +74,25 @@ const ShowsPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if ( isLoadingShows) {
-      loadRecordsByType<Show>('shows').then((records: Show[]) => {
-        setShows(records);
-        setIsLoadingShows(false);
-      });
-    }
-  }, [isLoadingShows]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, shows.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Show[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'shows')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'shows' });
   };
 
   const handleAddShow = (form: Show) => {
@@ -110,11 +101,8 @@ const ShowsPage: React.FC = () => {
       rank: form.rank,
       tags: form.tags
     };
-    setShows((prev) => {
-      const updatedShows = [newShow, ...prev];
-      handleSubmit(updatedShows);
-      return updatedShows;
-    });
+    const updatedShows = [newShow, ...shows];
+    handleSubmit(updatedShows);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -123,20 +111,16 @@ const ShowsPage: React.FC = () => {
   };
 
   const handleEditShow = (form: Show) => {
-    setShows((prev) => {
-      const updatedShows = prev.map((s) =>
-        s.name === form.name
-          ? {
-            name: form.name,
-            rank: form.rank,
-            tags: form.tags
-          }
-          : s
-      );
-
-      handleSubmit(updatedShows);
-      return updatedShows;
-    });
+    const updatedShows = shows.map((s) =>
+      s.name === form.name
+        ? {
+          name: form.name,
+          rank: form.rank,
+          tags: form.tags
+        }
+        : s
+    );
+    handleSubmit(updatedShows);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -175,11 +159,8 @@ const ShowsPage: React.FC = () => {
 
   const confirmDeleteShow = () => {
     if (showToDelete) {
-      setShows((prev) => {
-        const updatedShows = prev.filter((s) => s.name !== showToDelete.name);
-        handleSubmit(updatedShows);
-        return updatedShows;
-      });
+      const updatedShows = shows.filter((s) => s.name !== showToDelete.name);
+      handleSubmit(updatedShows);
       setShowDeleteModal(false);
       setShowToDelete(null);
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -25,8 +25,8 @@ const projectSortByOptions = [
 ];
 
 const ProjectPage: React.FC = () => {
-  const [isLoadingProjects, setIsLoadingProjects] = useState<boolean>(true);
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { data: projects = [], isLoading: isLoadingProjects } = useLoadRecordsByType<Project>('projects');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -80,34 +80,25 @@ const ProjectPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingProjects) {
-      loadRecordsByType<Project>('projects').then((records: Project[]) => {
-        setProjects(records);
-        setIsLoadingProjects(false);
-      });
-    }
-  }, [isLoadingProjects]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, projects.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Project[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'projects')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'projects' });
   };
 
   const handleAddProject = (form: Project) => {
@@ -118,11 +109,8 @@ const ProjectPage: React.FC = () => {
       rank: form.rank,
       tags: form.tags
     };
-    setProjects((prev) => {
-      const updatedProjects = [newProject, ...prev];
-      handleSubmit(updatedProjects);
-      return updatedProjects;
-    });
+    const updatedProjects = [newProject, ...projects];
+    handleSubmit(updatedProjects);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -131,22 +119,18 @@ const ProjectPage: React.FC = () => {
   };
 
   const handleEditProject = (form: Project) => {
-    setProjects((prev) => {
-      const updatedProjects = prev.map((p) =>
-        p.id === form.id
-          ? {
-            id: p.id,
-            name: form.name,
-            details: form.details,
-            rank: form.rank,
-            tags: form.tags
-          }
-          : p
-      );
-
-      handleSubmit(updatedProjects);
-      return updatedProjects;
-    });
+    const updatedProjects = projects.map((p) =>
+      p.id === form.id
+        ? {
+          id: p.id,
+          name: form.name,
+          details: form.details,
+          rank: form.rank,
+          tags: form.tags
+        }
+        : p
+    );
+    handleSubmit(updatedProjects);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -187,11 +171,8 @@ const ProjectPage: React.FC = () => {
 
   const confirmDeleteProject = () => {
     if (projectToDelete) {
-      setProjects((prev) => {
-        const updatedProjects = prev.filter((p) => p.id !== projectToDelete.id);
-        handleSubmit(updatedProjects);
-        return updatedProjects;
-      });
+      const updatedProjects = projects.filter((p) => p.id !== projectToDelete.id);
+      handleSubmit(updatedProjects);
       setShowDeleteModal(false);
       setProjectToDelete(null);
     }

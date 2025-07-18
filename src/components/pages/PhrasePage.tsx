@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -22,8 +22,8 @@ const phraseSearchByOptions = [
 const phraseSortByOptions: { value: string; label: string }[] = [];
 
 const PhrasePage: React.FC = () => {
-  const [isLoadingPhrases, setIsLoadingPhrases] = useState<boolean>(true);
-  const [phrases, setPhrases] = useState<Phrase[]>([]);
+  const { data: phrases = [], isLoading: isLoadingPhrases } = useLoadRecordsByType<Phrase>('phrases');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('value');
@@ -70,34 +70,25 @@ const PhrasePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingPhrases) {
-      loadRecordsByType<Phrase>('phrases').then((records: Phrase[]) => {
-        setPhrases(records);
-        setIsLoadingPhrases(false);
-      });
-    }
-  }, [isLoadingPhrases]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, phrases.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Phrase[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'phrases')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'phrases' });
   };
 
   const handleAddPhrase = (form: Phrase) => {
@@ -107,11 +98,8 @@ const PhrasePage: React.FC = () => {
       origin: form.origin,
       tags: form.tags
     };
-    setPhrases((prev) => {
-      const updatedPhrases = [newPhrase, ...prev];
-      handleSubmit(updatedPhrases);
-      return updatedPhrases;
-    });
+    const updatedPhrases = [newPhrase, ...phrases];
+    handleSubmit(updatedPhrases);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -120,21 +108,17 @@ const PhrasePage: React.FC = () => {
   };
 
   const handleEditPhrase = (form: Phrase) => {
-    setPhrases((prev) => {
-      const updatedPhrases = prev.map((p) =>
-        p.id === form.id
-          ? {
-            id: p.id,
-            value: form.value,
-            origin: form.origin,
-            tags: form.tags
-          }
-          : p
-      );
-
-      handleSubmit(updatedPhrases);
-      return updatedPhrases;
-    });
+    const updatedPhrases = phrases.map((p) =>
+      p.id === form.id
+        ? {
+          id: p.id,
+          value: form.value,
+          origin: form.origin,
+          tags: form.tags
+        }
+        : p
+    );
+    handleSubmit(updatedPhrases);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -174,11 +158,8 @@ const PhrasePage: React.FC = () => {
 
   const confirmDeletePhrase = () => {
     if (phraseToDelete) {
-      setPhrases((prev) => {
-        const updatedPhrases = prev.filter((p) => p.id !== phraseToDelete.id);
-        handleSubmit(updatedPhrases);
-        return updatedPhrases;
-      });
+      const updatedPhrases = phrases.filter((p) => p.id !== phraseToDelete.id);
+      handleSubmit(updatedPhrases);
       setShowDeleteModal(false);
       setPhraseToDelete(null);
     }

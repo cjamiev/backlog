@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -24,8 +24,8 @@ const gameSortByOptions = [
 ];
 
 const GamePage: React.FC = () => {
-  const [isLoadingGames, setIsLoadingGames] = useState<boolean>(true);
-  const [games, setGames] = useState<Game[]>([]);
+  const { data: games = [], isLoading: isLoadingGames } = useLoadRecordsByType<Game>('games');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -74,34 +74,25 @@ const GamePage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingGames) {
-      loadRecordsByType<Game>('games').then((records: Game[]) => {
-        setGames(records);
-        setIsLoadingGames(false);
-      });
-    }
-  }, [isLoadingGames]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, games.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Game[]) => {
-    updateRecordsByType(JSON.stringify(payload), 'games')
-      .then((isSuccess: boolean) => {
-        if (isSuccess) {
-          setShowBanner({ show: true, type: 'success' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        } else {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        }
-      })
-      .catch((error: unknown) => {
-        setShowBanner({ show: true, type: 'error' });
-        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        console.error('Error:', error);
-      });
+    mutate({ payload: JSON.stringify(payload), type: 'games' });
   };
 
   const handleAddGame = (form: Game) => {
@@ -111,11 +102,8 @@ const GamePage: React.FC = () => {
       lowestPrice: form.lowestPrice,
       tags: form.tags
     };
-    setGames((prev) => {
-      const updatedGames = [newGame, ...prev];
-      handleSubmit(updatedGames);
-      return updatedGames;
-    });
+    const updatedGames = [newGame, ...games];
+    handleSubmit(updatedGames);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -124,21 +112,17 @@ const GamePage: React.FC = () => {
   };
 
   const handleEditGame = (form: Game) => {
-    setGames((prev) => {
-      const updatedGames = prev.map((g) =>
-        g.name === form.name
-          ? {
-            name: form.name,
-            rank: form.rank,
-            lowestPrice: form.lowestPrice,
-            tags: form.tags
-          }
-          : g
-      );
-
-      handleSubmit(updatedGames);
-      return updatedGames;
-    });
+    const updatedGames = games.map((g) =>
+      g.name === form.name
+        ? {
+          name: form.name,
+          rank: form.rank,
+          lowestPrice: form.lowestPrice,
+          tags: form.tags
+        }
+        : g
+    );
+    handleSubmit(updatedGames);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -178,11 +162,8 @@ const GamePage: React.FC = () => {
 
   const confirmDeleteGame = () => {
     if (gameToDelete) {
-      setGames((prev) => {
-        const updatedGames = prev.filter((g) => g.name !== gameToDelete.name);
-        handleSubmit(updatedGames);
-        return updatedGames;
-      });
+      const updatedGames = games.filter((g) => g.name !== gameToDelete.name);
+      handleSubmit(updatedGames);
       setShowDeleteModal(false);
       setGameToDelete(null);
     }

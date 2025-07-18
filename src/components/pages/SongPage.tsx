@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -26,8 +26,8 @@ const songSortByOptions = [
 ];
 
 const SongPage: React.FC = () => {
-  const [isLoadingSongs, setIsLoadingSongs] = useState<boolean>(true);
-  const [songs, setSongs] = useState<Song[]>([]);
+  const { data: songs = [], isLoading: isLoadingSongs } = useLoadRecordsByType<Song>('songs');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -81,34 +81,25 @@ const SongPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingSongs) {
-      loadRecordsByType<Song>('songs').then((records: Song[]) => {
-        setSongs(records);
-        setIsLoadingSongs(false);
-      });
-    }
-  }, [isLoadingSongs]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, songs.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Song[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'songs')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'songs' });
   };
 
   const handleAddSong = (form: Song) => {
@@ -121,11 +112,8 @@ const SongPage: React.FC = () => {
       link: form.link,
       tags: form.tags
     };
-    setSongs((prev) => {
-      const updatedSongs = [newSong, ...prev];
-      handleSubmit(updatedSongs);
-      return updatedSongs;
-    });
+    const updatedSongs = [newSong, ...songs];
+    handleSubmit(updatedSongs);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -134,24 +122,20 @@ const SongPage: React.FC = () => {
   };
 
   const handleEditSong = (form: Song) => {
-    setSongs((prev) => {
-      const updatedSongs = prev.map((s) =>
-        s.id === form.id
-          ? {
-            id: s.id,
-            name: form.name,
-            album: form.album,
-            band: form.band,
-            rank: form.rank,
-            link: form.link,
-            tags: form.tags
-          }
-          : s
-      );
-
-      handleSubmit(updatedSongs);
-      return updatedSongs;
-    });
+    const updatedSongs = songs.map((s) =>
+      s.id === form.id
+        ? {
+          id: s.id,
+          name: form.name,
+          album: form.album,
+          band: form.band,
+          rank: form.rank,
+          link: form.link,
+          tags: form.tags
+        }
+        : s
+    );
+    handleSubmit(updatedSongs);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -194,11 +178,8 @@ const SongPage: React.FC = () => {
 
   const confirmDeleteSong = () => {
     if (songToDelete) {
-      setSongs((prev) => {
-        const updatedSongs = prev.filter((s) => s.id !== songToDelete.id);
-        handleSubmit(updatedSongs);
-        return updatedSongs;
-      });
+      const updatedSongs = songs.filter((s) => s.id !== songToDelete.id);
+      handleSubmit(updatedSongs);
       setShowDeleteModal(false);
       setSongToDelete(null);
     }

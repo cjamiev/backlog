@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -22,8 +22,8 @@ const countdownSortByOptions = [
 ];
 
 const CountdownPage: React.FC = () => {
-  const [isLoadingCountdowns, setIsLoadingCountdowns] = useState<boolean>(true);
-  const [countdowns, setCountdowns] = useState<Countdown[]>([]);
+  const { data: countdowns = [], isLoading: isLoadingCountdowns } = useLoadRecordsByType<Countdown>('countdowns');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -75,34 +75,25 @@ const CountdownPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingCountdowns) {
-      loadRecordsByType<Countdown>('countdowns').then((records: Countdown[]) => {
-        setCountdowns(records);
-        setIsLoadingCountdowns(false);
-      });
-    }
-  }, [isLoadingCountdowns]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, countdowns.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Countdown[]) => {
-    updateRecordsByType(JSON.stringify(payload), 'countdowns')
-      .then((isSuccess: boolean) => {
-        if (isSuccess) {
-          setShowBanner({ show: true, type: 'success' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        } else {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        }
-      })
-      .catch((error: unknown) => {
-        setShowBanner({ show: true, type: 'error' });
-        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        console.error('Error:', error);
-      });
+    mutate({ payload: JSON.stringify(payload), type: 'countdowns' });
   };
 
   const handleAddCountdown = (form: Countdown) => {
@@ -112,11 +103,8 @@ const CountdownPage: React.FC = () => {
       date: form.date,
       tags: form.tags
     };
-    setCountdowns((prev) => {
-      const updatedCountdowns = [newCountdown, ...prev];
-      handleSubmit(updatedCountdowns);
-      return updatedCountdowns;
-    });
+    const updatedCountdowns = [newCountdown, ...countdowns];
+    handleSubmit(updatedCountdowns);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -125,21 +113,17 @@ const CountdownPage: React.FC = () => {
   };
 
   const handleEditCountdown = (form: Countdown) => {
-    setCountdowns((prev) => {
-      const updatedCountdowns = prev.map((c) =>
-        c.id === form.id
-          ? {
-            id: c.id,
-            name: form.name,
-            date: form.date,
-            tags: form.tags
-          }
-          : c
-      );
-
-      handleSubmit(updatedCountdowns);
-      return updatedCountdowns;
-    });
+    const updatedCountdowns = countdowns.map((c) =>
+      c.id === form.id
+        ? {
+          id: c.id,
+          name: form.name,
+          date: form.date,
+          tags: form.tags
+        }
+        : c
+    );
+    handleSubmit(updatedCountdowns);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -179,11 +163,8 @@ const CountdownPage: React.FC = () => {
 
   const confirmDeleteCountdown = () => {
     if (countdownToDelete) {
-      setCountdowns((prev) => {
-        const updatedCountdowns = prev.filter((c) => c.id !== countdownToDelete.id);
-        handleSubmit(updatedCountdowns);
-        return updatedCountdowns;
-      });
+      const updatedCountdowns = countdowns.filter((c) => c.id !== countdownToDelete.id);
+      handleSubmit(updatedCountdowns);
       setShowDeleteModal(false);
       setCountdownToDelete(null);
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -21,8 +21,8 @@ const bookSearchByOptions = [
 const bookSortByOptions: { value: string; label: string }[] = [];
 
 const BookPage: React.FC = () => {
-  const [isLoadingBooks, setIsLoadingBooks] = useState<boolean>(true);
-  const [books, setBooks] = useState<Book[]>([]);
+  const { data: books = [], isLoading: isLoadingBooks } = useLoadRecordsByType<Book>('books');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -67,34 +67,25 @@ const BookPage: React.FC = () => {
   ).sort((a, b) => a.localeCompare(b));
 
   useEffect(() => {
-    if (isLoadingBooks) {
-      loadRecordsByType<Book>('books').then((records: Book[]) => {
-        setBooks(records);
-        setIsLoadingBooks(false);
-      });
-    }
-  }, [isLoadingBooks]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, books.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: Book[]) => {
-    updateRecordsByType(JSON.stringify(payload), 'books')
-      .then((isSuccess: boolean) => {
-        if (isSuccess) {
-          setShowBanner({ show: true, type: 'success' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        } else {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        }
-      })
-      .catch((error: unknown) => {
-        setShowBanner({ show: true, type: 'error' });
-        setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-        console.error('Error:', error);
-      });
+    mutate({ payload: JSON.stringify(payload), type: 'books' });
   };
 
   const handleAddBook = (form: Book) => {
@@ -102,11 +93,8 @@ const BookPage: React.FC = () => {
       name: form.name,
       tags: form.tags
     };
-    setBooks((prev) => {
-      const updatedBooks = [newBook, ...prev];
-      handleSubmit(updatedBooks);
-      return updatedBooks;
-    });
+    const updatedBooks = [newBook, ...books];
+    handleSubmit(updatedBooks);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -115,19 +103,15 @@ const BookPage: React.FC = () => {
   };
 
   const handleEditBook = (form: Book) => {
-    setBooks((prev) => {
-      const updatedBooks = prev.map((b) =>
-        b.name === form.name
-          ? {
-            name: form.name,
-            tags: form.tags
-          }
-          : b
-      );
-
-      handleSubmit(updatedBooks);
-      return updatedBooks;
-    });
+    const updatedBooks = books.map((b) =>
+      b.name === form.name
+        ? {
+          name: form.name,
+          tags: form.tags
+        }
+        : b
+    );
+    handleSubmit(updatedBooks);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -165,11 +149,8 @@ const BookPage: React.FC = () => {
 
   const confirmDeleteBook = () => {
     if (bookToDelete) {
-      setBooks((prev) => {
-        const updatedBooks = prev.filter((b) => b.name !== bookToDelete.name);
-        handleSubmit(updatedBooks);
-        return updatedBooks;
-      });
+      const updatedBooks = books.filter((b) => b.name !== bookToDelete.name);
+      handleSubmit(updatedBooks);
       setShowDeleteModal(false);
       setBookToDelete(null);
     }

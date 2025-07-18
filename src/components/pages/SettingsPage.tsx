@@ -27,7 +27,7 @@ const SettingsPage: React.FC = () => {
         <div>
           <h2>Backend Operations</h2>
           <button className="add-new-btn" onClick={backupRecords}>Backup</button>
-        </div> : <div><h2>Backend Disabled</h2></div>
+        </div>
       </div>
     </div>
   );

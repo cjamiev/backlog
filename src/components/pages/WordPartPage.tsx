@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { loadRecordsByType, updateRecordsByType } from '../../api/library-service';
+import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -21,8 +21,8 @@ const wordPartSearchByOptions = [
 const wordPartSortByOptions: { value: string; label: string }[] = [];
 
 const WordPartPage: React.FC = () => {
-  const [isLoadingWordParts, setIsLoadingWordParts] = useState<boolean>(true);
-  const [wordParts, setWordParts] = useState<WordPart[]>([]);
+  const { data: wordParts = [], isLoading: isLoadingWordParts } = useLoadRecordsByType<WordPart>('word-parts');
+  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('value');
@@ -59,34 +59,25 @@ const WordPartPage: React.FC = () => {
   );
 
   useEffect(() => {
-    if (isLoadingWordParts) {
-      loadRecordsByType<WordPart>('word-parts').then((records: WordPart[]) => {
-        setWordParts(records);
-        setIsLoadingWordParts(false);
-      });
-    }
-  }, [isLoadingWordParts]);
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, wordParts.length]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isError]);
+
   const handleSubmit = async (payload: WordPart[]) => {
-      updateRecordsByType(JSON.stringify(payload), 'word-parts')
-        .then((isSuccess: boolean) => {
-          if (isSuccess) {
-            setShowBanner({ show: true, type: 'success' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          } else {
-            setShowBanner({ show: true, type: 'error' });
-            setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          }
-        })
-        .catch((error: unknown) => {
-          setShowBanner({ show: true, type: 'error' });
-          setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
-          console.error('Error:', error);
-        });
+    mutate({ payload: JSON.stringify(payload), type: 'word-parts' });
   };
 
   const handleAddWordPart = (form: WordPart) => {
@@ -95,11 +86,8 @@ const WordPartPage: React.FC = () => {
       definition: form.definition,
       type: form.type
     };
-    setWordParts((prev) => {
-      const updatedWordParts = [newWordPart, ...prev];
-      handleSubmit(updatedWordParts);
-      return updatedWordParts;
-    });
+    const updatedWordParts = [newWordPart, ...wordParts];
+    handleSubmit(updatedWordParts);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -108,20 +96,16 @@ const WordPartPage: React.FC = () => {
   };
 
   const handleEditWordPart = (form: WordPart) => {
-    setWordParts((prev) => {
-      const updatedWordParts = prev.map((wp) =>
-        wp.value === form.value
-          ? {
-            value: form.value,
-            definition: form.definition,
-            type: form.type
-          }
-          : wp
-      );
-
-      handleSubmit(updatedWordParts);
-      return updatedWordParts;
-    });
+    const updatedWordParts = wordParts.map((wp) =>
+      wp.value === form.value
+        ? {
+          value: form.value,
+          definition: form.definition,
+          type: form.type
+        }
+        : wp
+    );
+    handleSubmit(updatedWordParts);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -160,11 +144,8 @@ const WordPartPage: React.FC = () => {
 
   const confirmDeleteWordPart = () => {
     if (wordPartToDelete) {
-      setWordParts((prev) => {
-        const updatedWordParts = prev.filter((wp) => wp.value !== wordPartToDelete.value);
-        handleSubmit(updatedWordParts);
-        return updatedWordParts;
-      });
+      const updatedWordParts = wordParts.filter((wp) => wp.value !== wordPartToDelete.value);
+      handleSubmit(updatedWordParts);
       setShowDeleteModal(false);
       setWordPartToDelete(null);
     }
