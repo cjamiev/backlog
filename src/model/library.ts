@@ -218,3 +218,36 @@ export const DefaultPassword: Password = {
   link: '',
   tags: '',
 }
+
+export interface Contact {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+  tags: string;
+}
+
+export const DefaultContact: Contact = {
+  name: '',
+  phone: '',
+  email: '',
+  address: '',
+  tags: ''
+}
+
+
+export interface Note {
+  name: string;
+  details: string;
+  createdDate: string;
+  updatedDate: string;
+  tags: string;
+}
+
+export const DefaultNote: Note = {
+  name: '',
+  details: '',
+  createdDate: '',
+  updatedDate: '',
+  tags: ''
+}
