@@ -1,7 +1,8 @@
 .readme-edit {
   width: 80vw;
-  height: 50vh;
+  height: 65vh;
   padding: 8px;
+  margin: 0 auto;
 } 
 
 .readme-view {

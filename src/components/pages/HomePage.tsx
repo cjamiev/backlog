@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { loadReadme, updateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
+import Footer from '../atoms/Footer';
 
 
 const HomePage: React.FC = () => {
@@ -57,7 +58,7 @@ const HomePage: React.FC = () => {
     <div className="page-wrapper">
       <Banner isVisible={showBanner.show} type={showBanner.type} />
       <h1 className="page-title">Home</h1>
-      <div className="home-editable-text">
+      <div className="readme-edit">
         {isEditing ? (
           <>
             <textarea
@@ -66,20 +67,24 @@ const HomePage: React.FC = () => {
               onChange={e => setEditValue(e.target.value)}
               rows={4}
             />
-            <div>
-              <button className="primary-btn" onClick={handleSave}>Save</button>
-              <button className="negative-btn" onClick={handleCancel}>Cancel</button>
-            </div>
           </>
         ) : (
           <>
-            <button className="primary-btn" onClick={handleEdit}>Edit</button>
             <div className="readme-view">
               {readme.split('\n').map(sentence => <div key={sentence}>{sentence}</div>)}
             </div>
           </>
         )}
       </div>
+      <Footer>
+        {isEditing ? <div>
+          <button className="primary-btn" onClick={handleSave}>Save</button>
+          <button className="negative-btn" onClick={handleCancel}>Cancel</button>
+        </div>
+          :
+          <button className="primary-btn" onClick={handleEdit}>Edit</button>
+        }
+      </Footer>
     </div>
   );
 };
