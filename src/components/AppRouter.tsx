@@ -20,6 +20,7 @@ import FavoritePage from './pages/FavoritePage';
 import WordPartPage from './pages/WordPartPage';
 import ContactPage from './pages/ContactPage';
 import NotePage from './pages/NotePage';
+import Navigation from './Navigation';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,28 +36,7 @@ function AppRouter() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <nav className="page-nav">
-          <Link to="/">Home</Link>
-          <Link to="/words">Words</Link>
-          <Link to="/constructed-words">Constructed Words</Link>
-          <Link to="/wordparts">Word Parts</Link>
-          <Link to="/phrases">Phrases</Link>
-          <Link to="/references">References</Link>
-          <Link to="/names">Names</Link>
-          <Link to="/constructed-names">Construced Names</Link>
-          <Link to="/games">Games</Link>
-          <Link to="/songs">Songs</Link>
-          <Link to="/films">Films</Link>
-          <Link to="/shows">Shows</Link>
-          <Link to="/books">Books</Link>
-          <Link to="/projects">Projects</Link>
-          <Link to="/passwords">Passwords</Link>
-          <Link to="/countdowns">Countdowns</Link>
-          <Link to="/favorites">Favorites</Link>
-          <Link to="/contacts">Contacts</Link>
-          <Link to="/notes">Notes</Link>
-          <Link to="/settings">Settings</Link>
-        </nav>
+        <Navigation />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/words" element={<WordPage />} />

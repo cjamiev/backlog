@@ -1,11 +1,12 @@
+@import url('./assets/navigation.css');
 @import url('./assets/favorites.css');
 @import url('./assets/home.css');
 @import url('./assets/readme.css');
-@import url('./assets/banner.css');
-@import url('./assets/modal.css');
 @import url('./assets/search.css');
 @import url('./assets/card.css');
 @import url('./assets/form.css');
+@import url('./assets/banner.css');
+@import url('./assets/modal.css');
 @import url('./assets/sidebar.css');
 @import url('./assets/page.css');
 
