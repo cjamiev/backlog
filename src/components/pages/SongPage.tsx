@@ -45,6 +45,7 @@ const SongPage: React.FC = () => {
   const [showJSONModal, setShowJSONModal] = useState(false);
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
   const [currentPage, setCurrentPage] = useState(1);
+  const [showTagsModal, setShowTagsModal] = useState(false);
 
   const filteredSongs = songs.filter((s: Song) => {
     if (searchBy === 'tags') {
@@ -205,6 +206,13 @@ const SongPage: React.FC = () => {
   const handleCloseCSVModal = () => setShowCSVModal(false);
   const handleOpenJSONModal = () => setShowJSONModal(true);
   const handleCloseJSONModal = () => setShowJSONModal(false);
+  const handleOpenTagsModal = () => setShowTagsModal(true);
+  const handleCloseTagsModal = () => setShowTagsModal(false);
+  const handleSelectTagFromModal = (tag: string) => {
+    setSearchBy('tags');
+    setSearch(tag);
+    setShowTagsModal(false);
+  };
 
   const handlePrevious = () => {
     setCurrentPage((p) => Math.max(1, p - 1));
@@ -261,6 +269,9 @@ const SongPage: React.FC = () => {
           <button className="primary-btn" onClick={handleOpenJSONModal}>
             Show JSON
           </button>
+          <button className="primary-btn" onClick={handleOpenTagsModal}>
+            Show All Tags
+          </button>
         </div>
         <Pagination
           totalPages={totalPages}
@@ -298,6 +309,22 @@ const SongPage: React.FC = () => {
             Copy
           </button>
           <pre className="modal-data-content">{getJSON(songs)}</pre>
+        </div>
+      </Modal>
+      <Modal isOpen={showTagsModal} onClose={handleCloseTagsModal} title="All Tags">
+        <div className="modal-data-display">
+          <div className="tags-container">
+            {allTags.length === 0 && <div>No tags available.</div>}
+            {allTags.map((tag, idx) => (
+              <button
+                key={idx}
+                className="tag-btn"
+                onClick={() => handleSelectTagFromModal(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
         </div>
       </Modal>
       <Sidepanel
