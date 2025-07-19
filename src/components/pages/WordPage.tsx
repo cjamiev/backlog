@@ -93,7 +93,7 @@ const WordPage: React.FC = () => {
 
   const handleAddWord = (form: Word) => {
     const newWord = {
-      value: form.value,
+      value: form.value.toLocaleLowerCase(),
       definition: form.definition,
       type: form.type,
       tags: form.tags
@@ -112,7 +112,7 @@ const WordPage: React.FC = () => {
     const updatedWords = words.map((w) =>
       w.value === form.value
         ? {
-          value: form.value,
+          value: form.value.toLocaleLowerCase(),
           definition: form.definition,
           type: form.type,
           tags: form.tags

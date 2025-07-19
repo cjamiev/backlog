@@ -94,7 +94,7 @@ const ConstructedNamePage: React.FC = () => {
 
   const handleAddName = (form: Name) => {
     const newName = {
-      value: form.value,
+      value: form.value.toLocaleLowerCase(),
       gender: form.gender,
       origin: form.origin,
       tags: form.tags
@@ -112,7 +112,7 @@ const ConstructedNamePage: React.FC = () => {
     const updatedNames = names.map((n) =>
       n.value === form.value
         ? {
-          value: form.value,
+          value: form.value.toLocaleLowerCase(),
           gender: form.gender,
           origin: form.origin,
           tags: form.tags

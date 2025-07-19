@@ -82,7 +82,7 @@ const WordPartPage: React.FC = () => {
 
   const handleAddWordPart = (form: WordPart) => {
     const newWordPart = {
-      value: form.value,
+      value: form.value.toLocaleLowerCase(),
       definition: form.definition,
       type: form.type
     };
@@ -99,7 +99,7 @@ const WordPartPage: React.FC = () => {
     const updatedWordParts = wordParts.map((wp) =>
       wp.value === form.value
         ? {
-          value: form.value,
+          value: form.value.toLocaleLowerCase(),
           definition: form.definition,
           type: form.type
         }
