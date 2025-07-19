@@ -33,10 +33,10 @@
   border-top: 1px solid var(--color-primary);
   display: flex;
   align-items: center;
-  padding: 16px 0 12px 16px;
+  padding: 8px 0;
   height: 50px;
   z-index: 1;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+  justify-content: center;
 }
 
 @media (max-width: 600px) {
