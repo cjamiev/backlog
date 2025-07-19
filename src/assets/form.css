@@ -139,6 +139,10 @@
   background: var(--color-primary);
 }
 
+.form-actions-wrapper {
+  display: flex;
+}
+
 @media (max-width: 600px) {
   .form-wrapper {
     padding: 16px;

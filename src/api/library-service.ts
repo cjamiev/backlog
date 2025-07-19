@@ -1,9 +1,9 @@
 import api from "./api";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const backupAllRecords = async () => {
+export const backupAllRecords = async (type: string) => {
   try {
-    const result = await api.get('library/backup');
+    const result = await api.get(`library/backup?type=${type}`);
 
     if (result) {
       return true;
@@ -13,13 +13,6 @@ export const backupAllRecords = async () => {
   } catch {
     return false;
   }
-};
-
-export const useBackupAllRecords = () => {
-  return useQuery({
-    queryKey: ['backup-all-records'],
-    queryFn: backupAllRecords,
-  });
 };
 
 export const loadReadme = async (): Promise<string> => {

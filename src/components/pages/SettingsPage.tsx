@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Banner from '../atoms/Banner';
 import { backupAllRecords } from '../../api/library-service';
+import { recordTypes } from '../../constants/records';
 
 const SettingsPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string; message: string }>({
@@ -9,8 +10,8 @@ const SettingsPage: React.FC = () => {
     message: ''
   });
 
-  const backupRecords = () => {
-    backupAllRecords().then(() => {
+  const backupRecords = (type: string) => {
+    backupAllRecords(type).then(() => {
       setShowBanner({ show: true, type: 'success', message: `Backed up Data` });
       setTimeout(() => setShowBanner({ show: false, type: '', message: '' }), 2500);
     }).catch(() => {
@@ -26,7 +27,13 @@ const SettingsPage: React.FC = () => {
       <div className="page-body-layout">
         <div>
           <h2>Backend Operations</h2>
-          <button className="add-new-btn" onClick={backupRecords}>Backup</button>
+          <div className='settings-backend-op-wrapper'>
+            {recordTypes.map(type =>
+              <button key={type} className="add-new-btn" onClick={() => { backupRecords(type) }}>
+                Backup {type}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

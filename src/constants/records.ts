@@ -1,0 +1,21 @@
+export const recordTypes = [
+  'readme',
+  'constructed-words',
+  'words',
+  'word-parts',
+  'phrases',
+  'references',
+  'names',
+  'constructed-names',
+  'games',
+  'songs',
+  'films',
+  'shows',
+  'books',
+  'projects',
+  'passwords',
+  'countdowns',
+  'favorites',
+  'contacts',
+  'notes'
+];
