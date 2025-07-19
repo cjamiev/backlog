@@ -52,7 +52,6 @@ function WordPartForm({ onSubmit, initialValues, cancelEdit }: WordPartFormProps
           value={form.definition}
           onChange={handleChange}
           rows={4}
-          required
         />
       </label>
       <div className="form-actions-wrapper">

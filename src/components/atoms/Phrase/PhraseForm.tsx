@@ -44,7 +44,7 @@ function PhraseForm({ onSubmit, initialValues, cancelEdit, allTags }: PhraseForm
       </label>
       <label className="form-label">
         Origin:
-        <input className="form-input" type="text" name="origin" value={form.origin} onChange={handleChange} required />
+        <input className="form-input" type="text" name="origin" value={form.origin} onChange={handleChange} />
       </label>
       <label className="form-label">
         Tags (comma separated):
@@ -64,9 +64,9 @@ function PhraseForm({ onSubmit, initialValues, cancelEdit, allTags }: PhraseForm
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

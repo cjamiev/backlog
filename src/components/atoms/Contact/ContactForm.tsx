@@ -62,7 +62,6 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, initialValues, canc
           name="email"
           value={form.email}
           onChange={handleChange}
-          required
         />
       </label>
       <label className="form-label">

@@ -54,7 +54,6 @@ function ReferenceForm({ onSubmit, initialValues, cancelEdit, allTags }: Referen
           value={form.definition}
           onChange={handleChange}
           rows={3}
-          required
         />
       </label>
       <label className="form-label">
@@ -75,9 +74,9 @@ function ReferenceForm({ onSubmit, initialValues, cancelEdit, allTags }: Referen
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

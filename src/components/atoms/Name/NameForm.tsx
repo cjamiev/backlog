@@ -55,7 +55,7 @@ function NameForm({ onSubmit, initialValues, cancelEdit, allTags }: NameFormProp
       </label>
       <label className="form-label">
         Origin:
-        <input className="form-input" type="text" name="origin" value={form.origin} onChange={handleChange} required />
+        <input className="form-input" type="text" name="origin" value={form.origin} onChange={handleChange} />
       </label>
       <label className="form-label">
         Tags (comma separated):
@@ -75,9 +75,9 @@ function NameForm({ onSubmit, initialValues, cancelEdit, allTags }: NameFormProp
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );
