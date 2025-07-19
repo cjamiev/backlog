@@ -8,6 +8,15 @@ interface PaginationProps {
   handleNext: () => void;
 }
 
+const getPageNumbers = (currentPage: number, totalPages: number) => {
+  const pageNumbers = [];
+  for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+    pageNumbers.push(i);
+  }
+
+  return pageNumbers;
+};
+
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
@@ -17,10 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   if (totalPages <= 1) return null;
 
-  const pageNumbers = [];
-  for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
-    pageNumbers.push(i);
-  }
+  const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
     <div className="pagination-wrapper">
