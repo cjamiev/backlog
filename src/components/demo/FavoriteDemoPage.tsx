@@ -46,6 +46,8 @@ const FavoriteDemoPage: React.FC = () => {
   const [favoriteTypes, setFavoriteTypesTypes] = useState<string[]>([]);
   const [removeTypeModalOpen, setRemoveTypeModalOpen] = useState(false);
   const [selectedTypeToRemove, setSelectedTypeToRemove] = useState('');
+  const [showTagsModal, setShowTagsModal] = useState(false);
+
 
   const filteredFavorites = favorites.filter((f: Favorite) => {
     if (searchBy === 'tags') {
@@ -171,6 +173,13 @@ const FavoriteDemoPage: React.FC = () => {
   const handleCloseCSVModal = () => setShowCSVModal(false);
   const handleOpenJSONModal = () => setShowJSONModal(true);
   const handleCloseJSONModal = () => setShowJSONModal(false);
+  const handleOpenTagsModal = () => setShowTagsModal(true);
+  const handleCloseTagsModal = () => setShowTagsModal(false);
+  const handleSelectTagFromModal = (tag: string) => {
+    setSearchBy('tags');
+    setSearch(tag);
+    setShowTagsModal(false);
+  };
 
   const handleAddNewType = (e: React.FormEvent) => {
     e.preventDefault();
@@ -338,6 +347,22 @@ const FavoriteDemoPage: React.FC = () => {
           <pre className="modal-data-content">{getJSON(favorites)}</pre>
         </div>
       </Modal>
+      <Modal isOpen={showTagsModal} onClose={handleCloseTagsModal} title="All Tags">
+        <div className="modal-data-display">
+          <div className="tags-container">
+            {allTags.length === 0 && <div>No tags available.</div>}
+            {allTags.map((tag, idx) => (
+              <button
+                key={idx}
+                className="tag-btn"
+                onClick={() => handleSelectTagFromModal(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      </Modal>
       <Sidepanel
         isOpen={isPanelOpen && (isAddMode || isEditing)}
         onClose={cancelEdit}
@@ -361,6 +386,9 @@ const FavoriteDemoPage: React.FC = () => {
           </button>
           <button className="primary-btn" onClick={handleOpenJSONModal}>
             Show JSON
+          </button>
+          <button className="primary-btn" onClick={handleOpenTagsModal}>
+            Show All Tags
           </button>
         </div>
       </Footer>
