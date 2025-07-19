@@ -16,18 +16,24 @@ const Pagination: React.FC<PaginationProps> = ({
   handleNext
 }) => {
   if (totalPages <= 1) return null;
+
+  const pageNumbers = [];
+  for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+    pageNumbers.push(i);
+  }
+
   return (
     <div className="pagination-wrapper">
       <button className="primary-btn" onClick={handlePrevious} disabled={currentPage === 1}>
         Prev
       </button>
-      {Array.from({ length: totalPages }, (_, i) => (
+      {pageNumbers.map((pageNum) => (
         <button
-          key={i}
-          className={`primary-btn${currentPage === i + 1 ? ' active' : ''}`}
-          onClick={() => handlePageSelect(i + 1)}
+          key={pageNum}
+          className={`primary-btn${currentPage === pageNum ? ' active' : ''}`}
+          onClick={() => handlePageSelect(pageNum)}
         >
-          {i + 1}
+          {pageNum}
         </button>
       ))}
       <button className="primary-btn" onClick={handleNext} disabled={currentPage === totalPages}>
