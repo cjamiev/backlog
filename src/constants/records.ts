@@ -6,7 +6,6 @@ export const recordTypes = [
   'phrases',
   'references',
   'names',
-  'constructed-names',
   'games',
   'songs',
   'films',
