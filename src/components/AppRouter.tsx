@@ -6,7 +6,6 @@ import SettingsPage from './pages/SettingsPage';
 import WordPage from './pages/WordPage';
 import ConstructedWordPage from './pages/ConstructedWordPage';
 import NamePage from './pages/NamePage';
-import ConstructedNamePage from './pages/ConstructedNamePage';
 import PhrasePage from './pages/PhrasePage';
 import ReferencePage from './pages/ReferencePage';
 import GamePage from './pages/GamePage';
@@ -45,7 +44,6 @@ function AppRouter() {
           <Route path="/phrases" element={<PhrasePage />} />
           <Route path="/references" element={<ReferencePage />} />
           <Route path="/names" element={<NamePage />} />
-          <Route path="/constructed-names" element={<ConstructedNamePage />} />
           <Route path="/games" element={<GamePage />} />
           <Route path="/songs" element={<SongPage />} />
           <Route path="/films" element={<FilmPage />} />

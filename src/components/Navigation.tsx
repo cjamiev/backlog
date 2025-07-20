@@ -25,7 +25,6 @@ function Navigation() {
             <Link to="/phrases">Phrases</Link>
             <Link to="/references">References</Link>
             <Link to="/names">Names</Link>
-            <Link to="/constructed-names">Constructed Names</Link>
           </div>
         )}
       </div>
