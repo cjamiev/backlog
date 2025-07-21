@@ -342,8 +342,8 @@ const SongDemoPage: React.FC = () => {
         <SongForm
           onSubmit={isEditing ? handleEditSong : handleAddSong}
           initialValues={editForm}
-          isEditing={isEditing}
           allTags={allTags}
+          cancelEdit={cancelEdit}
         />
       </Sidepanel>
     </div>

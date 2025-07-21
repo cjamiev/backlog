@@ -60,7 +60,7 @@ const PasswordPage: React.FC = () => {
 
   const sortedPasswords = [...filteredPasswords].sort((a, b) => {
     if (sortBy === 'id') {
-      return a.id.localeCompare(b.name);
+      return a.id.localeCompare(b.id);
     } else {
       return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
     }

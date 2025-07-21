@@ -5,7 +5,7 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface SongFormProps {
   onSubmit: (form: Song) => void;
   initialValues?: Song;
-  isEditing: boolean;
+  cancelEdit: () => void;
   allTags: string[];
 }
 

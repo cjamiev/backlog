@@ -32,7 +32,7 @@ export const loadPasswords = async (): Promise<Password[]> => {
 };
 
 export const useLoadPasswords = () => {
-  return useQuery<T[], Error>({
+  return useQuery<Password[], Error>({
     queryKey: ['load-passwords'],
     queryFn: () => loadPasswords(),
   });

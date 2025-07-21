@@ -22,7 +22,7 @@ export const loadReadme = async (): Promise<string> => {
     if (response.data) {
       return response.data.records;
     } else {
-      return [];
+      return '';
     }
   } catch (error) {
     console.error('Error:', error);

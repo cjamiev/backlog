@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { type Password } from '../../../model/library';
+import { type Password } from '../../../model/password';
 
 interface PasswordCardProps {
   password: Password;
