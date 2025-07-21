@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Show } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface ShowCardProps {
   show: Show;
@@ -18,7 +19,7 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, on
       <div className="card-content">
         <div>
           <span className="card-label">Rank:</span>
-          <span className="card-text">{show.rank}</span>
+          <span className="card-text">{getRankStars(show.rank)}</span>
         </div>
         <div>
           {show.tags.length ? (

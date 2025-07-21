@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultSong, type Song } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface SongFormProps {
   onSubmit: (form: Song) => void;
@@ -51,7 +52,7 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProp
         <input className="form-input" type="text" name="band" value={form.band} onChange={handleChange} />
       </label>
       <label className="form-label">
-        Rank: <span className="form-rank-text">{form.rank}</span>
+        Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input
           className="form-input"
           type="range"
@@ -84,9 +85,9 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProp
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { type Game } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface GameCardProps {
   game: Game;
@@ -16,7 +17,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onClone, onDelete, on
         <h2 className="card-title">{game.name}</h2>
       </div>
       <div>
-        <span className="card-label">Rank:</span> <span className="card-text">{game.rank}</span>
+        <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(game.rank)}</span>
       </div>
       <div>
         <span className="card-label">Lowest Price:</span> <span className="card-text">{game.lowestPrice}</span>

@@ -57,7 +57,7 @@ const FilmPage: React.FC = () => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);
     } else {
-      return a.rank - b.rank;
+      return b.rank - a.rank;
     }
   });
   const totalPages = Math.ceil(sortedFilms.length / FILMS_PER_PAGE);

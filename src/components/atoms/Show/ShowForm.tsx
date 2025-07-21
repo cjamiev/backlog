@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultShow, type Show } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface ShowFormProps {
   onSubmit: (show: Show) => void;
@@ -44,7 +45,7 @@ const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit
       </label>
 
       <label className="form-label">
-        Rank: <span className="form-rank-text">{form.rank}</span>
+        Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input
           className="form-input"
           type="range"

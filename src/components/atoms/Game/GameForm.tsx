@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultGame, type Game } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface GameFormProps {
   onSubmit: (form: Game) => void;
@@ -43,7 +44,7 @@ function GameForm({ onSubmit, initialValues, cancelEdit, allTags }: GameFormProp
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
       <label className="form-label">
-        Rank: <span className="form-rank-text">{form.rank}</span>
+        Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input
           className="form-input"
           type="range"
@@ -83,9 +84,9 @@ function GameForm({ onSubmit, initialValues, cancelEdit, allTags }: GameFormProp
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

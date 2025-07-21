@@ -1,5 +1,6 @@
 import React from 'react';
 import { type Project } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface ProjectCardProps {
   project: Project;
@@ -16,7 +17,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onD
         <h2 className="card-title">{project.name}</h2>
       </div>
       <div>
-        <span className="card-label">Rank:</span> <span className="card-text">{project.rank}</span>
+        <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(project.rank)}</span>
       </div>
       <div>
         <span className="card-label">Details:</span> <span className="card-text">{project.details}</span>

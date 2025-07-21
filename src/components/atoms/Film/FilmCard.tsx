@@ -1,5 +1,6 @@
 import React from 'react';
 import { type Film } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface FilmCardProps {
   film: Film;
@@ -16,7 +17,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, onEdit, onClone, onDelete, on
         <h2 className="card-title">{film.name}</h2>
       </div>
       <div>
-        <span className="card-label">Rank:</span> <span className="card-text">{film.rank}</span>
+        <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(film.rank)}</span>
       </div>
       <a
         className="url-link"

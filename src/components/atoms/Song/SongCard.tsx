@@ -1,5 +1,6 @@
 import React from 'react';
 import { type Song } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface SongCardProps {
   song: Song;
@@ -22,7 +23,7 @@ const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, on
         <span className="card-label">Band:</span> <span className="card-text">{song.band}</span>
       </div>
       <div>
-        <span className="card-label">Rank:</span> <span className="card-text">{song.rank}</span>
+        <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(song.rank)}</span>
       </div>
       <div>
         <span className="card-label">Link:</span>{' '}

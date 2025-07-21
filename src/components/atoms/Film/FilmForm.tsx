@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultFilm, type Film } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface FilmFormProps {
   onSubmit: (form: Film) => void;
@@ -43,7 +44,7 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProp
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
       <label className="form-label">
-        Rank: <span className="form-rank-text">{form.rank}</span>
+        Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input
           className="form-input"
           type="range"
@@ -72,9 +73,9 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProp
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

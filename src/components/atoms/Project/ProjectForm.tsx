@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultProject, type Project } from '../../../model/library';
+import { getRankStars } from '../../../utils/contentMapper';
 
 interface ProjectFormProps {
   onSubmit: (form: Project) => void;
@@ -54,7 +55,7 @@ function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags }: ProjectFo
         />
       </label>
       <label className="form-label">
-        Rank: <span className="form-rank-text">{form.rank}</span>
+        Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input
           className="form-input"
           type="range"
@@ -83,9 +84,9 @@ function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags }: ProjectFo
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

@@ -21,3 +21,8 @@ export const getPasswordHistory = (selectedPassword: Password, isClone?: boolean
 
   return JSON.stringify(updatePasswordHistory);
 }
+
+const FiveStars = ['🌟', '🌟', '🌟', '🌟', '🌟'];
+export const getRankStars = (rank: number) => {
+  return FiveStars.filter((_, i) => i < rank).join('');
+}

@@ -57,7 +57,7 @@ const ShowsPage: React.FC = () => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);
     } else {
-      return a.rank - b.rank;
+      return b.rank - a.rank;
     }
   });
   const totalPages = Math.ceil(sortedShows.length / SHOWS_PER_PAGE);

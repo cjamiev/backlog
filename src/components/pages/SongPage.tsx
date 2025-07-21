@@ -64,7 +64,7 @@ const SongPage: React.FC = () => {
     if (sortBy === 'band') {
       return a.band.localeCompare(b.band);
     } else {
-      return a.rank - b.rank;
+      return b.rank - a.rank;
     }
   });
   const totalPages = Math.ceil(sortedSongs.length / SONGS_PER_PAGE);
