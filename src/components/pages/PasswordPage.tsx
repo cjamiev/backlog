@@ -11,7 +11,8 @@ import PasswordForm from '../atoms/Password/PasswordForm';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
 import { useAddNewPassword, useLoadPasswords, useUpdatePassword } from '../../api/password-service';
-import { DefaultPassword, type Password, type PasswordHistory } from '../../model/password';
+import { DefaultPassword, type Password } from '../../model/password';
+import { getPasswordHistory } from '../../utils/contentMapper';
 
 const PASSWORDS_PER_PAGE = 24;
 const passwordSearchByOptions = [
@@ -75,7 +76,7 @@ const PasswordPage: React.FC = () => {
       passwords.flatMap((password) =>
         password.tags
           .split(',')
-          .map((tag) => tag.trim())
+          .map((tag: string) => tag.trim())
           .filter(Boolean)
       )
     )
@@ -114,16 +115,13 @@ const PasswordPage: React.FC = () => {
   }, [isUpdatePasswordError]);
 
   const handleAddPassword = (form: Password) => {
-    const newPassword = {
-      id: form.id,
-      username: form.username,
-      password: form.password,
-      createdDate: String(Date.now()),
-      url: form.url,
-      tags: form.tags,
-      history: '[]'
-    };
-    newPasswordMutate({ payload: newPassword });
+    newPasswordMutate({
+      payload: {
+        ...form,
+        createdDate: String(Date.now()),
+        history: '[]'
+      }
+    });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -147,7 +145,7 @@ const PasswordPage: React.FC = () => {
       createdDate: String(Date.now()),
       url: selectedPassword.url,
       tags: selectedPassword.tags,
-      history: isClone ? '[]' : JSON.stringify((JSON.parse(selectedPassword.history) as PasswordHistory[]).concat({ password: selectedPassword.password, createdDate: selectedPassword.createdDate }))
+      history: getPasswordHistory(selectedPassword, isClone)
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
