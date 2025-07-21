@@ -34,6 +34,14 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, on
           ) : null}
         </div>
       </div>
+      <a
+        className="url-link"
+        href={`https://www.google.com/search?q=${encodeURIComponent(show.name + ' series')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Google
+      </a>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>
           Clone

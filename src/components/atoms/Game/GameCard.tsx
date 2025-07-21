@@ -30,6 +30,30 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onClone, onDelete, on
       >
         Google
       </a>
+      <a
+        className="url-link"
+        href={`https://steamdb.info/search/?a=all&q=${encodeURIComponent(game.name)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Steam DB
+      </a>
+      <a
+        className="url-link"
+        href={`https://howlongtobeat.com/?q=${encodeURIComponent(game.name)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        How Long To Beat
+      </a>
+      <a
+        className="url-link"
+        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' game')}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Youtube
+      </a>
       <div>
         {game.tags.length ? (
           <div className="tags-container">
