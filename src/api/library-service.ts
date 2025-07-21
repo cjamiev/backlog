@@ -1,5 +1,7 @@
-import api from "./api";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from "./api";
+import { getRecordsFromStorage } from "../utils/storage";
+import { getIsDemoMode } from "../utils/config";
 
 export const backupRecordsByType = async (type: string) => {
   try {
@@ -39,6 +41,10 @@ export const useLoadReadme = () => {
 };
 
 export const loadRecordsByType = async <T = unknown>(type: string, shouldParse: boolean = true): Promise<T[]> => {
+  if (getIsDemoMode()) {
+    return getRecordsFromStorage(type, []);
+  }
+
   try {
     const response = await api.get(`/storage/library/specific-type?type=${type}`);
 
@@ -62,6 +68,11 @@ export const useLoadRecordsByType = <T = unknown>(type: string, shouldParse: boo
 };
 
 export const updateRecordsByType = async (payload: string, type: string) => {
+  if (getIsDemoMode()) {
+    localStorage.setItem(type, payload);
+    return true;
+  }
+
   try {
     const response = await api.put('/storage/library/update-records', JSON.stringify({
       type: type,

@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from "./api";
 import type { Password } from "../model/password";
+import { getRecordsFromStorage } from '../utils/storage';
+import { getIsDemoMode } from '../utils/config';
 
 export const backupPasswords = async () => {
   try {
@@ -17,6 +19,10 @@ export const backupPasswords = async () => {
 };
 
 export const loadPasswords = async (): Promise<Password[]> => {
+  if (getIsDemoMode()) {
+    return getRecordsFromStorage('passwords', []);
+  }
+
   try {
     const response = await api.get(`/storage/password/`);
 
@@ -39,6 +45,13 @@ export const useLoadPasswords = () => {
 };
 
 export const addNewPassword = async (payload: Password) => {
+  if (getIsDemoMode()) {
+    const currentPasswords: Password[] = getRecordsFromStorage('passwords', []);
+    const updatePasswords = currentPasswords.concat(payload);
+    localStorage.setItem('passwords', JSON.stringify(updatePasswords));
+    return true;
+  }
+
   try {
     const response = await api.post('/storage/password/', JSON.stringify(payload));
 
@@ -64,6 +77,19 @@ export const useAddNewPassword = () => {
 };
 
 export const updatePassword = async (payload: Password) => {
+  if (getIsDemoMode()) {
+    const currentPasswords: Password[] = getRecordsFromStorage('passwords', []);
+    const updatePasswords = currentPasswords.map(item => {
+      if (item.id === payload.id) {
+        return payload
+      } else {
+        return item;
+      }
+    });
+    localStorage.setItem('passwords', JSON.stringify(updatePasswords));
+    return true;
+  }
+
   try {
     const response = await api.put('/storage/password/update', JSON.stringify(payload));
 

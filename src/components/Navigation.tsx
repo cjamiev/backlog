@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { getIsDemoMode } from '../utils/config';
 
 function Navigation() {
   const [isGamedevHovered, setIsGamedevHovered] = useState(false);
@@ -9,7 +10,7 @@ function Navigation() {
   return (
     <nav className="nav-wrapper">
       <Link to="/">Home</Link>
-      <div
+      {!getIsDemoMode() ? <div
         className="nav-item-with-submenu"
         onMouseEnter={() => setIsGamedevHovered(true)}
         onMouseLeave={() => setIsGamedevHovered(false)}
@@ -25,7 +26,7 @@ function Navigation() {
             <Link to="/names">Names</Link>
           </div>
         )}
-      </div>
+      </div> : null}
       <div
         className="nav-item-with-submenu"
         onMouseEnter={() => setIsEntertainmentHovered(true)}
