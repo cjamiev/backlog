@@ -1,9 +1,9 @@
 import api from "./api";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
-export const backupAllRecords = async (type: string) => {
+export const backupRecordsByType = async (type: string) => {
   try {
-    const result = await api.get(`library/backup?type=${type}`);
+    const result = await api.get(`/storage/library/backup?type=${type}`);
 
     if (result) {
       return true;
@@ -17,7 +17,7 @@ export const backupAllRecords = async (type: string) => {
 
 export const loadReadme = async (): Promise<string> => {
   try {
-    const response = await api.get(`/library/specific-type?type=readme`);
+    const response = await api.get(`/storage/library/specific-type?type=readme`);
 
     if (response.data) {
       return response.data.records;
@@ -40,7 +40,7 @@ export const useLoadReadme = () => {
 
 export const loadRecordsByType = async <T = unknown>(type: string, shouldParse: boolean = true): Promise<T[]> => {
   try {
-    const response = await api.get(`/library/specific-type?type=${type}`);
+    const response = await api.get(`/storage/library/specific-type?type=${type}`);
 
     if (response.data) {
       return shouldParse ? JSON.parse(response.data.records) as T[] : response.data.records as T[];
@@ -63,7 +63,7 @@ export const useLoadRecordsByType = <T = unknown>(type: string, shouldParse: boo
 
 export const updateRecordsByType = async (payload: string, type: string) => {
   try {
-    const response = await api.put('library/update-records', JSON.stringify({
+    const response = await api.put('/storage/library/update-records', JSON.stringify({
       type: type,
       records: payload
     }));

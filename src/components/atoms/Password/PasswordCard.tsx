@@ -23,7 +23,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onClone, 
   return (
     <div className="card-wrapper">
       <div className="card-header">
-        <h2 className="card-title">{password.name}</h2>
+        <h2 className="card-title">{password.id}</h2>
       </div>
       <div>
         <span className="card-label">Username:</span>
@@ -47,10 +47,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onClone, 
         </button>
       </div>
       <div>
-        <span className="card-label">Updated:</span> <span className="card-text">{password.updatedDate}</span>
+        <span className="card-label">Created:</span> <span className="card-text">{new Date(Number(password.createdDate)).toDateString()}</span>
       </div>
-      {password.link && (
-        <a className="url-link" href={password.link} target="_blank" rel="noopener noreferrer">
+      {password.url && (
+        <a className="url-link" href={password.url} target="_blank" rel="noopener noreferrer">
           Visit Site
         </a>
       )}

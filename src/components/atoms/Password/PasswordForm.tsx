@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultPassword, type Password } from '../../../model/library';
+import { DefaultPassword, type Password } from '../../../model/password';
 
 interface PasswordFormProps {
   onSubmit: (form: Password) => void;
@@ -25,12 +25,7 @@ function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags }: Password
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Set current date as updatedDate if not provided
-    const formWithDate = {
-      ...form,
-      updatedDate: form.updatedDate || new Date().toISOString().split('T')[0]
-    };
-    onSubmit(formWithDate);
+    onSubmit(form);
     setForm(DefaultPassword);
   };
 
@@ -60,7 +55,7 @@ function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags }: Password
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Service/Website Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input className="form-input" type="text" name="id" value={form.id} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Username/Email:
@@ -108,16 +103,12 @@ function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags }: Password
         </div>
       </label>
       <label className="form-label">
-        Updated Date:
-        <input className="form-input" type="date" name="updatedDate" value={form.updatedDate} onChange={handleChange} />
-      </label>
-      <label className="form-label">
         Website Link (optional):
         <input
           className="form-input"
           type="url"
-          name="link"
-          value={form.link}
+          name="url"
+          value={form.url}
           onChange={handleChange}
           placeholder="https://example.com"
         />
@@ -140,9 +131,9 @@ function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags }: Password
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

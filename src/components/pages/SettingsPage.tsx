@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Banner from '../atoms/Banner';
-import { backupAllRecords } from '../../api/library-service';
+import { backupRecordsByType } from '../../api/library-service';
 import { recordTypes } from '../../constants/records';
+import { backupPasswords } from '../../api/password-service';
 
 const SettingsPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string; message: string }>({
@@ -11,7 +12,7 @@ const SettingsPage: React.FC = () => {
   });
 
   const backupRecords = (type: string) => {
-    backupAllRecords(type).then(() => {
+    backupRecordsByType(type).then(() => {
       setShowBanner({ show: true, type: 'success', message: `Backed up Data` });
       setTimeout(() => setShowBanner({ show: false, type: '', message: '' }), 2500);
     }).catch(() => {
@@ -33,6 +34,9 @@ const SettingsPage: React.FC = () => {
                 Backup {type}
               </button>
             )}
+            <button key={'passwords'} className="add-new-btn" onClick={() => { backupPasswords() }}>
+              Backup Passwords
+            </button>
           </div>
         </div>
       </div>

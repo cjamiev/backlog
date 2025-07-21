@@ -12,7 +12,6 @@ export const recordTypes = [
   'shows',
   'books',
   'projects',
-  'passwords',
   'countdowns',
   'favorites',
   'contacts',

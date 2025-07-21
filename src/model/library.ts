@@ -201,24 +201,6 @@ export const DefaultCountdown: Countdown = {
   tags: ''
 }
 
-export interface Password {
-  name: string;
-  username: string;
-  password: string;
-  updatedDate: string;
-  link: string;
-  tags: string;
-}
-
-export const DefaultPassword: Password = {
-  name: '',
-  username: '',
-  password: '',
-  updatedDate: '',
-  link: '',
-  tags: '',
-}
-
 export interface Contact {
   name: string;
   phone: string;

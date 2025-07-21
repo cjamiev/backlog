@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
-const isPasswordReady = false
-
 function Navigation() {
   const [isGamedevHovered, setIsGamedevHovered] = useState(false);
   const [isEntertainmentHovered, setIsEntertainmentHovered] = useState(false);
@@ -54,7 +52,7 @@ function Navigation() {
         {isTrackerHovered && (
           <div className="submenu">
             <Link to="/projects">Projects</Link>
-            {isPasswordReady && <Link to="/passwords">Passwords</Link>}
+            <Link to="/passwords">Passwords</Link>
             <Link to="/countdowns">Countdowns</Link>
             <Link to="/contacts">Contacts</Link>
             <Link to="/notes">Notes</Link>

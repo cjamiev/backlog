@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
 import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
@@ -9,24 +8,26 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import PasswordCard from '../atoms/Password/PasswordCard';
 import PasswordForm from '../atoms/Password/PasswordForm';
-import { DefaultPassword, type Password } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
+import { useAddNewPassword, useLoadPasswords, useUpdatePassword } from '../../api/password-service';
+import { DefaultPassword, type Password, type PasswordHistory } from '../../model/password';
 
 const PASSWORDS_PER_PAGE = 24;
 const passwordSearchByOptions = [
-  { value: 'name', label: 'Name' },
+  { value: 'id', label: 'id' },
   { value: 'username', label: 'Username' },
   { value: 'tags', label: 'Tags' },
 ];
 const passwordSortByOptions = [
-  { value: 'name', label: 'Name' },
-  { value: 'updatedDate', label: 'Updated Date' }
+  { value: 'id', label: 'id' },
+  { value: 'createdDate', label: 'Created Date' }
 ];
 
 const PasswordPage: React.FC = () => {
-  const { data: passwords = [], isLoading: isLoadingPasswords } = useLoadRecordsByType<Password>('passwords');
-  const { mutate, isSuccess, isError } = useUpdateRecordsByType();
+  const { data: passwords = [], isLoading: isLoadingPasswords } = useLoadPasswords();
+  const { mutate: newPasswordMutate, isSuccess: isNewPasswordSuccess, isError: isNewPasswordError } = useAddNewPassword();
+  const { mutate: updatePasswordMutate, isSuccess: isUpdatePasswordSuccess, isError: isUpdatePasswordError } = useUpdatePassword();
 
   const [search, setSearch] = useState('');
   const [searchBy, setSearchBy] = useState('name');
@@ -52,15 +53,15 @@ const PasswordPage: React.FC = () => {
     } else if (searchBy === 'tags') {
       return p.tags.toLowerCase().includes(search.toLowerCase());
     } else {
-      return p.name.toLowerCase().includes(search.toLowerCase());
+      return p.id.toLowerCase().includes(search.toLowerCase());
     }
   });
 
   const sortedPasswords = [...filteredPasswords].sort((a, b) => {
-    if (sortBy === 'name') {
-      return a.name.localeCompare(b.name);
+    if (sortBy === 'id') {
+      return a.id.localeCompare(b.name);
     } else {
-      return new Date(b.updatedDate).getTime() - new Date(a.updatedDate).getTime();
+      return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
     }
   });
   const totalPages = Math.ceil(sortedPasswords.length / PASSWORDS_PER_PAGE);
@@ -85,34 +86,44 @@ const PasswordPage: React.FC = () => {
   }, [search, searchBy, sortBy, passwords.length]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isNewPasswordSuccess) {
       setShowBanner({ show: true, type: 'success' });
       setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
     }
-  }, [isSuccess]);
+  }, [isNewPasswordSuccess]);
 
   useEffect(() => {
-    if (isError) {
+    if (isNewPasswordError) {
       setShowBanner({ show: true, type: 'error' });
       setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
     }
-  }, [isError]);
+  }, [isNewPasswordError]);
 
-  const handleSubmit = async (payload: Password[]) => {
-    mutate({ payload: JSON.stringify(payload), type: 'passwords' });
-  };
+  useEffect(() => {
+    if (isUpdatePasswordSuccess) {
+      setShowBanner({ show: true, type: 'success' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isUpdatePasswordSuccess]);
+
+  useEffect(() => {
+    if (isUpdatePasswordError) {
+      setShowBanner({ show: true, type: 'error' });
+      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+    }
+  }, [isUpdatePasswordError]);
 
   const handleAddPassword = (form: Password) => {
     const newPassword = {
-      name: form.name,
+      id: form.id,
       username: form.username,
       password: form.password,
-      updatedDate: form.updatedDate,
-      link: form.link,
-      tags: form.tags
+      createdDate: String(Date.now()),
+      url: form.url,
+      tags: form.tags,
+      history: '[]'
     };
-    const updatedPasswords = [newPassword, ...passwords];
-    handleSubmit(updatedPasswords);
+    newPasswordMutate({ payload: newPassword });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -121,19 +132,7 @@ const PasswordPage: React.FC = () => {
   };
 
   const handleEditPassword = (form: Password) => {
-    const updatedPasswords = passwords.map((p) =>
-      p.name === form.name && p.username === form.username
-        ? {
-          name: form.name,
-          username: form.username,
-          password: form.password,
-          updatedDate: form.updatedDate,
-          link: form.link,
-          tags: form.tags
-        }
-        : p
-    );
-    handleSubmit(updatedPasswords);
+    updatePasswordMutate({ payload: form });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -142,12 +141,13 @@ const PasswordPage: React.FC = () => {
 
   const startEdit = (selectedPassword: Password, isClone?: boolean) => {
     setEditForm({
-      name: selectedPassword.name,
+      id: selectedPassword.id,
       username: selectedPassword.username,
       password: selectedPassword.password,
-      updatedDate: selectedPassword.updatedDate,
-      link: selectedPassword.link,
-      tags: selectedPassword.tags
+      createdDate: String(Date.now()),
+      url: selectedPassword.url,
+      tags: selectedPassword.tags,
+      history: isClone ? '[]' : JSON.stringify((JSON.parse(selectedPassword.history) as PasswordHistory[]).concat({ password: selectedPassword.password, createdDate: selectedPassword.createdDate }))
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -175,10 +175,11 @@ const PasswordPage: React.FC = () => {
 
   const confirmDeletePassword = () => {
     if (passwordToDelete) {
-      const updatedPasswords = passwords.filter(
-        (p) => !(p.name === passwordToDelete.name && p.username === passwordToDelete.username)
-      );
-      handleSubmit(updatedPasswords);
+      const archivedPassword = {
+        ...passwordToDelete,
+        tags: passwordToDelete.tags ? passwordToDelete.tags + ', archived' : 'archived'
+      };
+      updatePasswordMutate({ payload: archivedPassword });
       setShowDeleteModal(false);
       setPasswordToDelete(null);
     }
@@ -283,7 +284,7 @@ const PasswordPage: React.FC = () => {
         isOpen={showDeleteModal}
         onClose={cancelDeletePassword}
         title={
-          passwordToDelete ? `Are you sure you want to delete "${passwordToDelete.name}"?` : 'Error missing password'
+          passwordToDelete ? `Are you sure you want to delete "${passwordToDelete.id}"?` : 'Error missing password'
         }
       >
         <div className="modal-actions">
