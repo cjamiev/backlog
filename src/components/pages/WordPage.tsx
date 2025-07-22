@@ -252,7 +252,7 @@ const WordPage: React.FC = () => {
             Show JSON
           </button>
           <button className="primary-btn" onClick={handleOpenTagsModal}>
-            Show All Tags
+            Select A Tag
           </button>
         </div>
         <Pagination
