@@ -36,7 +36,7 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, on
       </div>
       <a
         className="url-link"
-        href={`https://www.google.com/search?q=${encodeURIComponent(show.name + ' series')}`}
+        href={`https://www.google.com/search?q=${encodeURIComponent(show.name + ' tv series')}`}
         target="_blank"
         rel="noopener noreferrer"
       >
