@@ -136,19 +136,3 @@
   color: black;
 }
 
-.add-new-btn {
-  background: var(--color-primary);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  margin-right: 8px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.add-new-btn:hover {
-  background: #2c369a;
-}

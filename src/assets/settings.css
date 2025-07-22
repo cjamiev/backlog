@@ -1,4 +1,15 @@
-.settings-backend-op-wrapper {
+.settings-content {
+  justify-content: center;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.settings-backend-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.settings-btns-section {
   display: flex;
   flex-direction: column;
   gap: 8px;

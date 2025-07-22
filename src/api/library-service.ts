@@ -17,29 +17,6 @@ export const backupRecordsByType = async (type: string) => {
   }
 };
 
-export const loadReadme = async (): Promise<string> => {
-  try {
-    const response = await api.get(`/storage/library/specific-type?type=readme`);
-
-    if (response.data) {
-      return response.data.records;
-    } else {
-      return '';
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    return "";
-  }
-};
-
-export const useLoadReadme = () => {
-  return useQuery<string, Error>({
-    queryKey: ['readme'],
-    queryFn: () => loadReadme(),
-    enabled: true,
-  });
-};
-
 export const loadRecordsByType = async <T = unknown>(type: string, shouldParse: boolean = true): Promise<T[]> => {
   if (getIsDemoMode()) {
     return getRecordsFromStorage(type, []);

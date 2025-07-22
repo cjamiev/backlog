@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Banner from '../atoms/Banner';
 import { backupRecordsByType } from '../../api/library-service';
 import { backupPasswords } from '../../api/password-service';
-import { recordTypes } from '../../constants/records';
+import { trackerTypes, gamedevTypes, entertainmentTypes } from '../../constants/records';
 import { clearStorage } from '../../utils/storage';
 import { getIsDemoMode } from '../../utils/config';
 
@@ -34,23 +34,64 @@ const SettingsPage: React.FC = () => {
       <Banner isVisible={showBanner.show} type={showBanner.type} defaultMessage={showBanner.message} />
       <h1 className="page-title">Settings</h1>
       <div className="page-body-layout">
-        {!getIsDemoMode() ? <div>
-          <h2>Backend Operations</h2>
-          <div className='settings-backend-op-wrapper'>
-            {recordTypes.map(type =>
-              <button key={type} className="add-new-btn" onClick={() => { backupRecords(type) }}>
-                Backup {type}
-              </button>
-            )}
-            <button key={'passwords'} className="add-new-btn" onClick={() => { backupPasswords() }}>
-              Backup Passwords
-            </button>
-          </div>
-        </div> : <div>
-          <button className="add-new-btn" onClick={() => handleClearLocalStorage()}>
-            Clear Local Storage
-          </button>
-        </div>}
+        <div className='settings-content'>
+          {!getIsDemoMode() ? <div>
+            <h2>Backend Operations</h2>
+            <div className='settings-backend-wrapper'>
+              <div className='settings-btns-section'>
+                {gamedevTypes.map(type =>
+                  <button key={type} className="primary-btn" onClick={() => { backupRecords(type) }}>
+                    Backup {type}
+                  </button>
+                )}
+              </div>
+              <div className='settings-btns-section'>
+                {entertainmentTypes.map(type =>
+                  <button key={type} className="primary-btn" onClick={() => { backupRecords(type) }}>
+                    Backup {type}
+                  </button>
+                )}
+              </div>
+              <div className='settings-btns-section'>
+                {trackerTypes.map(type =>
+                  <button key={type} className="primary-btn" onClick={() => { backupRecords(type) }}>
+                    Backup {type}
+                  </button>
+                )}
+              </div>
+              <div className='settings-btns-section'>
+                <button key={'passwords'} className="primary-btn" onClick={() => { backupPasswords() }}>
+                  Backup Passwords
+                </button>
+              </div>
+            </div>
+          </div> :
+            <div className='settings-content'>
+              <h2>Local Storage Operations</h2>
+              <div className='settings-backend-wrapper'>
+                <div className='settings-btns-section'>
+                  <button className="primary-btn" onClick={() => handleClearLocalStorage()}>
+                    Clear all
+                  </button>
+                </div>
+                <div className='settings-btns-section'>
+                  {entertainmentTypes.map(type =>
+                    <button key={type} className="primary-btn" onClick={() => { handleClearLocalStorage(type) }}>
+                      Clear {type}
+                    </button>
+                  )}
+                </div>
+                <div className='settings-btns-section'>
+                  {trackerTypes.map(type =>
+                    <button key={type} className="primary-btn" onClick={() => { handleClearLocalStorage(type) }}>
+                      Clear {type}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
       </div>
     </div>
   );
