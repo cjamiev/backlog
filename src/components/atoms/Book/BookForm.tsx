@@ -38,9 +38,17 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProp
 
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
-      <label className="form-label">
+      <label className="form-id">
         Book Name:
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <a
+          className="form-id-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(form.name + ' book')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          G
+        </a>
       </label>
       <label className="form-label">
         type:

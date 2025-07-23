@@ -39,11 +39,18 @@ const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit
 
   return (
     <form onSubmit={handleSubmit} className="form-wrapper">
-      <label className="form-label">
-        Name:
+      <label className="form-id">
+        Show Name:
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <a
+          className="form-id-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(form.name + ' show')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          G
+        </a>
       </label>
-
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input

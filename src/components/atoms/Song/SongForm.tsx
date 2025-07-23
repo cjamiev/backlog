@@ -39,9 +39,17 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProp
 
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
-      <label className="form-label">
+      <label className="form-id">
         Song Name:
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <a
+          className="form-id-link"
+          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(form.name + ' song')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Y
+        </a>
       </label>
       <label className="form-label">
         Album:

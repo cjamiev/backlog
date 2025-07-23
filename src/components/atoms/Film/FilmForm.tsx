@@ -39,9 +39,17 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProp
 
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
-      <label className="form-label">
+      <label className="form-id">
         Film Name:
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <a
+          className="form-id-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(form.name + ' film')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          G
+        </a>
       </label>
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
