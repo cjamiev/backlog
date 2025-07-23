@@ -11,7 +11,7 @@ import SongCard from '../atoms/Song/SongCard';
 import SongForm from '../atoms/Song/SongForm';
 import { DefaultSong, type Song } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
 
 const SONGS_PER_PAGE = 24;
 const songSearchByOptions = [
@@ -46,6 +46,8 @@ const SongPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
+  const [showTableView, setShowTableView] = useState(false);
+
 
   const filteredSongs = songs.filter((s: Song) => {
     if (searchBy === 'tags') {
@@ -224,6 +226,10 @@ const SongPage: React.FC = () => {
     setCurrentPage((p) => Math.min(totalPages, p + 1));
   };
 
+  const toggleTableView = () => {
+    setShowTableView(!showTableView);
+  }
+
   return (
     <div className="page-wrapper">
       <Banner isVisible={showBanner.show} type={showBanner.type} />
@@ -238,7 +244,7 @@ const SongPage: React.FC = () => {
         searchByOptions={songSearchByOptions}
         sortByOptions={songSortByOptions}
       />
-      <div className="page-body-layout">
+      {!showTableView ? <div className="page-body-layout">
         {!isLoadingSongs ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
@@ -260,26 +266,56 @@ const SongPage: React.FC = () => {
         ) : (
           <div className="loading-container">Loading...</div>
         )}
-      </div>
-      <Footer>
-        <div>
-          <button className="primary-btn" onClick={handleOpenCSVModal}>
-            Show CSV
-          </button>
-          <button className="primary-btn" onClick={handleOpenJSONModal}>
-            Show JSON
-          </button>
-          <button className="primary-btn" onClick={handleOpenTagsModal}>
-            Select A Tag
-          </button>
+      </div> : <div className='list-wrapper'>
+        <div className='list-section'>
+          <label>{getRankStars(5)}</label>
+          {sortedSongs.filter(song => song.rank === 5).map(song => <div key={song.name} className='list-item' onClick={() => { startEdit(song); }}>{song.name}</div>)}
         </div>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          handlePrevious={handlePrevious}
-          handlePageSelect={handlePageSelect}
-          handleNext={handleNext}
-        />
+        <div className='list-section'>
+          <label>{getRankStars(4)}</label>
+          {sortedSongs.filter(song => song.rank === 4).map(song => <div key={song.name} className='list-item' onClick={() => { startEdit(song); }}>{song.name}</div>)}
+        </div>
+        <div className='list-section'>
+          <label>{getRankStars(3)}</label>
+          {sortedSongs.filter(song => song.rank === 3).map(song => <div key={song.name} className='list-item' onClick={() => { startEdit(song); }}>{song.name}</div>)}
+        </div>
+        <div className='list-section'>
+          <label>{getRankStars(2)}</label>
+          {sortedSongs.filter(song => song.rank === 2).map(song => <div key={song.name} className='list-item' onClick={() => { startEdit(song); }}>{song.name}</div>)}
+        </div>
+        <div className='list-section'>
+          <label>{getRankStars(1)}</label>
+          {sortedSongs.filter(song => song.rank === 1).map(song => <div key={song.name} className='list-item' onClick={() => { startEdit(song); }}>{song.name}</div>)}
+        </div>
+      </div>}
+      <Footer>
+        <div className='footer-btn-wrapper'>
+          <div className='switch-wrapper'>
+            <label className='switch-label'>{showTableView ? 'Hide Table View' : 'Show Table View'}</label>
+            <label className="switch">
+              <input type="checkbox" onClick={toggleTableView} />
+              <span className="slider round"></span>
+            </label>
+          </div>
+          <div>
+            <button className="primary-btn" onClick={handleOpenCSVModal}>
+              Show CSV
+            </button>
+            <button className="primary-btn" onClick={handleOpenJSONModal}>
+              Show JSON
+            </button>
+            <button className="primary-btn" onClick={handleOpenTagsModal}>
+              Select A Tag
+            </button>
+          </div>
+          {!showTableView && <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            handlePrevious={handlePrevious}
+            handlePageSelect={handlePageSelect}
+            handleNext={handleNext}
+          />}
+        </div>
       </Footer>
       <Modal
         isOpen={showDeleteModal}

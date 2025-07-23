@@ -11,7 +11,7 @@ import GameCard from '../atoms/Game/GameCard';
 import GameForm from '../atoms/Game/GameForm';
 import { DefaultGame, type Game } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
 
 const GAMES_PER_PAGE = 24;
 const gameSearchByOptions = [
@@ -44,6 +44,7 @@ const GamePage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
+  const [showTableView, setShowTableView] = useState(false);
 
   const filteredGames = games.filter((g: Game) => {
     if (searchBy === 'tags') {
@@ -208,6 +209,10 @@ const GamePage: React.FC = () => {
     setCurrentPage((p) => Math.min(totalPages, p + 1));
   };
 
+  const toggleTableView = () => {
+    setShowTableView(!showTableView);
+  }
+
   return (
     <div className="page-wrapper">
       <Banner isVisible={showBanner.show} type={showBanner.type} />
@@ -222,7 +227,7 @@ const GamePage: React.FC = () => {
         searchByOptions={gameSearchByOptions}
         sortByOptions={gameSortByOptions}
       />
-      <div className="page-body-layout">
+      {!showTableView ? <div className="page-body-layout">
         {!isLoadingGames ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
@@ -244,9 +249,37 @@ const GamePage: React.FC = () => {
         ) : (
           <div className="loading-container">Loading...</div>
         )}
-      </div>
+      </div> : <div className='list-wrapper'>
+        <div className='list-section'>
+          <label>{getRankStars(5)}</label>
+          {sortedGames.filter(game => game.rank === 5).map(game => <div key={game.name} className='list-item' onClick={() => { startEdit(game); }}>{game.name}</div>)}
+        </div>
+        <div className='list-section'>
+          <label>{getRankStars(4)}</label>
+          {sortedGames.filter(game => game.rank === 4).map(game => <div key={game.name} className='list-item' onClick={() => { startEdit(game); }}>{game.name}</div>)}
+        </div>
+        <div className='list-section'>
+          <label>{getRankStars(3)}</label>
+          {sortedGames.filter(game => game.rank === 3).map(game => <div key={game.name} className='list-item' onClick={() => { startEdit(game); }}>{game.name}</div>)}
+        </div>
+        <div className='list-section'>
+          <label>{getRankStars(2)}</label>
+          {sortedGames.filter(game => game.rank === 2).map(game => <div key={game.name} className='list-item' onClick={() => { startEdit(game); }}>{game.name}</div>)}
+        </div>
+        <div className='list-section'>
+          <label>{getRankStars(1)}</label>
+          {sortedGames.filter(game => game.rank === 1).map(game => <div key={game.name} className='list-item' onClick={() => { startEdit(game); }}>{game.name}</div>)}
+        </div>
+      </div>}
       <Footer>
-        <div>
+        <div className='footer-btn-wrapper'>
+          <div className='switch-wrapper'>
+            <label className='switch-label'>{showTableView ? 'Hide Table View' : 'Show Table View'}</label>
+            <label className="switch">
+              <input type="checkbox" onClick={toggleTableView} />
+              <span className="slider round"></span>
+            </label>
+          </div>
           <button className="primary-btn" onClick={handleOpenCSVModal}>
             Show CSV
           </button>
@@ -254,16 +287,16 @@ const GamePage: React.FC = () => {
             Show JSON
           </button>
           <button className="primary-btn" onClick={handleOpenTagsModal}>
-            Show All Tags
+            Select A Tag
           </button>
         </div>
-        <Pagination
+        {!showTableView && <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
           handlePrevious={handlePrevious}
           handlePageSelect={handlePageSelect}
           handleNext={handleNext}
-        />
+        />}
       </Footer>
       <Modal
         isOpen={showDeleteModal}

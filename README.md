@@ -2,6 +2,9 @@
 
 This app is a UI to view and edit my personal backlog items like music, shows, and books.
 
+## Features
+- Demo mode set by .env uses local storage instead of backend
+
 ## Built Using
 - React
 - React Query
