@@ -44,6 +44,7 @@ const FilmPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
+  const [showTableView, setShowTableView] = useState(false);
 
   const filteredFilms = films.filter((f: Film) => {
     if (searchBy === 'tags') {
@@ -74,6 +75,8 @@ const FilmPage: React.FC = () => {
     )
   ).sort((a, b) => a.localeCompare(b));
 
+  const allServices = Array.from(new Set(films.flatMap((film) => film.service)));
+
   useEffect(() => {
     setCurrentPage(1);
   }, [search, searchBy, sortBy, films.length]);
@@ -99,6 +102,7 @@ const FilmPage: React.FC = () => {
   const handleAddFilm = (form: Film) => {
     const newFilm = {
       name: form.name,
+      service: form.service,
       rank: form.rank,
       tags: form.tags
     };
@@ -116,6 +120,7 @@ const FilmPage: React.FC = () => {
       f.name === form.name
         ? {
           name: form.name,
+          service: form.service,
           rank: form.rank,
           tags: form.tags
         }
@@ -131,6 +136,7 @@ const FilmPage: React.FC = () => {
   const startEdit = (selectedFilm: Film, isClone?: boolean) => {
     setEditForm({
       name: selectedFilm.name,
+      service: selectedFilm.service,
       rank: selectedFilm.rank,
       tags: selectedFilm.tags
     });
@@ -205,6 +211,10 @@ const FilmPage: React.FC = () => {
     setCurrentPage((p) => Math.min(totalPages, p + 1));
   };
 
+  const toggleTableView = () => {
+    setShowTableView(!showTableView);
+  }
+
   return (
     <div className="page-wrapper">
       <Banner isVisible={showBanner.show} type={showBanner.type} />
@@ -219,7 +229,7 @@ const FilmPage: React.FC = () => {
         searchByOptions={filmSearchByOptions}
         sortByOptions={filmSortByOptions}
       />
-      <div className="page-body-layout">
+      {!showTableView ? <div className="page-body-layout">
         {!isLoadingFilms ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
@@ -241,26 +251,42 @@ const FilmPage: React.FC = () => {
         ) : (
           <div className="loading-container">Loading...</div>
         )}
-      </div>
+      </div> : <div className='list-wrapper'>
+        {allServices.map(service => (
+          <div key={service} className='list-section'>
+            <label>{service}</label>
+            {sortedFilms.filter(film => film.service === service).map(film => <div key={film.name} className='list-item' onClick={() => { startEdit(film); }}>{film.name}</div>)}
+          </div>
+        ))}
+      </div>}
       <Footer>
-        <div>
-          <button className="primary-btn" onClick={handleOpenCSVModal}>
-            Show CSV
-          </button>
-          <button className="primary-btn" onClick={handleOpenJSONModal}>
-            Show JSON
-          </button>
-          <button className="primary-btn" onClick={handleOpenTagsModal}>
-            Select A Tag
-          </button>
+        <div className='footer-btn-wrapper'>
+          <div className='switch-wrapper'>
+            <label className='switch-label'>{showTableView ? 'Hide Table View' : 'Show Table View'}</label>
+            <label className="switch">
+              <input type="checkbox" onClick={toggleTableView} />
+              <span className="slider round"></span>
+            </label>
+          </div>
+          <div>
+            <button className="primary-btn" onClick={handleOpenCSVModal}>
+              Show CSV
+            </button>
+            <button className="primary-btn" onClick={handleOpenJSONModal}>
+              Show JSON
+            </button>
+            <button className="primary-btn" onClick={handleOpenTagsModal}>
+              Select A Tag
+            </button>
+          </div>
         </div>
-        <Pagination
+        {!showTableView && <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
           handlePrevious={handlePrevious}
           handlePageSelect={handlePageSelect}
           handleNext={handleNext}
-        />
+        />}
       </Footer>
       <Modal
         isOpen={showDeleteModal}

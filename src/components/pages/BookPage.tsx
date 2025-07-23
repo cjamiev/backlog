@@ -41,6 +41,7 @@ const BookPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
+  const [showTableView, setShowTableView] = useState(false);
 
   const filteredBooks = books.filter((b: Book) => {
     if (searchBy === 'tags') {
@@ -66,6 +67,7 @@ const BookPage: React.FC = () => {
       )
     )
   ).sort((a, b) => a.localeCompare(b));
+  const allTypes = Array.from(new Set(books.flatMap((book) => book.type)));
 
   useEffect(() => {
     setCurrentPage(1);
@@ -92,6 +94,7 @@ const BookPage: React.FC = () => {
   const handleAddBook = (form: Book) => {
     const newBook = {
       name: form.name,
+      type: form.type,
       tags: form.tags
     };
     const updatedBooks = [newBook, ...books];
@@ -108,6 +111,7 @@ const BookPage: React.FC = () => {
       b.name === form.name
         ? {
           name: form.name,
+          type: form.type,
           tags: form.tags
         }
         : b
@@ -122,6 +126,7 @@ const BookPage: React.FC = () => {
   const startEdit = (selectedBook: Book, isClone?: boolean) => {
     setEditForm({
       name: selectedBook.name,
+      type: selectedBook.type,
       tags: selectedBook.tags
     });
     setIsEditing(!isClone);
@@ -195,6 +200,10 @@ const BookPage: React.FC = () => {
     setCurrentPage((p) => Math.min(totalPages, p + 1));
   };
 
+  const toggleTableView = () => {
+    setShowTableView(!showTableView);
+  }
+
   return (
     <div className="page-wrapper">
       <Banner isVisible={showBanner.show} type={showBanner.type} />
@@ -209,7 +218,7 @@ const BookPage: React.FC = () => {
         searchByOptions={bookSearchByOptions}
         sortByOptions={bookSortByOptions}
       />
-      <div className="page-body-layout">
+      {!showTableView ? <div className="page-body-layout">
         {!isLoadingBooks ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
@@ -231,9 +240,23 @@ const BookPage: React.FC = () => {
         ) : (
           <div className="loading-container">Loading...</div>
         )}
-      </div>
+      </div> : <div className='list-wrapper'>
+        {allTypes.map(type => (
+          <div key={type} className='list-section'>
+            <label>{type}</label>
+            {sortedBooks.filter(book => book.type === type).map(book => <div key={book.name} className='list-item' onClick={() => { startEdit(book); }}>{book.name}</div>)}
+          </div>
+        ))}
+      </div>}
       <Footer>
-        <div>
+        <div className='footer-btn-wrapper'>
+          <div className='switch-wrapper'>
+            <label className='switch-label'>{showTableView ? 'Hide Table View' : 'Show Table View'}</label>
+            <label className="switch">
+              <input type="checkbox" onClick={toggleTableView} />
+              <span className="slider round"></span>
+            </label>
+          </div>
           <button className="primary-btn" onClick={handleOpenCSVModal}>
             Show CSV
           </button>
@@ -244,13 +267,13 @@ const BookPage: React.FC = () => {
             Select A Tag
           </button>
         </div>
-        <Pagination
+        {!showTableView && <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
           handlePrevious={handlePrevious}
           handlePageSelect={handlePageSelect}
           handleNext={handleNext}
-        />
+        />}
       </Footer>
       <Modal
         isOpen={showDeleteModal}
