@@ -19,14 +19,20 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, onEdit, onClone, onDelete, on
       <div>
         <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(film.rank)}</span>
       </div>
-      <a
-        className="url-link"
-        href={`https://www.google.com/search?q=${encodeURIComponent(film.name + ' movie')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Google
-      </a>
+      <div>
+        <span className="card-label">Service:</span>
+        <span className="card-text">{film.service}</span>
+      </div>
+      <div className='link-wrapper'>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(film.name + ' movie')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google
+        </a>
+      </div>
       <div>
         {film.tags.length ? (
           <div className="tags-container">

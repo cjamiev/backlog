@@ -109,34 +109,40 @@ export const DefaultSong: Song = {
 
 export interface Book {
   name: string;
+  type: string;
   tags: string;
 }
 
 export const DefaultBook: Book = {
   name: '',
+  type: '',
   tags: '',
 }
 
 export interface Film {
   name: string;
+  service: string;
   rank: number;
   tags: string;
 }
 
 export const DefaultFilm: Film = {
   name: '',
+  service: '',
   rank: 1,
   tags: '',
 }
 
 export interface Show {
   name: string;
+  service: string;
   rank: number;
   tags: string;
 }
 
 export const DefaultShow: Show = {
   name: '',
+  service: '',
   rank: 1,
   tags: '',
 }

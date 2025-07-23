@@ -58,6 +58,10 @@ const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit
       </label>
 
       <label className="form-label">
+        Service:
+        <input type="text" name="service" value={form.service} onChange={handleChange} className="form-input" />
+      </label>
+      <label className="form-label">
         Tags (comma separated):
         <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
       </label>

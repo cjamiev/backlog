@@ -43,6 +43,10 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProp
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
       <label className="form-label">
+        type:
+        <input type="text" name="type" value={form.type} onChange={handleChange} className="form-input" />
+      </label>
+      <label className="form-label">
         Tags (comma separated):
         <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
       </label>
@@ -60,9 +64,9 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProp
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

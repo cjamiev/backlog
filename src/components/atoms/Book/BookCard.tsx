@@ -15,14 +15,20 @@ const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{book.name}</h2>
       </div>
-      <a
-        className="url-link"
-        href={`https://www.google.com/search?q=${encodeURIComponent(book.name + ' book')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Google
-      </a>
+      <div>
+        <span className="card-label">Type:</span>
+        <span className="card-text">{book.type}</span>
+      </div>
+      <div className='link-wrapper'>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(book.name + ' book')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google
+        </a>
+      </div>
       <div>
         {book.tags.length ? (
           <div className="tags-container">
