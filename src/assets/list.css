@@ -4,7 +4,8 @@
   border: 1px solid black;
   width: fit-content;
   padding: 10px;
-    margin-bottom: 100px;
+  margin: 0 auto;
+  margin-bottom: 100px;
 }
 
 .list-section {

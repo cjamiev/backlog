@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import FilmCard from '../atoms/Film/FilmCard';
 import FilmForm from '../atoms/Film/FilmForm';
-import { DefaultFilm, type Film } from '../../model/library';
+import { DefaultFilm, serviceType, type Film } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
 
@@ -74,8 +74,6 @@ const FilmPage: React.FC = () => {
       )
     )
   ).sort((a, b) => a.localeCompare(b));
-
-  const allServices = Array.from(new Set(films.flatMap((film) => film.service)));
 
   useEffect(() => {
     setCurrentPage(1);
@@ -252,7 +250,7 @@ const FilmPage: React.FC = () => {
           <div className="loading-container">Loading...</div>
         )}
       </div> : <div className='list-wrapper'>
-        {allServices.map(service => (
+        {serviceType.map(service => (
           <div key={service} className='list-section'>
             <label>{service}</label>
             {sortedFilms.filter(film => film.service === service).map(film => <div key={film.name} className='list-item' onClick={() => { startEdit(film); }}>{film.name}</div>)}

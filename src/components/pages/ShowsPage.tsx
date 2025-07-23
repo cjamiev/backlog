@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import ShowCard from '../atoms/Show/ShowCard';
 import ShowForm from '../atoms/Show/ShowForm';
-import { DefaultShow, type Show } from '../../model/library';
+import { DefaultShow, serviceType, type Show } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
 
@@ -74,7 +74,6 @@ const ShowsPage: React.FC = () => {
       )
     )
   ).sort((a, b) => a.localeCompare(b));
-  const allServices = Array.from(new Set(shows.flatMap((show) => show.service)));
 
   useEffect(() => {
     setCurrentPage(1);
@@ -251,7 +250,7 @@ const ShowsPage: React.FC = () => {
           <div className="loading-container">Loading...</div>
         )}
       </div> : <div className='list-wrapper'>
-        {allServices.map(service => (
+        {serviceType.map(service => (
           <div key={service} className='list-section'>
             <label>{service}</label>
             {sortedShows.filter(show => show.service === service).map(show => <div key={show.name} className='list-item' onClick={() => { startEdit(show); }}>{show.name}</div>)}

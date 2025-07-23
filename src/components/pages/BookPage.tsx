@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import BookCard from '../atoms/Book/BookCard';
 import BookForm from '../atoms/Book/BookForm';
-import { DefaultBook, type Book } from '../../model/library';
+import { bookTypes, DefaultBook, type Book } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
 import { getCSV, getJSON } from '../../utils/contentMapper';
 
@@ -67,7 +67,6 @@ const BookPage: React.FC = () => {
       )
     )
   ).sort((a, b) => a.localeCompare(b));
-  const allTypes = Array.from(new Set(books.flatMap((book) => book.type)));
 
   useEffect(() => {
     setCurrentPage(1);
@@ -241,7 +240,7 @@ const BookPage: React.FC = () => {
           <div className="loading-container">Loading...</div>
         )}
       </div> : <div className='list-wrapper'>
-        {allTypes.map(type => (
+        {bookTypes.map(type => (
           <div key={type} className='list-section'>
             <label>{type}</label>
             {sortedBooks.filter(book => book.type === type).map(book => <div key={book.name} className='list-item' onClick={() => { startEdit(book); }}>{book.name}</div>)}

@@ -16,18 +16,8 @@ const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, on
         <h2 className="card-title">{book.name}</h2>
       </div>
       <div>
-        <span className="card-label">Type:</span>
+        <span className="card-label">Type: </span>
         <span className="card-text">{book.type}</span>
-      </div>
-      <div className='link-wrapper'>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(book.name + ' book')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
       </div>
       <div>
         {book.tags.length ? (
@@ -40,6 +30,16 @@ const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, on
             ))}
           </div>
         ) : null}
+      </div>
+      <div className='link-wrapper'>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(book.name + ' book')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google
+        </a>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

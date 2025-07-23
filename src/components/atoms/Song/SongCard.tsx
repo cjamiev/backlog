@@ -33,16 +33,6 @@ const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, on
           </a>
         ) : null}
       </div>
-      <div className='link-wrapper'>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(song.name + ' ' + song.album)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
-      </div>
       <div>
         {song.tags.length ? (
           <div className="tags-container">
@@ -54,6 +44,16 @@ const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, on
             ))}
           </div>
         ) : null}
+      </div>
+      <div className='link-wrapper'>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(song.name + ' ' + song.album)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google
+        </a>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

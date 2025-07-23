@@ -107,6 +107,8 @@ export const DefaultSong: Song = {
   tags: '',
 }
 
+export const bookTypes = ['Fantasy', 'SciFi', 'Comic', 'Manga'];
+
 export interface Book {
   name: string;
   type: string;
@@ -118,6 +120,21 @@ export const DefaultBook: Book = {
   type: '',
   tags: '',
 }
+
+export const serviceType = [
+  'Unknown',
+  'Amazon Prime',
+  'Apple+',
+  'Disney+',
+  'Crunchyroll',
+  'HBO Max',
+  'Hulu',
+  'Netflix',
+  'Paramount+',
+  'Peacock',
+  'Pluto TV',
+  'Tubi',
+];
 
 export interface Film {
   name: string;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultFilm, type Film } from '../../../model/library';
+import { DefaultFilm, serviceType, type Film } from '../../../model/library';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface FilmFormProps {
@@ -18,7 +18,7 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProp
     }
   }, [initialValues]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: name === 'rank' ? Number(value) : value }));
   };
@@ -65,7 +65,14 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProp
       </label>
       <label className="form-label">
         Service:
-        <input type="text" name="service" value={form.service} onChange={handleChange} className="form-input" />
+        <select className="form-input" name="service" value={form.service} onChange={handleChange} required>
+          {serviceType
+            .map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+        </select>
       </label>
       <label className="form-label">
         Tags (comma separated):

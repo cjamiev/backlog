@@ -22,7 +22,7 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, on
           <span className="card-text">{getRankStars(show.rank)}</span>
         </div>
         <div>
-          <span className="card-label">Service:</span>
+          <span className="card-label">Service: </span>
           <span className="card-text">{show.service}</span>
         </div>
         <div>

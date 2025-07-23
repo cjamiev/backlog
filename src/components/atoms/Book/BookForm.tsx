@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultBook, type Book } from '../../../model/library';
+import { bookTypes, DefaultBook, type Book } from '../../../model/library';
 
 interface BookFormProps {
   onSubmit: (form: Book) => void;
@@ -17,7 +17,7 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProp
     }
   }, [initialValues]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
@@ -51,8 +51,15 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProp
         </a>
       </label>
       <label className="form-label">
-        type:
-        <input type="text" name="type" value={form.type} onChange={handleChange} className="form-input" />
+        Type:
+        <select className="form-input" name="type" value={form.type} onChange={handleChange} required>
+          {bookTypes
+            .map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+        </select>
       </label>
       <label className="form-label">
         Tags (comma separated):
