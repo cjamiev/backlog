@@ -24,11 +24,11 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formWithAddedDate = form.createdDate ? {
-        ...form,
-        updatedDate: new Date().toString(),
+      ...form,
+      updatedDate: new Date().toString(),
     } : {
-        ...form,
-        createdDate: new Date().toString(),
+      ...form,
+      createdDate: new Date().toString(),
     }
     onSubmit(formWithAddedDate);
   };
@@ -44,7 +44,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
-        Name:
+        Note Name:
         <input
           className="form-input"
           name="name"
@@ -55,15 +55,15 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit
       </label>
       <label className="form-label">
         Details:
-        <textarea
-          className="form-input"
-          name="details"
-          value={form.details}
-          onChange={handleChange}
-          rows={3}
-          required
-        />
       </label>
+      <textarea
+        className="form-input"
+        name="details"
+        value={form.details}
+        onChange={handleChange}
+        rows={24}
+        required
+      />
       <label className="form-label">
         Tags (comma separated):
         <input

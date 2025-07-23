@@ -12,6 +12,10 @@
   transition: right 0.3s;
 }
 
+.sidebar-wide {
+  width: 800px;
+}
+
 .sidebar-header {
   position: relative;
   height: 36px;

@@ -45,15 +45,15 @@ function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags }: ProjectFo
       </label>
       <label className="form-label">
         Details:
-        <textarea
-          className="form-textarea"
-          name="details"
-          value={form.details}
-          onChange={handleChange}
-          rows={4}
-          required
-        />
       </label>
+      <textarea
+        className="form-textarea"
+        name="details"
+        value={form.details}
+        onChange={handleChange}
+        rows={24}
+        required
+      />
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input

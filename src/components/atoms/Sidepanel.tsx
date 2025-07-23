@@ -2,18 +2,19 @@ import React, { type ReactNode } from 'react';
 
 interface SidepanelProps {
   isOpen: boolean;
+  isWide?: boolean;
   onClose: () => void;
   title: string;
   children?: ReactNode;
 }
 
-const Sidepanel: React.FC<SidepanelProps> = ({ isOpen, onClose, title, children }) => {
+const Sidepanel: React.FC<SidepanelProps> = ({ isWide, isOpen, onClose, title, children }) => {
   if (!isOpen) {
     return null;
   }
 
   return (
-    <div className="sidebar">
+    <div className={isWide ? "sidebar sidebar-wide" : "sidebar"}>
       <div className="sidebar-header">
         <button className="sidebar-close-btn" onClick={onClose} aria-label="Close">
           ×

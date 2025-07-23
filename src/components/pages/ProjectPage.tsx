@@ -321,6 +321,7 @@ const ProjectPage: React.FC = () => {
         </div>
       </Modal>
       <Sidepanel
+        isWide
         isOpen={isPanelOpen && (isAddMode || isEditing)}
         onClose={cancelEdit}
         title={isEditing ? 'Updating existing' : 'Add a New Project'}
