@@ -12,16 +12,13 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onDelete, onHandleClickTag }) => {
   return (
-    <div className="card-wrapper">
+    <div className="card-wrapper card-with-details-wrapper">
       <div className="card-header">
         <h2 className="card-title">{project.name}</h2>
       </div>
-      <div className='card-body'>
+      <div>
         <div>
           <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(project.rank)}</span>
-        </div>
-        <div>
-          <span className="card-label">Details:</span> <span className="card-text">{project.details}</span>
         </div>
         <div>
           {project.tags.length ? (
@@ -35,6 +32,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onD
             </div>
           ) : null}
         </div>
+        <span className="card-label">Details:</span>
+        <pre className='card-details'>
+          {project.details}
+        </pre>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

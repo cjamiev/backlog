@@ -222,7 +222,6 @@ const NotePage: React.FC = () => {
       <div className="page-body-layout">
         {!isLoadingNotes ? (
           <div className="cards-container">
-            {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
             {paginatedNotes.map((note, idx) => (
               <NoteCard
                 key={idx}
@@ -244,6 +243,7 @@ const NotePage: React.FC = () => {
       </div>
       <Footer>
         <div>
+          <button className='primary-btn' onClick={startAdd}>Add Note</button>
           <button className="primary-btn" onClick={handleOpenCSVModal}>
             Show CSV
           </button>

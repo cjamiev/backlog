@@ -11,14 +11,11 @@ interface NoteCardProps {
 
 const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onClone, onDelete, onHandleClickTag }) => {
   return (
-    <div className="card-wrapper">
+    <div className="card-wrapper card-with-details-wrapper">
       <div className="card-header">
         <h2 className="card-title">{note.name}</h2>
       </div>
       <div className='card-body'>
-        <div>
-          <span className="card-label">Details:</span> <span className="card-text">{note.details}</span>
-        </div>
         <div>
           <span className="card-label">Created:</span> <span className="card-text">{note.createdDate}</span>
         </div>
@@ -39,6 +36,10 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onClone, onDelete, on
             ))}
           </div>
         ) : null}
+        <span className="card-label">Details:</span>
+        <pre className='card-details'>
+          {note.details}
+        </pre>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

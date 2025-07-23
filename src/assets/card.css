@@ -3,12 +3,16 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
   background: #fff;
   transition: transform 0.15s, box-shadow 0.15s;
   width: 400px;
   height: 300px;
   position: relative;
+}
+
+.card-with-details-wrapper {
+  width: 800px;
+  height: 600px;
 }
 
 .card-wrapper:hover {
@@ -42,13 +46,17 @@
 }
 
 .card-body {
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
   height: 200px;
 }
 
 .card-text {
   color: var(--color-text-primary);
+}
+
+.card-details {
+  overflow: auto;
 }
 
 .card-label {
