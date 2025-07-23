@@ -60,25 +60,27 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClon
       <div className="card-header">
         <h2 className="card-title">{countdown.name}</h2>
       </div>
-      <div>
-        <span className="card-label">Target Date:</span>
-        <span className="card-text">{formatDate(countdown.date)}</span>
-      </div>
-      <div>
-        <span className="card-label">Time Remaining:</span>
-        <span className={`card-text ${isOverdue ? 'overdue-text' : 'countdown-text'}`}>{timeLeft}</span>
-      </div>
-      <div>
-        {countdown.tags.length ? (
-          <div className="tags-container">
-            <span className="card-label">Tags:</span>
-            {countdown.tags.split(',').map((tag, i) => (
-              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
-                {tag}
-              </button>
-            ))}
-          </div>
-        ) : null}
+      <div className='card-body'>
+        <div>
+          <span className="card-label">Target Date:</span>
+          <span className="card-text">{formatDate(countdown.date)}</span>
+        </div>
+        <div>
+          <span className="card-label">Time Remaining:</span>
+          <span className={`card-text ${isOverdue ? 'overdue-text' : 'countdown-text'}`}>{timeLeft}</span>
+        </div>
+        <div>
+          {countdown.tags.length ? (
+            <div className="tags-container">
+              <span className="card-label">Tags:</span>
+              {countdown.tags.split(',').map((tag, i) => (
+                <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

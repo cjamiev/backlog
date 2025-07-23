@@ -5,10 +5,10 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   background: #fff;
-  transition:
-    transform 0.15s,
-    box-shadow 0.15s;
-  min-width: 320px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  width: 400px;
+  height: 300px;
+  position: relative;
 }
 
 .card-wrapper:hover {
@@ -41,6 +41,12 @@
   color: var(--color-primary);
 }
 
+.card-body {
+  overflow-y: auto;
+  position: relative;
+  height: 200px;
+}
+
 .card-text {
   color: var(--color-text-primary);
 }
@@ -55,6 +61,8 @@
   align-items: right;
   margin-top: 24px;
   gap: 10px;
+  position: absolute;
+  bottom: 20px;
 }
 
 .card-btn {

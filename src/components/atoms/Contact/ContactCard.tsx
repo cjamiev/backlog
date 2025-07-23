@@ -15,29 +15,31 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onEdit, onClone, onD
       <div className="card-header">
         <h2 className="card-title">{contact.name}</h2>
       </div>
-      <div>
-        <span className="card-label">Phone:</span> <span className="card-text">{contact.phone}</span>
-      </div>
-      <div>
-        <span className="card-label">Email:</span> <span className="card-text">{contact.email}</span>
-      </div>
-      <div>
-        <span className="card-label">Address:</span> <span className="card-text">{contact.address}</span>
-      </div>
-      {contact.tags.length ? (
-        <div className="tags-container">
-          <span className="card-label">Tags:</span>
-          {contact.tags.split(',').filter(Boolean).map((tag, idx) => (
-            <button
-              key={idx}
-              className="tag-btn"
-              onClick={() => onHandleClickTag(tag.trim())}
-            >
-              {tag.trim()}
-            </button>
-          ))}
+      <div className='card-body'>
+        <div>
+          <span className="card-label">Phone:</span> <span className="card-text">{contact.phone}</span>
         </div>
-      ) : null}
+        <div>
+          <span className="card-label">Email:</span> <span className="card-text">{contact.email}</span>
+        </div>
+        <div>
+          <span className="card-label">Address:</span> <span className="card-text">{contact.address}</span>
+        </div>
+        {contact.tags.length ? (
+          <div className="tags-container">
+            <span className="card-label">Tags:</span>
+            {contact.tags.split(',').filter(Boolean).map((tag, idx) => (
+              <button
+                key={idx}
+                className="tag-btn"
+                onClick={() => onHandleClickTag(tag.trim())}
+              >
+                {tag.trim()}
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>
           Clone

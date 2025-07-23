@@ -85,6 +85,8 @@
   display: flex;
   gap: 8px;
   margin-top: 5px;
+  position: absolute;
+  bottom: 0;
 }
 
 .url-link {

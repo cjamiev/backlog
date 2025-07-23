@@ -15,31 +15,33 @@ const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{book.name}</h2>
       </div>
-      <div>
-        <span className="card-label">Type: </span>
-        <span className="card-text">{book.type}</span>
-      </div>
-      <div>
-        {book.tags.length ? (
-          <div className="tags-container">
-            <span className="card-label">Tags:</span>
-            {book.tags.split(',').map((tag: string, i: number) => (
-              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
-                {tag}
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </div>
-      <div className='link-wrapper'>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(book.name + ' book')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
+      <div className='card-body'>
+        <div>
+          <span className="card-label">Type: </span>
+          <span className="card-text">{book.type}</span>
+        </div>
+        <div>
+          {book.tags.length ? (
+            <div className="tags-container">
+              <span className="card-label">Tags:</span>
+              {book.tags.split(',').map((tag: string, i: number) => (
+                <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        <div className='link-wrapper'>
+          <a
+            className="url-link"
+            href={`https://www.google.com/search?q=${encodeURIComponent(book.name + ' book')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google
+          </a>
+        </div>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

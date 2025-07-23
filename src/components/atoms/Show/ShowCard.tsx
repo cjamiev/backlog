@@ -16,7 +16,7 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{show.name}</h2>
       </div>
-      <div className="card-content">
+      <div className='card-body'>
         <div>
           <span className="card-label">Rank:</span>
           <span className="card-text">{getRankStars(show.rank)}</span>
@@ -37,16 +37,16 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, on
             </div>
           ) : null}
         </div>
-      </div>
-      <div className='link-wrapper'>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(show.name + ' tv series')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
+        <div className='link-wrapper'>
+          <a
+            className="url-link"
+            href={`https://www.google.com/search?q=${encodeURIComponent(show.name + ' tv series')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google
+          </a>
+        </div>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

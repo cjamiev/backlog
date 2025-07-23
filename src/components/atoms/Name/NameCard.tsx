@@ -15,31 +15,33 @@ const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{name.value}</h2>
       </div>
-      <div>
-        <span className="card-label">Gender:</span> <span className="card-text">{name.gender}</span>
-      </div>
-      <div>
-        <span className="card-label">Origin:</span> <span className="card-text">{name.origin}</span>
-      </div>
-      <a
-        className="url-link"
-        href={`https://www.google.com/search?q=${encodeURIComponent(name.value + ' name meaning')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Google
-      </a>
-      <div>
-        {name.tags.length ? (
-          <div className="tags-container">
-            <span className="card-label">Tags:</span>
-            {name.tags.split(',').map((tag, i) => (
-              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
-                {tag}
-              </button>
-            ))}
-          </div>
-        ) : null}
+      <div className='card-body'>
+        <div>
+          <span className="card-label">Gender:</span> <span className="card-text">{name.gender}</span>
+        </div>
+        <div>
+          <span className="card-label">Origin:</span> <span className="card-text">{name.origin}</span>
+        </div>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(name.value + ' name meaning')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google
+        </a>
+        <div>
+          {name.tags.length ? (
+            <div className="tags-container">
+              <span className="card-label">Tags:</span>
+              {name.tags.split(',').map((tag, i) => (
+                <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

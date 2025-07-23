@@ -16,34 +16,36 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{film.name}</h2>
       </div>
-      <div>
-        <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(film.rank)}</span>
-      </div>
-      <div>
-        <span className="card-label">Service: </span>
-        <span className="card-text">{film.service}</span>
-      </div>
-      <div>
-        {film.tags.length ? (
-          <div className="tags-container">
-            <span className="card-label">Tags:</span>
-            {film.tags.split(',').map((tag, i) => (
-              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
-                {tag}
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </div>
-      <div className='link-wrapper'>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(film.name + ' movie')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
+      <div className='card-body'>
+        <div>
+          <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(film.rank)}</span>
+        </div>
+        <div>
+          <span className="card-label">Service: </span>
+          <span className="card-text">{film.service}</span>
+        </div>
+        <div>
+          {film.tags.length ? (
+            <div className="tags-container">
+              <span className="card-label">Tags:</span>
+              {film.tags.split(',').map((tag, i) => (
+                <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        <div className='link-wrapper'>
+          <a
+            className="url-link"
+            href={`https://www.google.com/search?q=${encodeURIComponent(film.name + ' movie')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google
+          </a>
+        </div>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

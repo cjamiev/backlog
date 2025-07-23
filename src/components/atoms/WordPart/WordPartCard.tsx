@@ -9,21 +9,6 @@ interface WordPartCardProps {
 }
 
 const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onClone, onDelete }) => {
-  const getTypeLabel = (type: WORD_PART_TYPE): string => {
-    switch (type) {
-      case WORD_PART_TYPE.SUFFIX:
-        return 'Suffix';
-      case WORD_PART_TYPE.PREFIX:
-        return 'Prefix';
-      case WORD_PART_TYPE.VOWEL:
-        return 'Vowel';
-      case WORD_PART_TYPE.CONSONANT:
-        return 'Consonant';
-      default:
-        return 'Unknown';
-    }
-  };
-
   const getTypeIcon = (type: WORD_PART_TYPE): string => {
     switch (type) {
       case WORD_PART_TYPE.SUFFIX:
@@ -44,21 +29,23 @@ const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onClone, 
       <div className="card-header">
         <h2 className="card-title">{wordPart.value}</h2>
         <span className="card-type">
-          {getTypeIcon(wordPart.type)} {getTypeLabel(wordPart.type)}
+          {getTypeIcon(wordPart.type)} {wordPart.type}
         </span>
       </div>
-      <div>
-        <span className="card-label">Definition:</span>
-        <span className="card-text">{wordPart.definition}</span>
+      <div className='card-body'>
+        <div>
+          <span className="card-label">Definition:</span>
+          <span className="card-text">{wordPart.definition}</span>
+        </div>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(wordPart.value + ' word part definition')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google Search
+        </a>
       </div>
-      <a
-        className="url-link"
-        href={`https://www.google.com/search?q=${encodeURIComponent(wordPart.value + ' word part definition')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Google Search
-      </a>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>
           Clone

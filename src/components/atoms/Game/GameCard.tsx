@@ -16,57 +16,59 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{game.name}</h2>
       </div>
-      <div>
-        <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(game.rank)}</span>
-      </div>
-      <div>
-        <span className="card-label">Lowest Price:</span> <span className="card-text">{game.lowestPrice}</span>
-      </div>
-      <div>
-        {game.tags.length ? (
-          <div className="tags-container">
-            <span className="card-label">Tags:</span>
-            {game.tags.split(',').map((tag: string, i: number) => (
-              <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
-                {tag}
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </div>
-      <div className='link-wrapper'>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(game.name + ' game')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
-        <a
-          className="url-link"
-          href={`https://steamdb.info/search/?a=all&q=${encodeURIComponent(game.name)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Steam
-        </a>
-        <a
-          className="url-link"
-          href={`https://howlongtobeat.com/?q=${encodeURIComponent(game.name)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          How Long
-        </a>
-        <a
-          className="url-link"
-          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' game')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Youtube
-        </a>
+      <div className='card-body'>
+        <div>
+          <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(game.rank)}</span>
+        </div>
+        <div>
+          <span className="card-label">Lowest Price:</span> <span className="card-text">{game.lowestPrice}</span>
+        </div>
+        <div>
+          {game.tags.length ? (
+            <div className="tags-container">
+              <span className="card-label">Tags:</span>
+              {game.tags.split(',').map((tag: string, i: number) => (
+                <button key={i} className="tag-btn" onClick={() => onHandleClickTag(tag)}>
+                  {tag}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+        <div className='link-wrapper'>
+          <a
+            className="url-link"
+            href={`https://www.google.com/search?q=${encodeURIComponent(game.name + ' game')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google
+          </a>
+          <a
+            className="url-link"
+            href={`https://steamdb.info/search/?a=all&q=${encodeURIComponent(game.name)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Steam
+          </a>
+          <a
+            className="url-link"
+            href={`https://howlongtobeat.com/?q=${encodeURIComponent(game.name)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            How Long
+          </a>
+          <a
+            className="url-link"
+            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(game.name + ' game')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Youtube
+          </a>
+        </div>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>
