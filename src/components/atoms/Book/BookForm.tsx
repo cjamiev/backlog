@@ -51,6 +51,10 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProp
         </a>
       </label>
       <label className="form-label">
+        Author:
+        <input type="text" name="author" value={form.author} onChange={handleChange} className="form-input" />
+      </label>
+      <label className="form-label">
         Type:
         <select className="form-input" name="type" value={form.type} onChange={handleChange} required>
           {bookTypes

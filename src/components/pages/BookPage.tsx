@@ -16,6 +16,7 @@ import { getCSV, getJSON } from '../../utils/contentMapper';
 const BOOKS_PER_PAGE = 24;
 const bookSearchByOptions = [
   { value: 'name', label: 'Name' },
+  { value: 'author', label: 'Author' },
   { value: 'tags', label: 'Tags' }
 ];
 const bookSortByOptions: { value: string; label: string }[] = [];
@@ -46,6 +47,8 @@ const BookPage: React.FC = () => {
   const filteredBooks = books.filter((b: Book) => {
     if (searchBy === 'tags') {
       return b.tags.split(',').some((tag) => tag.toLowerCase().includes(search.toLowerCase()));
+    } else if (searchBy === 'author') {
+      return b.author.toLowerCase().includes(search.toLowerCase());
     } else {
       return b.name.toLowerCase().includes(search.toLowerCase());
     }
@@ -93,6 +96,7 @@ const BookPage: React.FC = () => {
   const handleAddBook = (form: Book) => {
     const newBook = {
       name: form.name,
+      author: form.author,
       type: form.type,
       tags: form.tags
     };
@@ -110,6 +114,7 @@ const BookPage: React.FC = () => {
       b.name === form.name
         ? {
           name: form.name,
+          author: form.author,
           type: form.type,
           tags: form.tags
         }
@@ -125,6 +130,7 @@ const BookPage: React.FC = () => {
   const startEdit = (selectedBook: Book, isClone?: boolean) => {
     setEditForm({
       name: selectedBook.name,
+      author: selectedBook.author,
       type: selectedBook.type,
       tags: selectedBook.tags
     });

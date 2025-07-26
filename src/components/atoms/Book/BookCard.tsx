@@ -17,6 +17,10 @@ const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, on
       </div>
       <div className='card-body'>
         <div>
+          <span className="card-label">Author: </span>
+          <span className="card-text">{book.author}</span>
+        </div>
+        <div>
           <span className="card-label">Type: </span>
           <span className="card-text">{book.type}</span>
         </div>

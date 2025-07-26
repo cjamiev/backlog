@@ -107,17 +107,19 @@ export const DefaultSong: Song = {
   tags: '',
 }
 
-export const bookTypes = ['Fantasy', 'SciFi', 'Comic', 'Manga'];
+export const bookTypes = ['SciFi', 'Fantasy', 'Comic', 'Manga'];
 
 export interface Book {
   name: string;
+  author: string;
   type: string;
   tags: string;
 }
 
 export const DefaultBook: Book = {
   name: '',
-  type: '',
+  author: '',
+  type: 'SciFi',
   tags: '',
 }
 
@@ -145,7 +147,7 @@ export interface Film {
 
 export const DefaultFilm: Film = {
   name: '',
-  service: '',
+  service: 'Unknown',
   rank: 1,
   tags: '',
 }
@@ -159,7 +161,7 @@ export interface Show {
 
 export const DefaultShow: Show = {
   name: '',
-  service: '',
+  service: 'Unknown',
   rank: 1,
   tags: '',
 }
