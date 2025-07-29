@@ -12,6 +12,7 @@
     "pcss": "prettier src/*.css --write"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "^0.5.1",
     "@tanstack/react-query": "5.83.0",
     "axios": "1.10.0",
     "react": "^19.1.0",

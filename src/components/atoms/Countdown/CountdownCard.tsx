@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Countdown } from '../../../model/library';
+import { Temporal } from "@js-temporal/polyfill";
 
 interface CountdownCardProps {
   countdown: Countdown;
@@ -45,12 +46,8 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClon
   }, [countdown.date]);
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    const [year, month, day] = dateString.split('-');
+    return Temporal.PlainDate.from({ year: Number(year), month: Number(month), day: Number(day) }).toLocaleString();
   };
 
   const isOverdue = new Date(countdown.date).getTime() < new Date().getTime();
@@ -63,10 +60,10 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClon
       <div className='card-body'>
         <div>
           <span className="card-label">Target Date:</span>
-          <span className="card-text">{formatDate(countdown.date)}</span>
+          <span className="card-text"> {formatDate(countdown.date)}</span>
         </div>
         <div>
-          <span className="card-label">Time Remaining:</span>
+          <span className="card-label">Time Remaining: </span>
           <span className={`card-text ${isOverdue ? 'overdue-text' : 'countdown-text'}`}>{timeLeft}</span>
         </div>
         <div>
