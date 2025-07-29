@@ -43,9 +43,17 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
 
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
-      <label className="form-label">
+      <label className="form-id">
         Favorite Name:
         <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <a
+          className="form-id-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(form.name)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          G
+        </a>
       </label>
       <label className="form-label">
         Link:

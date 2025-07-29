@@ -152,6 +152,11 @@ const FavoritePage: React.FC = () => {
     setEditForm(DefaultFavorite);
   };
 
+  const handleRemoveFavorite = (selectedFavorite: Favorite) => {
+    setFavoriteToDelete(selectedFavorite);
+    setShowDeleteModal(true);
+  };
+
   const confirmDeleteFavorite = () => {
     if (favoriteToDelete) {
       const updatedFavorites = favorites.filter(
@@ -198,7 +203,7 @@ const FavoritePage: React.FC = () => {
       setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
       setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     } else {
-      setShowBanner({ show: true, type: 'fail' });
+      setShowBanner({ isVisible: true, type: 'fail', message: BANNER_MESSAGES.SAVE_ERROR });
       setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
     setNewTypeInput('');
@@ -272,6 +277,7 @@ const FavoritePage: React.FC = () => {
                   setIsAddMode(false);
                   setIsPanelOpen(true);
                 }}
+                onDeleteFavorite={handleRemoveFavorite}
               />))}
           </div>
         ) : (
