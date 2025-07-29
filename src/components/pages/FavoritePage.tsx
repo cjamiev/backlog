@@ -7,10 +7,12 @@ import Footer from '../atoms/Footer';
 import FavoriteForm from '../atoms/Favorite/FavoriteForm';
 import { DefaultFavorite, type Favorite } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import FavoriteList from '../atoms/Favorite/FavoriteList';
 import AddFavoriteCard from '../atoms/Favorite/AddFavoriteCard';
 import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const favoriteSearchByOptions = [
   { value: 'name', label: 'Name' },
@@ -41,7 +43,7 @@ const FavoritePage: React.FC = () => {
   const [showTypeModal, setShowTypeModal] = useState(false);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [newTypeModalOpen, setNewTypeModalOpen] = useState(false);
   const [newTypeInput, setNewTypeInput] = useState('');
   const [removeTypeModalOpen, setRemoveTypeModalOpen] = useState(false);
@@ -71,29 +73,29 @@ const FavoritePage: React.FC = () => {
 
   useEffect(() => {
     if (isFavoritesUpdateSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isFavoritesUpdateSuccess]);
 
   useEffect(() => {
     if (isFavoritesUpdateError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isFavoritesUpdateError]);
 
   useEffect(() => {
     if (isFavoriteTypesUpdateSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isFavoriteTypesUpdateSuccess]);
 
   useEffect(() => {
     if (isFavoriteTypesUpdateError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isFavoriteTypesUpdateError]);
 
@@ -107,31 +109,31 @@ const FavoritePage: React.FC = () => {
 
   const handleAddFavorite = (form: Favorite) => {
     const newFavorite = {
-      name: form.name,
-      link: form.link,
-      type: form.type,
-      tags: form.tags,
-      notes: form.notes
+      ...form,
+      name: capitalizeEachWord(form.name),
     };
-    const updatedFavorites = [newFavorite, ...favorites];
-    handleSubmit(updatedFavorites);
 
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultFavorite);
-    setSearch('');
+    const isThereADuplicate = checkIfDuplicateId(favorites.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedFavorites = [newFavorite, ...favorites];
+      handleSubmit(updatedFavorites);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultFavorite);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditFavorite = (form: Favorite) => {
     const updatedFavorites = favorites.map((f) =>
       f.name === form.name && f.link === form.link
         ? {
-          name: form.name,
-          link: form.link,
-          type: form.type,
-          tags: form.tags,
-          notes: form.notes
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : f
     );
@@ -193,11 +195,11 @@ const FavoritePage: React.FC = () => {
       const updatedFavoriteTypes = favoriteTypes.concat(newTypeInput);
       handleTypesSubmit(updatedFavoriteTypes);
 
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     } else {
       setShowBanner({ show: true, type: 'fail' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
     setNewTypeInput('');
     setNewTypeModalOpen(false);
@@ -209,8 +211,8 @@ const FavoritePage: React.FC = () => {
       const updatedFavoriteTypes = favoriteTypes.filter(type => type !== selectedTypeToRemove);
       handleTypesSubmit(updatedFavoriteTypes);
 
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
     setSelectedTypeToRemove('');
     setRemoveTypeModalOpen(false);
@@ -225,7 +227,7 @@ const FavoritePage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Favorites</h1>
       <Search
         search={search}

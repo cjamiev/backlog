@@ -11,7 +11,9 @@ import { DefaultContact, type Contact } from '../../model/library';
 import ContactCard from '../atoms/Contact/ContactCard';
 import ContactForm from '../atoms/Contact/ContactForm';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const CONTACTS_PER_PAGE = 24;
 const contactSearchByOptions = [
@@ -41,7 +43,7 @@ const ContactPage: React.FC = () => {
   const [contactToDelete, setContactToDelete] = useState<Contact | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -80,15 +82,15 @@ const ContactPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -98,30 +100,31 @@ const ContactPage: React.FC = () => {
 
   const handleAddContact = (form: Contact) => {
     const newContact = {
-      name: form.name,
-      phone: form.phone,
-      email: form.email,
-      address: form.address,
-      tags: form.tags
+      ...form,
+      name: capitalizeEachWord(form.name),
     };
-    const updatedContacts = [newContact, ...contacts];
-    handleSubmit(updatedContacts);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultContact);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(contacts.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedContacts = [newContact, ...contacts];
+      handleSubmit(updatedContacts);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultContact);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditContact = (form: Contact) => {
     const updatedContacts = contacts.map((c) =>
       c.name === form.name && c.email === form.email
         ? {
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          address: form.address,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : c
     );
@@ -133,13 +136,7 @@ const ContactPage: React.FC = () => {
   };
 
   const startEdit = (selectedContact: Contact, isClone?: boolean) => {
-    setEditForm({
-      name: selectedContact.name,
-      phone: selectedContact.phone,
-      email: selectedContact.email,
-      address: selectedContact.address,
-      tags: selectedContact.tags
-    });
+    setEditForm(selectedContact);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -215,7 +212,7 @@ const ContactPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Contacts</h1>
       <Search
         search={search}

@@ -3,22 +3,22 @@ import React from 'react';
 interface BannerProps {
   isVisible: boolean;
   type: string;
-  defaultMessage?: string;
+  message: string;
 }
 
 const getBannerClassName = (type: string) => {
   if (type === 'success') {
-    return { message: 'Saved successfully!', className: 'banner banner-success' };
+    return 'banner banner-success';
   } else {
-    return { message: 'Error on attempt to save', className: 'banner banner-error' };
+    return 'banner banner-error';
   }
 };
 
-const Banner: React.FC<BannerProps> = ({ isVisible, type, defaultMessage }) => {
-  const { message, className } = getBannerClassName(type);
+const Banner: React.FC<BannerProps> = ({ isVisible, type, message }) => {
+  const className = getBannerClassName(type);
 
   if (!isVisible) return null;
-  return <div className={className}>{defaultMessage ? defaultMessage : message}</div>;
+  return <div className={className}>{message}</div>;
 };
 
 export default Banner;

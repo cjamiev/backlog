@@ -26,3 +26,13 @@ const FiveStars = ['🌟', '🌟', '🌟', '🌟', '🌟'];
 export const getRankStars = (rank: number) => {
   return FiveStars.filter((_, i) => i < rank).join('');
 }
+
+export const capitalizeEachWord = (text: string) => {
+  return text.toLocaleLowerCase().split(' ').map(word => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+}
+
+export const checkIfDuplicateId = (listOfIds: string[], currentId: string) => {
+  return listOfIds.some(id => id.toLowerCase() === currentId.toLowerCase())
+}

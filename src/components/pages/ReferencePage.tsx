@@ -11,7 +11,9 @@ import ReferenceCard from '../atoms/Reference/ReferenceCard';
 import ReferenceForm from '../atoms/Reference/ReferenceForm';
 import { DefaultReference, type Reference } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const REFERENCES_PER_PAGE = 24;
 const referenceSearchByOptions = [
@@ -40,7 +42,7 @@ const ReferencePage: React.FC = () => {
   const [referenceToDelete, setReferenceToDelete] = useState<Reference | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -82,15 +84,15 @@ const ReferencePage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -100,31 +102,29 @@ const ReferencePage: React.FC = () => {
 
   const handleAddReference = (form: Reference) => {
     const newReference = {
+      ...form,
       id: String(references.length + 1),
-      value: form.value,
-      origin: form.origin,
-      definition: form.definition,
-      tags: form.tags
     };
-    const updatedReferences = [newReference, ...references];
-    handleSubmit(updatedReferences);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultReference);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(references.map(i => i.value), form.value);
+    if (!isThereADuplicate) {
+      const updatedReferences = [newReference, ...references];
+      handleSubmit(updatedReferences);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultReference);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditReference = (form: Reference) => {
     const updatedReferences = references.map((r) =>
       r.id === form.id
-        ? {
-          id: r.id,
-          value: form.value,
-          origin: form.origin,
-          definition: form.definition,
-          tags: form.tags
-        }
+        ? form
         : r
     );
     handleSubmit(updatedReferences);
@@ -136,11 +136,8 @@ const ReferencePage: React.FC = () => {
 
   const startEdit = (selectedReference: Reference, isClone?: boolean) => {
     setEditForm({
+      ...selectedReference,
       id: isClone ? String(references.length + 1) : selectedReference.id,
-      value: selectedReference.value,
-      origin: selectedReference.origin,
-      definition: selectedReference.definition,
-      tags: selectedReference.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -215,7 +212,7 @@ const ReferencePage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">References</h1>
       <Search
         search={search}

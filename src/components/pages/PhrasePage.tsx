@@ -11,7 +11,9 @@ import PhraseCard from '../atoms/Phrase/PhraseCard';
 import PhraseForm from '../atoms/Phrase/PhraseForm';
 import { DefaultPhrase, type Phrase } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const PHRASES_PER_PAGE = 24;
 const phraseSearchByOptions = [
@@ -39,7 +41,7 @@ const PhrasePage: React.FC = () => {
   const [phraseToDelete, setPhraseToDelete] = useState<Phrase | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -76,15 +78,15 @@ const PhrasePage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -94,29 +96,29 @@ const PhrasePage: React.FC = () => {
 
   const handleAddPhrase = (form: Phrase) => {
     const newPhrase = {
+      ...form,
       id: String(phrases.length + 1),
-      value: form.value,
-      origin: form.origin,
-      tags: form.tags
     };
-    const updatedPhrases = [newPhrase, ...phrases];
-    handleSubmit(updatedPhrases);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultPhrase);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(phrases.map(i => i.value), form.value);
+    if (!isThereADuplicate) {
+      const updatedPhrases = [newPhrase, ...phrases];
+      handleSubmit(updatedPhrases);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultPhrase);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditPhrase = (form: Phrase) => {
     const updatedPhrases = phrases.map((p) =>
       p.id === form.id
-        ? {
-          id: p.id,
-          value: form.value,
-          origin: form.origin,
-          tags: form.tags
-        }
+        ? form
         : p
     );
     handleSubmit(updatedPhrases);
@@ -128,10 +130,8 @@ const PhrasePage: React.FC = () => {
 
   const startEdit = (selectedPhrase: Phrase, isClone?: boolean) => {
     setEditForm({
+      ...selectedPhrase,
       id: isClone ? String(phrases.length + 1) : selectedPhrase.id,
-      value: selectedPhrase.value,
-      origin: selectedPhrase.origin,
-      tags: selectedPhrase.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -206,7 +206,7 @@ const PhrasePage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Phrases</h1>
       <Search
         search={search}

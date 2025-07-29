@@ -11,7 +11,9 @@ import GameCard from '../atoms/Game/GameCard';
 import GameForm from '../atoms/Game/GameForm';
 import { DefaultGame, type Game } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const GAMES_PER_PAGE = 24;
 const gameSearchByOptions = [
@@ -41,7 +43,7 @@ const GamePage: React.FC = () => {
   const [gameToDelete, setGameToDelete] = useState<Game | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
   const [showTableView, setShowTableView] = useState(false);
@@ -81,15 +83,15 @@ const GamePage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -99,28 +101,31 @@ const GamePage: React.FC = () => {
 
   const handleAddGame = (form: Game) => {
     const newGame = {
-      name: form.name,
-      rank: form.rank,
-      lowestPrice: form.lowestPrice,
-      tags: form.tags
+      ...form,
+      name: capitalizeEachWord(form.name),
     };
-    const updatedGames = [newGame, ...games];
-    handleSubmit(updatedGames);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultGame);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(games.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedGames = [newGame, ...games];
+      handleSubmit(updatedGames);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultGame);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditGame = (form: Game) => {
     const updatedGames = games.map((g) =>
       g.name === form.name
         ? {
-          name: form.name,
-          rank: form.rank,
-          lowestPrice: form.lowestPrice,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : g
     );
@@ -132,12 +137,7 @@ const GamePage: React.FC = () => {
   };
 
   const startEdit = (selectedGame: Game, isClone?: boolean) => {
-    setEditForm({
-      name: selectedGame.name,
-      rank: selectedGame.rank,
-      lowestPrice: selectedGame.lowestPrice,
-      tags: selectedGame.tags
-    });
+    setEditForm(selectedGame);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -215,7 +215,7 @@ const GamePage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Games</h1>
       <Search
         search={search}

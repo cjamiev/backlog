@@ -11,7 +11,9 @@ import CountdownCard from '../atoms/Countdown/CountdownCard';
 import CountdownForm from '../atoms/Countdown/CountdownForm';
 import { DefaultCountdown, type Countdown } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const COUNTDOWNS_PER_PAGE = 24;
 const countdownSearchByOptions = [{ value: 'name', label: 'Name' },
@@ -39,7 +41,7 @@ const CountdownPage: React.FC = () => {
   const [countdownToDelete, setCountdownToDelete] = useState<Countdown | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -81,15 +83,15 @@ const CountdownPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -99,28 +101,32 @@ const CountdownPage: React.FC = () => {
 
   const handleAddCountdown = (form: Countdown) => {
     const newCountdown = {
+      ...form,
+      name: capitalizeEachWord(form.name),
       id: String(countdowns.length + 1),
-      name: form.name,
-      date: form.date,
-      tags: form.tags
     };
-    const updatedCountdowns = [newCountdown, ...countdowns];
-    handleSubmit(updatedCountdowns);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultCountdown);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(countdowns.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedCountdowns = [newCountdown, ...countdowns];
+      handleSubmit(updatedCountdowns);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultCountdown);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditCountdown = (form: Countdown) => {
     const updatedCountdowns = countdowns.map((c) =>
       c.id === form.id
         ? {
-          id: c.id,
-          name: form.name,
-          date: form.date,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : c
     );
@@ -133,10 +139,8 @@ const CountdownPage: React.FC = () => {
 
   const startEdit = (selectedCountdown: Countdown, isClone?: boolean) => {
     setEditForm({
+      ...selectedCountdown,
       id: isClone ? String(countdowns.length + 1) : selectedCountdown.id,
-      name: selectedCountdown.name,
-      date: selectedCountdown.date,
-      tags: selectedCountdown.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -211,7 +215,7 @@ const CountdownPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Countdowns</h1>
       <Search
         search={search}

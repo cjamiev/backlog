@@ -9,10 +9,12 @@ import Pagination from '../atoms/Pagination';
 import PasswordCard from '../atoms/Password/PasswordCard';
 import PasswordForm from '../atoms/Password/PasswordForm';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, getCSV, getJSON } from '../../utils/contentMapper';
 import { useAddNewPassword, useLoadPasswords, useUpdatePassword } from '../../api/password-service';
 import { DefaultPassword, type Password } from '../../model/password';
 import { getPasswordHistory } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const PASSWORDS_PER_PAGE = 24;
 const passwordSearchByOptions = [
@@ -44,7 +46,7 @@ const PasswordPage: React.FC = () => {
   const [passwordToDelete, setPasswordToDelete] = useState<Password | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -88,29 +90,29 @@ const PasswordPage: React.FC = () => {
 
   useEffect(() => {
     if (isNewPasswordSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isNewPasswordSuccess]);
 
   useEffect(() => {
     if (isNewPasswordError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isNewPasswordError]);
 
   useEffect(() => {
     if (isUpdatePasswordSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isUpdatePasswordSuccess]);
 
   useEffect(() => {
     if (isUpdatePasswordError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isUpdatePasswordError]);
 
@@ -118,6 +120,7 @@ const PasswordPage: React.FC = () => {
     newPasswordMutate({
       payload: {
         ...form,
+        id: capitalizeEachWord(form.id),
         createdDate: String(Date.now()),
         history: '[]'
       }
@@ -223,7 +226,7 @@ const PasswordPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Passwords</h1>
       <Search
         search={search}

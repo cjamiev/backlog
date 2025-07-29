@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
-import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
 import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';
@@ -11,7 +10,9 @@ import { DefaultNote, type Note } from '../../model/library';
 import NoteCard from '../atoms/Note/NoteCard';
 import NoteForm from '../atoms/Note/NoteForm';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const NOTES_PER_PAGE = 24;
 const noteSearchByOptions = [
@@ -39,7 +40,7 @@ const NotePage: React.FC = () => {
   const [noteToDelete, setNoteToDelete] = useState<Note | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -74,15 +75,15 @@ const NotePage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -92,30 +93,31 @@ const NotePage: React.FC = () => {
 
   const handleAddNote = (form: Note) => {
     const newNote = {
-      name: form.name,
-      details: form.details,
-      createdDate: form.createdDate,
-      updatedDate: form.updatedDate,
-      tags: form.tags
+      ...form,
+      name: capitalizeEachWord(form.name),
     };
-    const updatedNotes = [newNote, ...notes];
-    handleSubmit(updatedNotes);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultNote);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(notes.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedNotes = [newNote, ...notes];
+      handleSubmit(updatedNotes);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultNote);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditNote = (form: Note) => {
     const updatedNotes = notes.map((n) =>
       n.name === form.name
         ? {
-          name: form.name,
-          details: form.details,
-          createdDate: form.createdDate,
-          updatedDate: form.updatedDate,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : n
     );
@@ -127,13 +129,7 @@ const NotePage: React.FC = () => {
   };
 
   const startEdit = (selectedNote: Note, isClone?: boolean) => {
-    setEditForm({
-      name: selectedNote.name,
-      details: selectedNote.details,
-      createdDate: selectedNote.createdDate,
-      updatedDate: selectedNote.updatedDate,
-      tags: selectedNote.tags
-    });
+    setEditForm(selectedNote);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -207,7 +203,7 @@ const NotePage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Notes</h1>
       <Search
         search={search}

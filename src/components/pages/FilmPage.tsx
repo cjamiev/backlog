@@ -11,7 +11,9 @@ import FilmCard from '../atoms/Film/FilmCard';
 import FilmForm from '../atoms/Film/FilmForm';
 import { DefaultFilm, serviceType, type Film } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const FILMS_PER_PAGE = 24;
 const filmSearchByOptions = [
@@ -41,7 +43,7 @@ const FilmPage: React.FC = () => {
   const [filmToDelete, setFilmToDelete] = useState<Film | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
   const [showTableView, setShowTableView] = useState(false);
@@ -81,15 +83,15 @@ const FilmPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -99,28 +101,31 @@ const FilmPage: React.FC = () => {
 
   const handleAddFilm = (form: Film) => {
     const newFilm = {
-      name: form.name,
-      service: form.service,
-      rank: form.rank,
-      tags: form.tags
+      ...form,
+      name: capitalizeEachWord(form.name),
     };
-    const updatedFilms = [newFilm, ...films];
-    handleSubmit(updatedFilms);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultFilm);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(films.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedFilms = [newFilm, ...films];
+      handleSubmit(updatedFilms);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultFilm);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditFilm = (form: Film) => {
     const updatedFilms = films.map((f) =>
       f.name === form.name
         ? {
-          name: form.name,
-          service: form.service,
-          rank: form.rank,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : f
     );
@@ -132,12 +137,7 @@ const FilmPage: React.FC = () => {
   };
 
   const startEdit = (selectedFilm: Film, isClone?: boolean) => {
-    setEditForm({
-      name: selectedFilm.name,
-      service: selectedFilm.service,
-      rank: selectedFilm.rank,
-      tags: selectedFilm.tags
-    });
+    setEditForm(selectedFilm);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -215,7 +215,7 @@ const FilmPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Films</h1>
       <Search
         search={search}

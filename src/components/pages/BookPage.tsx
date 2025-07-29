@@ -11,7 +11,9 @@ import BookCard from '../atoms/Book/BookCard';
 import BookForm from '../atoms/Book/BookForm';
 import { bookTypes, DefaultBook, type Book } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const BOOKS_PER_PAGE = 24;
 const bookSearchByOptions = [
@@ -39,7 +41,7 @@ const BookPage: React.FC = () => {
   const [bookToDelete, setBookToDelete] = useState<Book | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
   const [showTableView, setShowTableView] = useState(false);
@@ -77,15 +79,15 @@ const BookPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -95,28 +97,33 @@ const BookPage: React.FC = () => {
 
   const handleAddBook = (form: Book) => {
     const newBook = {
-      name: form.name,
-      author: form.author,
-      type: form.type,
-      tags: form.tags
+      ...form,
+      name: capitalizeEachWord(form.name),
+      author: capitalizeEachWord(form.author),
     };
-    const updatedBooks = [newBook, ...books];
-    handleSubmit(updatedBooks);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultBook);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(books.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedBooks = [newBook, ...books];
+      handleSubmit(updatedBooks);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultBook);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditBook = (form: Book) => {
     const updatedBooks = books.map((b) =>
       b.name === form.name
         ? {
-          name: form.name,
-          author: form.author,
-          type: form.type,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
+          author: capitalizeEachWord(form.author),
         }
         : b
     );
@@ -128,12 +135,7 @@ const BookPage: React.FC = () => {
   };
 
   const startEdit = (selectedBook: Book, isClone?: boolean) => {
-    setEditForm({
-      name: selectedBook.name,
-      author: selectedBook.author,
-      type: selectedBook.type,
-      tags: selectedBook.tags
-    });
+    setEditForm(selectedBook);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -211,7 +213,7 @@ const BookPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Books</h1>
       <Search
         search={search}

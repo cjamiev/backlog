@@ -11,7 +11,9 @@ import ShowCard from '../atoms/Show/ShowCard';
 import ShowForm from '../atoms/Show/ShowForm';
 import { DefaultShow, serviceType, type Show } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const SHOWS_PER_PAGE = 24;
 const showSearchByOptions = [
@@ -41,7 +43,7 @@ const ShowsPage: React.FC = () => {
   const [showToDelete, setShowToDelete] = useState<Show | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
   const [showTableView, setShowTableView] = useState(false);
@@ -81,15 +83,15 @@ const ShowsPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -99,28 +101,31 @@ const ShowsPage: React.FC = () => {
 
   const handleAddShow = (form: Show) => {
     const newShow = {
-      name: form.name,
-      service: form.service,
-      rank: form.rank,
-      tags: form.tags
+      ...form,
+      name: capitalizeEachWord(form.name),
     };
-    const updatedShows = [newShow, ...shows];
-    handleSubmit(updatedShows);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultShow);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(shows.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedShows = [newShow, ...shows];
+      handleSubmit(updatedShows);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultShow);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditShow = (form: Show) => {
     const updatedShows = shows.map((s) =>
       s.name === form.name
         ? {
-          name: form.name,
-          service: form.service,
-          rank: form.rank,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : s
     );
@@ -132,12 +137,7 @@ const ShowsPage: React.FC = () => {
   };
 
   const startEdit = (selectedShow: Show, isClone?: boolean) => {
-    setEditForm({
-      name: selectedShow.name,
-      service: selectedShow.service,
-      rank: selectedShow.rank,
-      tags: selectedShow.tags
-    });
+    setEditForm(selectedShow);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -215,7 +215,7 @@ const ShowsPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Shows</h1>
       <Search
         search={search}

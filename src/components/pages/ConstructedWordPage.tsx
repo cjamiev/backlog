@@ -11,7 +11,9 @@ import WordCard from '../atoms/Word/WordCard';
 import WordForm from '../atoms/Word/WordForm';
 import { DefaultWord, type Word } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const WORDS_PER_PAGE = 24;
 const wordSearchByOptions = [
@@ -38,7 +40,7 @@ const ConstructedWordPage: React.FC = () => {
   const [wordToDelete, setWordToDelete] = useState<Word | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -75,15 +77,15 @@ const ConstructedWordPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -93,28 +95,30 @@ const ConstructedWordPage: React.FC = () => {
 
   const handleAddWord = (form: Word) => {
     const newWord = {
+      ...form,
       value: form.value.toLocaleLowerCase(),
-      definition: form.definition,
-      type: form.type,
-      tags: form.tags
     };
-    const updatedWords = [newWord, ...words];
-    handleSubmit(updatedWords);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultWord);
-    setSearch('');
+    const isThereADuplicate = checkIfDuplicateId(words.map(i => i.value), form.value);
+    if (!isThereADuplicate) {
+      const updatedWords = [newWord, ...words];
+      handleSubmit(updatedWords);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultWord);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditWord = (form: Word) => {
     const updatedWords = words.map((w) =>
       w.value === form.value
         ? {
+          ...form,
           value: form.value.toLocaleLowerCase(),
-          definition: form.definition,
-          type: form.type,
-          tags: form.tags
         }
         : w
     );
@@ -126,12 +130,7 @@ const ConstructedWordPage: React.FC = () => {
   };
 
   const startEdit = (selectedWord: Word, isClone?: boolean) => {
-    setEditForm({
-      value: selectedWord.value,
-      definition: selectedWord.definition,
-      type: selectedWord.type,
-      tags: selectedWord.tags
-    });
+    setEditForm(selectedWord);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -205,7 +204,7 @@ const ConstructedWordPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Constructed Words</h1>
       <Search
         search={search}

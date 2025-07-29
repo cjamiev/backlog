@@ -11,7 +11,9 @@ import SongCard from '../atoms/Song/SongCard';
 import SongForm from '../atoms/Song/SongForm';
 import { DefaultSong, type Song } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const SONGS_PER_PAGE = 24;
 const songSearchByOptions = [
@@ -43,11 +45,10 @@ const SongPage: React.FC = () => {
   const [songToDelete, setSongToDelete] = useState<Song | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
   const [showTableView, setShowTableView] = useState(false);
-
 
   const filteredSongs = songs.filter((s: Song) => {
     if (searchBy === 'tags') {
@@ -89,15 +90,15 @@ const SongPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -107,34 +108,40 @@ const SongPage: React.FC = () => {
 
   const handleAddSong = (form: Song) => {
     const newSong = {
+      ...form,
       id: String(songs.length + 1),
-      name: form.name,
-      album: form.album,
-      band: form.band,
-      rank: form.rank,
-      link: form.link,
-      tags: form.tags
+      name: capitalizeEachWord(form.name),
+      album: capitalizeEachWord(form.album),
+      band: capitalizeEachWord(form.band),
     };
-    const updatedSongs = [newSong, ...songs];
-    handleSubmit(updatedSongs);
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
-    setEditForm(DefaultSong);
     setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(songs.map(i => i.name + i.band), form.name + form.band);
+    if (!isThereADuplicate) {
+      const updatedSongs = [newSong, ...songs];
+      handleSubmit(updatedSongs);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultSong);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditSong = (form: Song) => {
     const updatedSongs = songs.map((s) =>
       s.id === form.id
         ? {
-          id: s.id,
-          name: form.name,
-          album: form.album,
-          band: form.band,
-          rank: form.rank,
-          link: form.link,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
+          album: capitalizeEachWord(form.album),
+          band: capitalizeEachWord(form.band),
         }
         : s
     );
@@ -147,13 +154,8 @@ const SongPage: React.FC = () => {
 
   const startEdit = (selectedSong: Song, isClone?: boolean) => {
     setEditForm({
+      ...selectedSong,
       id: isClone ? String(songs.length + 1) : selectedSong.id,
-      name: selectedSong.name,
-      album: selectedSong.album,
-      band: selectedSong.band,
-      rank: selectedSong.rank,
-      link: selectedSong.link,
-      tags: selectedSong.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -232,7 +234,7 @@ const SongPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Songs</h1>
       <Search
         search={search}

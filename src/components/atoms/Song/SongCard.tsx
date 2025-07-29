@@ -55,6 +55,14 @@ const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, on
           >
             Google
           </a>
+          {!song.link && <a
+            className="url-link"
+            href={`https://www.youtube.com/results?search_query=${encodeURIComponent(song.name + ' ' + song.band + ' song')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Youtube
+          </a>}
         </div>
       </div>
       <div className="card-footer">

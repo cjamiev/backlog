@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
-import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
 import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';
@@ -11,7 +10,9 @@ import ProjectCard from '../atoms/Project/ProjectCard';
 import ProjectForm from '../atoms/Project/ProjectForm';
 import { DefaultProject, type Project } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const PROJECTS_PER_PAGE = 24;
 const projectSearchByOptions = [
@@ -42,7 +43,7 @@ const ProjectPage: React.FC = () => {
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
 
@@ -86,15 +87,15 @@ const ProjectPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -104,30 +105,32 @@ const ProjectPage: React.FC = () => {
 
   const handleAddProject = (form: Project) => {
     const newProject = {
+      ...form,
       id: String(projects.length + 1),
-      name: form.name,
-      details: form.details,
-      rank: form.rank,
-      tags: form.tags
+      name: capitalizeEachWord(form.name),
     };
-    const updatedProjects = [newProject, ...projects];
-    handleSubmit(updatedProjects);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultProject);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(projects.map(i => i.name), form.name);
+    if (!isThereADuplicate) {
+      const updatedProjects = [newProject, ...projects];
+      handleSubmit(updatedProjects);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultProject);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditProject = (form: Project) => {
     const updatedProjects = projects.map((p) =>
       p.id === form.id
         ? {
-          id: p.id,
-          name: form.name,
-          details: form.details,
-          rank: form.rank,
-          tags: form.tags
+          ...form,
+          name: capitalizeEachWord(form.name),
         }
         : p
     );
@@ -140,11 +143,8 @@ const ProjectPage: React.FC = () => {
 
   const startEdit = (selectedProject: Project, isClone?: boolean) => {
     setEditForm({
+      ...selectedProject,
       id: isClone ? String(projects.length + 1) : selectedProject.id,
-      name: selectedProject.name,
-      details: selectedProject.details,
-      rank: selectedProject.rank,
-      tags: selectedProject.tags
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -219,7 +219,7 @@ const ProjectPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Projects</h1>
       <Search
         search={search}

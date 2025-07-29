@@ -44,7 +44,7 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProp
         <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
         <a
           className="form-id-link"
-          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(form.name + ' song')}`}
+          href={`https://www.youtube.com/results?search_query=${encodeURIComponent(form.name + ' ' + form.band + ' song')}`}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -57,7 +57,7 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProp
       </label>
       <label className="form-label">
         Band:
-        <input className="form-input" type="text" name="band" value={form.band} onChange={handleChange} />
+        <input className="form-input" type="text" name="band" value={form.band} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>

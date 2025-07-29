@@ -11,7 +11,9 @@ import WordPartCard from '../atoms/WordPart/WordPartCard';
 import WordPartForm from '../atoms/WordPart/WordPartForm';
 import { DefaultWordPart, type WordPart } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { BANNER_MESSAGES } from '../../constants/messages';
+import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
 const WORDPARTS_PER_PAGE = 24;
 const wordPartSearchByOptions = [
@@ -38,7 +40,7 @@ const WordPartPage: React.FC = () => {
   const [wordPartToDelete, setWordPartToDelete] = useState<WordPart | null>(null);
   const [showCSVModal, setShowCSVModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
-  const [showBanner, setShowBanner] = useState<{ show: boolean; type: string }>({ show: false, type: 'success' });
+  const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredWordParts = wordParts.filter((wp: WordPart) => {
@@ -64,15 +66,15 @@ const WordPartPage: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setShowBanner({ show: true, type: 'success' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'success', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ show: true, type: 'error' });
-      setTimeout(() => setShowBanner({ show: false, type: '' }), 2500);
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
 
@@ -82,26 +84,31 @@ const WordPartPage: React.FC = () => {
 
   const handleAddWordPart = (form: WordPart) => {
     const newWordPart = {
+      ...form,
       value: form.value.toLocaleLowerCase(),
-      definition: form.definition,
-      type: form.type
     };
-    const updatedWordParts = [newWordPart, ...wordParts];
-    handleSubmit(updatedWordParts);
-    setIsPanelOpen(false);
-    setIsAddMode(false);
-    setIsEditing(false);
-    setEditForm(DefaultWordPart);
-    setSearch('');
+
+    const isThereADuplicate = checkIfDuplicateId(wordParts.map(i => i.value), form.value);
+    if (!isThereADuplicate) {
+      const updatedWordParts = [newWordPart, ...wordParts];
+      handleSubmit(updatedWordParts);
+      setIsPanelOpen(false);
+      setIsAddMode(false);
+      setIsEditing(false);
+      setEditForm(DefaultWordPart);
+      setSearch('');
+    } else {
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.DUPLICATE_ID });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    }
   };
 
   const handleEditWordPart = (form: WordPart) => {
     const updatedWordParts = wordParts.map((wp) =>
       wp.value === form.value
         ? {
+          ...form,
           value: form.value.toLocaleLowerCase(),
-          definition: form.definition,
-          type: form.type
         }
         : wp
     );
@@ -113,11 +120,7 @@ const WordPartPage: React.FC = () => {
   };
 
   const startEdit = (selectedWordPart: WordPart, isClone?: boolean) => {
-    setEditForm({
-      value: selectedWordPart.value,
-      definition: selectedWordPart.definition,
-      type: selectedWordPart.type
-    });
+    setEditForm(selectedWordPart);
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
     setIsPanelOpen(true);
@@ -179,7 +182,7 @@ const WordPartPage: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <Banner isVisible={showBanner.show} type={showBanner.type} />
+      <Banner {...showBanner} />
       <h1 className="page-title">Word Parts</h1>
       <Search
         search={search}
