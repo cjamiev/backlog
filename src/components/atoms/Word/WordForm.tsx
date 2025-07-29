@@ -6,9 +6,10 @@ interface WordFormProps {
   initialValues?: Word;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function WordForm({ onSubmit, initialValues, cancelEdit, allTags }: WordFormProps) {
+function WordForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: WordFormProps) {
   const [form, setForm] = useState<Word>(DefaultWord);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ function WordForm({ onSubmit, initialValues, cancelEdit, allTags }: WordFormProp
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Word:
-        <input className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Definition:

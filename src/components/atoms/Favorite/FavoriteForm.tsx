@@ -7,9 +7,10 @@ interface FavoriteFormProps {
   cancelEdit: () => void;
   favoriteTypes: string[];
   allTags: string[];
+  isEditing: boolean;
 }
 
-function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allTags }: FavoriteFormProps) {
+function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allTags, isEditing }: FavoriteFormProps) {
   const [form, setForm] = useState<Favorite>(DefaultFavorite);
 
   useEffect(() => {
@@ -44,7 +45,7 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Favorite Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Link:

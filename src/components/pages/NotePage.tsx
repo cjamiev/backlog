@@ -315,6 +315,7 @@ const NotePage: React.FC = () => {
           initialValues={editForm}
           cancelEdit={cancelEdit}
           allTags={allTags}
+          isEditing={isEditing}
         />
       </Sidepanel>
     </div>

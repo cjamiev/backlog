@@ -7,9 +7,10 @@ interface SongFormProps {
   initialValues?: Song;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProps) {
+function SongForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: SongFormProps) {
   const [form, setForm] = useState<Song>(DefaultSong);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags }: SongFormProp
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
         Song Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
         <a
           className="form-id-link"
           href={`https://www.youtube.com/results?search_query=${encodeURIComponent(form.name + ' ' + form.band + ' song')}`}

@@ -6,9 +6,10 @@ interface NoteFormProps {
   initialValues: Note;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit, allTags }) => {
+const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit, allTags, isEditing }) => {
   const [form, setForm] = useState<Note>(initialValues);
 
   useEffect(() => {
@@ -46,6 +47,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit
       <label className="form-label">
         Note Name:
         <input
+          disabled={isEditing}
           className="form-input"
           name="name"
           value={form.name}

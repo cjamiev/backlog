@@ -274,6 +274,7 @@ const WordPartPage: React.FC = () => {
           onSubmit={isEditing ? handleEditWordPart : handleAddWordPart}
           initialValues={editForm}
           cancelEdit={cancelEdit}
+          isEditing={isEditing}
         />
       </Sidepanel>
     </div>

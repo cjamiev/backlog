@@ -6,9 +6,10 @@ interface PhraseFormProps {
   initialValues?: Phrase;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function PhraseForm({ onSubmit, initialValues, cancelEdit, allTags }: PhraseFormProps) {
+function PhraseForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: PhraseFormProps) {
   const [form, setForm] = useState<Phrase>(DefaultPhrase);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ function PhraseForm({ onSubmit, initialValues, cancelEdit, allTags }: PhraseForm
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Phrase:
-        <input className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Origin:

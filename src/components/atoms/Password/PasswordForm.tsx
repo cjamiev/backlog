@@ -6,9 +6,10 @@ interface PasswordFormProps {
   initialValues?: Password;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags }: PasswordFormProps) {
+function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: PasswordFormProps) {
   const [form, setForm] = useState<Password>(DefaultPassword);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -55,7 +56,7 @@ function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags }: Password
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Service/Website Name:
-        <input className="form-input" type="text" name="id" value={form.id} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="id" value={form.id} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Username/Email:

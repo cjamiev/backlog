@@ -7,9 +7,10 @@ interface ProjectFormProps {
   initialValues?: Project;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags }: ProjectFormProps) {
+function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: ProjectFormProps) {
   const [form, setForm] = useState<Project>(DefaultProject);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags }: ProjectFo
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Project Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Details:

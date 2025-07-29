@@ -6,9 +6,10 @@ interface ReferenceFormProps {
   initialValues?: Reference;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function ReferenceForm({ onSubmit, initialValues, cancelEdit, allTags }: ReferenceFormProps) {
+function ReferenceForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: ReferenceFormProps) {
   const [form, setForm] = useState<Reference>(DefaultReference);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ function ReferenceForm({ onSubmit, initialValues, cancelEdit, allTags }: Referen
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Reference:
-        <input className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Origin:

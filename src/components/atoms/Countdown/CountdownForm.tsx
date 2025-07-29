@@ -6,9 +6,10 @@ interface CountdownFormProps {
   initialValues?: Countdown;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags }: CountdownFormProps) {
+function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: CountdownFormProps) {
   const [form, setForm] = useState<Countdown>(DefaultCountdown);
 
   useEffect(() => {
@@ -47,7 +48,7 @@ function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags }: Countdo
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Countdown Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Target Date:
@@ -88,9 +89,9 @@ function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags }: Countdo
         <button className="form-submit" type="submit">
           Submit
         </button>
-          <button className="form-cancel-btn" onClick={cancelEdit}>
-            Cancel
-          </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
       </div>
     </form>
   );

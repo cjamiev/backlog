@@ -6,9 +6,10 @@ interface BookFormProps {
   initialValues?: Book;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProps) {
+function BookForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: BookFormProps) {
   const [form, setForm] = useState<Book>(DefaultBook);
 
   useEffect(() => {
@@ -40,7 +41,7 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags }: BookFormProp
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
         Book Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
         <a
           className="form-id-link"
           href={`https://www.google.com/search?q=${encodeURIComponent(form.name + ' book')}`}

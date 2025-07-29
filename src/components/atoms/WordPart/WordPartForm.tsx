@@ -5,9 +5,10 @@ interface WordPartFormProps {
   onSubmit: (form: WordPart) => void;
   initialValues?: WordPart;
   cancelEdit: () => void;
+  isEditing: boolean;
 }
 
-function WordPartForm({ onSubmit, initialValues, cancelEdit }: WordPartFormProps) {
+function WordPartForm({ onSubmit, initialValues, cancelEdit, isEditing }: WordPartFormProps) {
   const [form, setForm] = useState<WordPart>(DefaultWordPart);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ function WordPartForm({ onSubmit, initialValues, cancelEdit }: WordPartFormProps
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Word Part:
-        <input className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Type:

@@ -6,9 +6,10 @@ interface ContactFormProps {
   initialValues: Contact;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, initialValues, cancelEdit, allTags }) => {
+const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, initialValues, cancelEdit, allTags, isEditing }) => {
   const [form, setForm] = useState<Contact>(initialValues);
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, initialValues, canc
       <label className="form-label">
         Name:
         <input
+          disabled={isEditing}
           className="form-input"
           name="name"
           value={form.name}

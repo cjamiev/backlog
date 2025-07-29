@@ -385,6 +385,7 @@ const FavoritePage: React.FC = () => {
           cancelEdit={cancelEdit}
           favoriteTypes={favoriteTypes}
           allTags={allTags}
+          isEditing={isEditing}
         />
       </Sidepanel>
       <Footer>

@@ -6,9 +6,10 @@ interface NameFormProps {
   initialValues?: Name;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function NameForm({ onSubmit, initialValues, cancelEdit, allTags }: NameFormProps) {
+function NameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: NameFormProps) {
   const [form, setForm] = useState<Name>(DefaultName);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ function NameForm({ onSubmit, initialValues, cancelEdit, allTags }: NameFormProp
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Name:
-        <input className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
       </label>
       <label className="form-label">
         Gender:

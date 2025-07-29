@@ -310,14 +310,14 @@ const SongPage: React.FC = () => {
               Select A Tag
             </button>
           </div>
-          {!showTableView && <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            handlePrevious={handlePrevious}
-            handlePageSelect={handlePageSelect}
-            handleNext={handleNext}
-          />}
         </div>
+        {!showTableView && <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          handlePrevious={handlePrevious}
+          handlePageSelect={handlePageSelect}
+          handleNext={handleNext}
+        />}
       </Footer>
       <Modal
         isOpen={showDeleteModal}
@@ -375,6 +375,7 @@ const SongPage: React.FC = () => {
           initialValues={editForm}
           allTags={allTags}
           cancelEdit={cancelEdit}
+          isEditing={isEditing}
         />
       </Sidepanel>
     </div>

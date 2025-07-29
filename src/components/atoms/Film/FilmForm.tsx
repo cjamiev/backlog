@@ -7,9 +7,10 @@ interface FilmFormProps {
   initialValues?: Film;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProps) {
+function FilmForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: FilmFormProps) {
   const [form, setForm] = useState<Film>(DefaultFilm);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags }: FilmFormProp
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
         Film Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
         <a
           className="form-id-link"
           href={`https://www.google.com/search?q=${encodeURIComponent(form.name + ' film')}`}

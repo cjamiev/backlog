@@ -7,9 +7,10 @@ interface GameFormProps {
   initialValues?: Game;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-function GameForm({ onSubmit, initialValues, cancelEdit, allTags }: GameFormProps) {
+function GameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: GameFormProps) {
   const [form, setForm] = useState<Game>(DefaultGame);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ function GameForm({ onSubmit, initialValues, cancelEdit, allTags }: GameFormProp
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
         Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
         <a
           className="form-id-link"
           href={`https://www.google.com/search?q=${encodeURIComponent(form.name + ' game')}`}

@@ -7,9 +7,10 @@ interface ShowFormProps {
   initialValues: Show;
   cancelEdit: () => void;
   allTags: string[];
+  isEditing: boolean;
 }
 
-const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit, allTags }) => {
+const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit, allTags, isEditing }) => {
   const [form, setForm] = useState<Show>(initialValues);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit
     <form onSubmit={handleSubmit} className="form-wrapper">
       <label className="form-id">
         Show Name:
-        <input className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
         <a
           className="form-id-link"
           href={`https://www.google.com/search?q=${encodeURIComponent(form.name + ' show')}`}
