@@ -30,7 +30,6 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultFavorite);
   };
 
   const handleTagClick = (tag: string) => {

@@ -27,7 +27,6 @@ function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultProject);
   };
 
   const handleTagClick = (tag: string) => {

@@ -25,7 +25,6 @@ function WordPartForm({ onSubmit, initialValues, cancelEdit, isEditing }: WordPa
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultWordPart);
   };
 
   return (

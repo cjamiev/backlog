@@ -26,7 +26,6 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: B
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultBook);
   };
 
   const handleTagClick = (tag: string) => {

@@ -27,7 +27,6 @@ function GameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: G
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultGame);
   };
 
   const handleTagClick = (tag: string) => {

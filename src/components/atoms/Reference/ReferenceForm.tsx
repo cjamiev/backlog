@@ -26,7 +26,6 @@ function ReferenceForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultReference);
   };
 
   const handleTagClick = (tag: string) => {

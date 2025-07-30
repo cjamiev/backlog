@@ -27,7 +27,6 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: F
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultFilm);
   };
 
   const handleTagClick = (tag: string) => {

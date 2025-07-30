@@ -29,7 +29,6 @@ function WordForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: W
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultWord);
   };
 
   const handleTagClick = (tag: string) => {

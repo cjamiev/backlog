@@ -27,7 +27,6 @@ const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultShow);
   };
 
   const handleTagClick = (tag: string) => {

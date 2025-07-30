@@ -29,7 +29,6 @@ function NameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: N
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultName);
   };
 
   const handleTagClick = (tag: string) => {

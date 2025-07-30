@@ -26,7 +26,6 @@ function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultCountdown);
   };
 
   const setQuickDate = (daysFromNow: number) => {

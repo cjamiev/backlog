@@ -27,7 +27,6 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: S
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
-    setForm(DefaultSong);
   };
 
   const handleTagClick = (tag: string) => {
