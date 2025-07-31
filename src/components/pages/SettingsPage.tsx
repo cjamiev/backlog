@@ -6,6 +6,7 @@ import { trackerTypes, gamedevTypes, entertainmentTypes } from '../../constants/
 import { clearStorage } from '../../utils/storage';
 import { getIsDemoMode } from '../../utils/config';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
+import { loadAllMockData, loadMockData } from '../../utils/demoUtils';
 
 const SettingsPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string; message: string }>({
@@ -13,6 +14,16 @@ const SettingsPage: React.FC = () => {
     type: 'success',
     message: ''
   });
+
+  const handleLoadMockData = (key?: string) => {
+    if (key) {
+      loadMockData(key);
+    } else {
+      loadAllMockData();
+    }
+    setShowBanner({ isVisible: true, type: 'success', message: `Loaded ${key ? key : 'Loaded all'}` });
+    setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+  };
 
   const handleClearLocalStorage = (key?: string) => {
     clearStorage(key);
@@ -69,6 +80,8 @@ const SettingsPage: React.FC = () => {
           </div> :
             <div className='settings-content'>
               <h2>Local Storage Operations</h2>
+              <p>***You may have to refresh page due to react query caching data***</p>
+              <h3>  Clear Data </h3>
               <div className='settings-backend-wrapper'>
                 <div className='settings-btns-section'>
                   <button className="primary-btn" onClick={() => handleClearLocalStorage()}>
@@ -86,6 +99,28 @@ const SettingsPage: React.FC = () => {
                   {trackerTypes.map(type =>
                     <button key={type} className="primary-btn" onClick={() => { handleClearLocalStorage(type) }}>
                       Clear {type}
+                    </button>
+                  )}
+                </div>
+              </div>
+              <h3>  Load Mock Data </h3>
+              <div className='settings-backend-wrapper'>
+                <div className='settings-btns-section'>
+                  <button className="primary-btn" onClick={() => handleLoadMockData()}>
+                    Load all
+                  </button>
+                </div>
+                <div className='settings-btns-section'>
+                  {entertainmentTypes.map(type =>
+                    <button key={type} className="primary-btn" onClick={() => { handleLoadMockData(type) }}>
+                      Load {type}
+                    </button>
+                  )}
+                </div>
+                <div className='settings-btns-section'>
+                  {trackerTypes.map(type =>
+                    <button key={type} className="primary-btn" onClick={() => { handleLoadMockData(type) }}>
+                      Load {type}
                     </button>
                   )}
                 </div>

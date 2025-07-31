@@ -1,11 +1,14 @@
 import { StrictMode } from 'react';
 import AppRouter from './components/AppRouter';
 import './index.css';
-
-const isDevelopmentMode = import.meta.env.VITE_APP_MODE === 'dev';
+import { getIsDemoMode, getIsDevMode } from './utils/config';
+import { initializeApp } from './utils/demoUtils';
 
 function App() {
-  if (isDevelopmentMode) {
+  if (getIsDemoMode()) {
+    initializeApp();
+  }
+  if (getIsDevMode()) {
     return (
       <StrictMode>
         <AppRouter />
