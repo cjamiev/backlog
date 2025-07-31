@@ -51,12 +51,18 @@
   height: 200px;
 }
 
+.card-body-with-details {
+  height: 475px;
+}
+
 .card-text {
   color: var(--color-text-primary);
 }
 
 .card-details {
   overflow: auto;
+  height: 350px;
+  padding: 2px;
 }
 
 .card-label {

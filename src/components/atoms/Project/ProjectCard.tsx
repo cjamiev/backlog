@@ -16,7 +16,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onD
       <div className="card-header">
         <h2 className="card-title">{project.name}</h2>
       </div>
-      <div>
+      <div className='card-body-with-details'>
         <div>
           <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(project.rank)}</span>
         </div>

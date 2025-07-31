@@ -15,7 +15,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{note.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body-with-details'>
         <div>
           <span className="card-label">Created:</span> <span className="card-text">{note.createdDate}</span>
         </div>
