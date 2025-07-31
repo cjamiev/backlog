@@ -49,7 +49,7 @@ const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, on
         <div className='link-wrapper'>
           <a
             className="url-link"
-            href={`https://www.google.com/search?q=${encodeURIComponent(song.name + ' ' + song.album)}`}
+            href={`https://www.google.com/search?q=${encodeURIComponent(song.name + ' ' + song.band)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
