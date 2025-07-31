@@ -12,10 +12,7 @@ export const getJSON = (records: object[]) => {
   return JSON.stringify(records, null, 2);
 };
 
-export const getPasswordHistory = (selectedPassword: Password, isClone?: boolean): string => {
-  if (isClone) {
-    return '[]';
-  }
+export const getPasswordHistory = (selectedPassword: Password): string => {
   const currentPasswordHistory: PasswordHistory[] = JSON.parse(selectedPassword.history);
   const updatePasswordHistory: PasswordHistory[] = currentPasswordHistory.concat({ password: selectedPassword.password, createdDate: selectedPassword.createdDate });
 

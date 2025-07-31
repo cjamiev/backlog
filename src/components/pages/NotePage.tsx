@@ -128,10 +128,9 @@ const NotePage: React.FC = () => {
     setEditForm(DefaultNote);
   };
 
-  const startEdit = (selectedNote: Note, isClone?: boolean) => {
+  const startEdit = (selectedNote: Note) => {
     setEditForm(selectedNote);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -224,9 +223,6 @@ const NotePage: React.FC = () => {
                 note={note}
                 onEdit={() => {
                   startEdit(note);
-                }}
-                onClone={() => {
-                  startEdit(note, true);
                 }}
                 onDelete={() => handleDeleteNote(note)}
                 onHandleClickTag={handleClickTag}

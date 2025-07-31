@@ -141,13 +141,12 @@ const ProjectPage: React.FC = () => {
     setEditForm(DefaultProject);
   };
 
-  const startEdit = (selectedProject: Project, isClone?: boolean) => {
+  const startEdit = (selectedProject: Project) => {
     setEditForm({
       ...selectedProject,
-      id: isClone ? String(projects.length + 1) : selectedProject.id,
+      id: selectedProject.id,
     });
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -240,9 +239,6 @@ const ProjectPage: React.FC = () => {
                 project={project}
                 onEdit={() => {
                   startEdit(project);
-                }}
-                onClone={() => {
-                  startEdit(project, true);
                 }}
                 onDelete={() => handleDeleteProject(project)}
                 onHandleClickTag={handleClickTag}

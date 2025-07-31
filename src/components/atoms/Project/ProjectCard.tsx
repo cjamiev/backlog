@@ -5,12 +5,11 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface ProjectCardProps {
   project: Project;
   onEdit: () => void;
-  onClone: () => void;
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper card-with-details-wrapper">
       <div className="card-header">
@@ -38,9 +37,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onClone, onD
         </pre>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

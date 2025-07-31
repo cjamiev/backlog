@@ -4,12 +4,11 @@ import { type Password } from '../../../model/password';
 interface PasswordCardProps {
   password: Password;
   onEdit: () => void;
-  onClone: () => void;
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onDelete, onHandleClickTag }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -71,9 +70,6 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onClone, 
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

@@ -4,12 +4,11 @@ import type { Note } from '../../../model/library';
 interface NoteCardProps {
   note: Note;
   onEdit: () => void;
-  onClone: () => void;
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper card-with-details-wrapper">
       <div className="card-header">
@@ -42,9 +41,6 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onClone, onDelete, on
         </pre>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

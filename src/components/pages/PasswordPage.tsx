@@ -146,7 +146,7 @@ const PasswordPage: React.FC = () => {
     setEditForm(DefaultPassword);
   };
 
-  const startEdit = (selectedPassword: Password, isClone?: boolean) => {
+  const startEdit = (selectedPassword: Password) => {
     setEditForm({
       id: selectedPassword.id,
       username: selectedPassword.username,
@@ -154,10 +154,9 @@ const PasswordPage: React.FC = () => {
       createdDate: String(Date.now()),
       url: selectedPassword.url,
       tags: selectedPassword.tags,
-      history: getPasswordHistory(selectedPassword, isClone)
+      history: getPasswordHistory(selectedPassword)
     });
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -254,9 +253,6 @@ const PasswordPage: React.FC = () => {
                 password={password}
                 onEdit={() => {
                   startEdit(password);
-                }}
-                onClone={() => {
-                  startEdit(password, true);
                 }}
                 onDelete={() => handleDeletePassword(password)}
                 onHandleClickTag={handleClickTag}
