@@ -109,7 +109,7 @@ const SongPage: React.FC = () => {
   const handleAddSong = (form: Song) => {
     const newSong = {
       ...form,
-      id: form.name + form.band,
+      id: capitalizeEachWord(form.name) + capitalizeEachWord(form.band),
       name: capitalizeEachWord(form.name),
       album: capitalizeEachWord(form.album),
       band: capitalizeEachWord(form.band),
@@ -119,7 +119,7 @@ const SongPage: React.FC = () => {
     setIsEditing(false);
     setSearch('');
 
-    const isThereADuplicate = checkIfDuplicateId(songs.map(i => i.name + i.band), newSong.name + newSong.band);
+    const isThereADuplicate = checkIfDuplicateId(songs.map(i => i.id), newSong.id);
     if (!isThereADuplicate) {
       const updatedSongs = [newSong, ...songs];
       handleSubmit(updatedSongs);
@@ -139,7 +139,6 @@ const SongPage: React.FC = () => {
       s.id === form.id
         ? {
           ...form,
-          id: form.name + form.band,
           name: capitalizeEachWord(form.name),
           album: capitalizeEachWord(form.album),
           band: capitalizeEachWord(form.band),
