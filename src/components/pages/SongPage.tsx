@@ -109,7 +109,7 @@ const SongPage: React.FC = () => {
   const handleAddSong = (form: Song) => {
     const newSong = {
       ...form,
-      id: String(songs.length + 1),
+      id: form.name + form.band,
       name: capitalizeEachWord(form.name),
       album: capitalizeEachWord(form.album),
       band: capitalizeEachWord(form.band),
@@ -119,7 +119,7 @@ const SongPage: React.FC = () => {
     setIsEditing(false);
     setSearch('');
 
-    const isThereADuplicate = checkIfDuplicateId(songs.map(i => i.name + i.band), form.name + form.band);
+    const isThereADuplicate = checkIfDuplicateId(songs.map(i => i.name + i.band), newSong.name + newSong.band);
     if (!isThereADuplicate) {
       const updatedSongs = [newSong, ...songs];
       handleSubmit(updatedSongs);
@@ -139,6 +139,7 @@ const SongPage: React.FC = () => {
       s.id === form.id
         ? {
           ...form,
+          id: form.name + form.band,
           name: capitalizeEachWord(form.name),
           album: capitalizeEachWord(form.album),
           band: capitalizeEachWord(form.band),
@@ -155,7 +156,7 @@ const SongPage: React.FC = () => {
   const startEdit = (selectedSong: Song, isClone?: boolean) => {
     setEditForm({
       ...selectedSong,
-      id: isClone ? String(songs.length + 1) : selectedSong.id,
+      id: isClone ? selectedSong.name + selectedSong.band + ' copy' : selectedSong.name + selectedSong.band,
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));

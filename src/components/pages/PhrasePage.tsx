@@ -94,13 +94,8 @@ const PhrasePage: React.FC = () => {
     mutate({ payload: JSON.stringify(payload), type: 'phrases' });
   };
 
-  const handleAddPhrase = (form: Phrase) => {
-    const newPhrase = {
-      ...form,
-      id: String(phrases.length + 1),
-    };
-
-    const isThereADuplicate = checkIfDuplicateId(phrases.map(i => i.value), form.value);
+  const handleAddPhrase = (newPhrase: Phrase) => {
+    const isThereADuplicate = checkIfDuplicateId(phrases.map(i => i.value), newPhrase.value);
     if (!isThereADuplicate) {
       const updatedPhrases = [newPhrase, ...phrases];
       handleSubmit(updatedPhrases);
@@ -117,7 +112,7 @@ const PhrasePage: React.FC = () => {
 
   const handleEditPhrase = (form: Phrase) => {
     const updatedPhrases = phrases.map((p) =>
-      p.id === form.id
+      p.value === form.value
         ? form
         : p
     );
@@ -131,7 +126,7 @@ const PhrasePage: React.FC = () => {
   const startEdit = (selectedPhrase: Phrase, isClone?: boolean) => {
     setEditForm({
       ...selectedPhrase,
-      id: isClone ? String(phrases.length + 1) : selectedPhrase.id,
+      value: isClone ? selectedPhrase.value + ' copy' : selectedPhrase.value,
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -159,7 +154,7 @@ const PhrasePage: React.FC = () => {
 
   const confirmDeletePhrase = () => {
     if (phraseToDelete) {
-      const updatedPhrases = phrases.filter((p) => p.id !== phraseToDelete.id);
+      const updatedPhrases = phrases.filter((p) => p.value !== phraseToDelete.value);
       handleSubmit(updatedPhrases);
       setShowDeleteModal(false);
       setPhraseToDelete(null);
@@ -222,9 +217,9 @@ const PhrasePage: React.FC = () => {
         {!isLoadingPhrases ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
-            {paginatedPhrases.map((phrase, idx) => (
+            {paginatedPhrases.map((phrase) => (
               <PhraseCard
-                key={idx}
+                key={phrase.value}
                 phrase={phrase}
                 onEdit={() => {
                   startEdit(phrase);
@@ -295,9 +290,9 @@ const PhrasePage: React.FC = () => {
         <div className="modal-data-display">
           <div className="tags-container">
             {allTags.length === 0 && <div>No tags available.</div>}
-            {allTags.map((tag, idx) => (
+            {allTags.map((tag) => (
               <button
-                key={idx}
+                key={tag}
                 className="tag-btn"
                 onClick={() => handleSelectTagFromModal(tag)}
               >

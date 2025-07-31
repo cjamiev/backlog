@@ -100,13 +100,8 @@ const ReferencePage: React.FC = () => {
     mutate({ payload: JSON.stringify(payload), type: 'references' });
   };
 
-  const handleAddReference = (form: Reference) => {
-    const newReference = {
-      ...form,
-      id: String(references.length + 1),
-    };
-
-    const isThereADuplicate = checkIfDuplicateId(references.map(i => i.value), form.value);
+  const handleAddReference = (newReference: Reference) => {
+    const isThereADuplicate = checkIfDuplicateId(references.map(i => i.value), newReference.value);
     if (!isThereADuplicate) {
       const updatedReferences = [newReference, ...references];
       handleSubmit(updatedReferences);
@@ -123,7 +118,7 @@ const ReferencePage: React.FC = () => {
 
   const handleEditReference = (form: Reference) => {
     const updatedReferences = references.map((r) =>
-      r.id === form.id
+      r.value === form.value
         ? form
         : r
     );
@@ -137,7 +132,7 @@ const ReferencePage: React.FC = () => {
   const startEdit = (selectedReference: Reference, isClone?: boolean) => {
     setEditForm({
       ...selectedReference,
-      id: isClone ? String(references.length + 1) : selectedReference.id,
+      value: isClone ? selectedReference.value + ' Copy' : selectedReference.value,
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -165,7 +160,7 @@ const ReferencePage: React.FC = () => {
 
   const confirmDeleteReference = () => {
     if (referenceToDelete) {
-      const updatedReferences = references.filter((r) => r.id !== referenceToDelete.id);
+      const updatedReferences = references.filter((r) => r.value !== referenceToDelete.value);
       handleSubmit(updatedReferences);
       setShowDeleteModal(false);
       setReferenceToDelete(null);
@@ -228,9 +223,9 @@ const ReferencePage: React.FC = () => {
         {!isLoadingReferences ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
-            {paginatedReferences.map((reference, idx) => (
+            {paginatedReferences.map((reference) => (
               <ReferenceCard
-                key={idx}
+                key={reference.name}
                 reference={reference}
                 onEdit={() => {
                   startEdit(reference);
@@ -305,9 +300,9 @@ const ReferencePage: React.FC = () => {
         <div className="modal-data-display">
           <div className="tags-container">
             {allTags.length === 0 && <div>No tags available.</div>}
-            {allTags.map((tag, idx) => (
+            {allTags.map((tag) => (
               <button
-                key={idx}
+                key={tag}
                 className="tag-btn"
                 onClick={() => handleSelectTagFromModal(tag)}
               >

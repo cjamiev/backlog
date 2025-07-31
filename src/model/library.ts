@@ -58,21 +58,18 @@ export const DefaultWordPart: WordPart = {
 };
 
 export interface Phrase {
-  id: string;
   value: string;
   origin: string;
   tags: string;
 }
 
 export const DefaultPhrase: Phrase = {
-  id: '',
   value: '',
   origin: '',
   tags: ''
 };
 
 export interface Reference {
-  id: string;
   value: string;
   origin: string;
   definition: string;
@@ -80,7 +77,6 @@ export interface Reference {
 }
 
 export const DefaultReference: Reference = {
-  id: '',
   value: '',
   origin: '',
   definition: '',
@@ -197,7 +193,6 @@ export const DefaultFavorite: Favorite = {
 }
 
 export interface Project {
-  id: string;
   name: string;
   details: string;
   rank: number;
@@ -205,7 +200,6 @@ export interface Project {
 }
 
 export const DefaultProject: Project = {
-  id: '',
   name: '',
   details: '',
   rank: 1,
@@ -213,14 +207,12 @@ export const DefaultProject: Project = {
 }
 
 export interface Countdown {
-  id: string;
   name: string;
   date: string;
   tags: string;
 }
 
 export const DefaultCountdown: Countdown = {
-  id: '',
   name: '',
   date: '',
   tags: ''

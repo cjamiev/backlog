@@ -103,10 +103,9 @@ const CountdownPage: React.FC = () => {
     const newCountdown = {
       ...form,
       name: capitalizeEachWord(form.name),
-      id: String(countdowns.length + 1),
     };
 
-    const isThereADuplicate = checkIfDuplicateId(countdowns.map(i => i.name), form.name);
+    const isThereADuplicate = checkIfDuplicateId(countdowns.map(i => i.name), newCountdown.name);
     if (!isThereADuplicate) {
       const updatedCountdowns = [newCountdown, ...countdowns];
       handleSubmit(updatedCountdowns);
@@ -123,11 +122,8 @@ const CountdownPage: React.FC = () => {
 
   const handleEditCountdown = (form: Countdown) => {
     const updatedCountdowns = countdowns.map((c) =>
-      c.id === form.id
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+      c.name === form.name
+        ? form
         : c
     );
     handleSubmit(updatedCountdowns);
@@ -140,7 +136,7 @@ const CountdownPage: React.FC = () => {
   const startEdit = (selectedCountdown: Countdown, isClone?: boolean) => {
     setEditForm({
       ...selectedCountdown,
-      id: isClone ? String(countdowns.length + 1) : selectedCountdown.id,
+      name: isClone ? selectedCountdown.name + ' copy' : selectedCountdown.name,
     });
     setIsEditing(!isClone);
     setIsAddMode(Boolean(isClone));
@@ -168,7 +164,7 @@ const CountdownPage: React.FC = () => {
 
   const confirmDeleteCountdown = () => {
     if (countdownToDelete) {
-      const updatedCountdowns = countdowns.filter((c) => c.id !== countdownToDelete.id);
+      const updatedCountdowns = countdowns.filter((c) => c.name !== countdownToDelete.name);
       handleSubmit(updatedCountdowns);
       setShowDeleteModal(false);
       setCountdownToDelete(null);
@@ -231,9 +227,9 @@ const CountdownPage: React.FC = () => {
         {!isLoadingCountdowns ? (
           <div className="cards-container">
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
-            {paginatedCountdowns.map((countdown, idx) => (
+            {paginatedCountdowns.map((countdown) => (
               <CountdownCard
-                key={idx}
+                key={countdown.name}
                 countdown={countdown}
                 onEdit={() => {
                   startEdit(countdown);
@@ -306,9 +302,9 @@ const CountdownPage: React.FC = () => {
         <div className="modal-data-display">
           <div className="tags-container">
             {allTags.length === 0 && <div>No tags available.</div>}
-            {allTags.map((tag, idx) => (
+            {allTags.map((tag) => (
               <button
-                key={idx}
+                key={tag}
                 className="tag-btn"
                 onClick={() => handleSelectTagFromModal(tag)}
               >

@@ -106,11 +106,10 @@ const ProjectPage: React.FC = () => {
   const handleAddProject = (form: Project) => {
     const newProject = {
       ...form,
-      id: String(projects.length + 1),
       name: capitalizeEachWord(form.name),
     };
 
-    const isThereADuplicate = checkIfDuplicateId(projects.map(i => i.name), form.name);
+    const isThereADuplicate = checkIfDuplicateId(projects.map(i => i.name), newProject.name);
     if (!isThereADuplicate) {
       const updatedProjects = [newProject, ...projects];
       handleSubmit(updatedProjects);
@@ -127,11 +126,8 @@ const ProjectPage: React.FC = () => {
 
   const handleEditProject = (form: Project) => {
     const updatedProjects = projects.map((p) =>
-      p.id === form.id
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+      p.name === form.name
+        ? form
         : p
     );
     handleSubmit(updatedProjects);
@@ -142,10 +138,7 @@ const ProjectPage: React.FC = () => {
   };
 
   const startEdit = (selectedProject: Project) => {
-    setEditForm({
-      ...selectedProject,
-      id: selectedProject.id,
-    });
+    setEditForm(selectedProject);
     setIsEditing(true);
     setIsPanelOpen(true);
   };
@@ -171,7 +164,7 @@ const ProjectPage: React.FC = () => {
 
   const confirmDeleteProject = () => {
     if (projectToDelete) {
-      const updatedProjects = projects.filter((p) => p.id !== projectToDelete.id);
+      const updatedProjects = projects.filter((p) => p.name !== projectToDelete.name);
       handleSubmit(updatedProjects);
       setShowDeleteModal(false);
       setProjectToDelete(null);
@@ -233,9 +226,9 @@ const ProjectPage: React.FC = () => {
       <div className="page-body-layout">
         {!isLoadingProjects ? (
           <div className="cards-container">
-            {paginatedProjects.map((project, idx) => (
+            {paginatedProjects.map((project) => (
               <ProjectCard
-                key={idx}
+                key={project.name}
                 project={project}
                 onEdit={() => {
                   startEdit(project);
@@ -304,9 +297,9 @@ const ProjectPage: React.FC = () => {
         <div className="modal-data-display">
           <div className="tags-container">
             {allTags.length === 0 && <div>No tags available.</div>}
-            {allTags.map((tag, idx) => (
+            {allTags.map((tag) => (
               <button
-                key={idx}
+                key={tag}
                 className="tag-btn"
                 onClick={() => handleSelectTagFromModal(tag)}
               >
