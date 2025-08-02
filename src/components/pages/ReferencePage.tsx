@@ -91,7 +91,7 @@ const ReferencePage: React.FC = () => {
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_ERROR });
       setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);

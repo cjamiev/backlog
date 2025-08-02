@@ -80,7 +80,7 @@ const FavoritePage: React.FC = () => {
 
   useEffect(() => {
     if (isFavoritesUpdateError) {
-      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_ERROR });
       setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isFavoritesUpdateError]);
@@ -94,7 +94,7 @@ const FavoritePage: React.FC = () => {
 
   useEffect(() => {
     if (isFavoriteTypesUpdateError) {
-      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_ERROR });
       setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isFavoriteTypesUpdateError]);
