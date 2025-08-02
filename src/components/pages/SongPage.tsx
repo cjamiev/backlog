@@ -26,6 +26,17 @@ const songSortByOptions = [
   { value: 'rank', label: 'Rank' },
   { value: 'band', label: 'Band' }
 ];
+const placeHolderSong = [
+  {
+    id: 'Overriden by name + band',
+    name: 'Song Name (required)',
+    album: 'Album (optional)',
+    band: 'Band Name (required)',
+    rank: 1,
+    link: 'Url to song (optional)',
+    tags: 'Comma separated tag (optional)',
+  }
+]
 
 const SongPage: React.FC = () => {
   const { data: songs = [], isLoading: isLoadingSongs } = useLoadRecordsByType<Song>('songs');
@@ -49,6 +60,8 @@ const SongPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
   const [showTableView, setShowTableView] = useState(false);
+  const [showBatchModal, setShowBatchModal] = useState(false);
+  const [batchContent, setBatchContent] = useState('');
 
   const filteredSongs = songs.filter((s: Song) => {
     if (searchBy === 'tags') {
@@ -97,10 +110,44 @@ const SongPage: React.FC = () => {
 
   useEffect(() => {
     if (isError) {
-      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_SUCCESS });
+      setShowBanner({ isVisible: true, type: 'error', message: BANNER_MESSAGES.SAVE_ERROR });
       setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isError]);
+
+
+  const handleBatchJob = async (batch: string) => {
+    try {
+      const batchSongs: Song[] = JSON.parse(batch);
+      const completeList = songs;
+      const allSongIds = songs.map(i => i.id);
+      batchSongs.forEach(song => {
+        const newSong = {
+          ...song,
+          id: capitalizeEachWord(song.name) + capitalizeEachWord(song.band),
+          name: capitalizeEachWord(song.name),
+          album: capitalizeEachWord(song.album),
+          band: capitalizeEachWord(song.band),
+          rank: song.rank > 5 ? 5 : song.rank < 1 ? 1 : song.rank
+        }
+        const isThereADuplicate = checkIfDuplicateId(allSongIds, newSong.id);
+        if (!isThereADuplicate) {
+          completeList.push(newSong);
+        } else {
+          console.error('Duplicate', song);
+        }
+      });
+
+      mutate({ payload: JSON.stringify(completeList), type: 'songs' });
+    } catch (e) {
+      console.error(e);
+      setShowBanner({ isVisible: true, type: 'error', message: 'Error parsing JSON Data for Song' });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    } finally {
+      setShowBatchModal(false);
+      setBatchContent('');
+    }
+  };
 
   const handleSubmit = async (payload: Song[]) => {
     mutate({ payload: JSON.stringify(payload), type: 'songs' });
@@ -218,6 +265,12 @@ const SongPage: React.FC = () => {
     setShowTagsModal(false);
   };
 
+  const handleOpenBatchModal = () => setShowBatchModal(true);
+  const handleCloseBatchModal = () => setShowBatchModal(false);
+  const handleBatchContentChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setBatchContent(e.target.value);
+  }
+
   const handlePrevious = () => {
     setCurrentPage((p) => Math.max(1, p - 1));
   };
@@ -309,6 +362,7 @@ const SongPage: React.FC = () => {
             <button className="primary-btn" onClick={handleOpenTagsModal}>
               Select A Tag
             </button>
+            <button className="primary-btn" onClick={handleOpenBatchModal}>Add Batch</button>
           </div>
         </div>
         {!showTableView && <Pagination
@@ -363,6 +417,26 @@ const SongPage: React.FC = () => {
               </button>
             ))}
           </div>
+        </div>
+      </Modal>
+      <Modal isOpen={showBatchModal} onClose={handleCloseBatchModal} title="Add Songs In Batch">
+        <div className="modal-data-display">
+          <div>Enter valid json array matching Song interface</div>
+          <textarea
+            className="form-input"
+            name="batch-content"
+            value={batchContent}
+            onChange={handleBatchContentChange}
+            rows={24}
+            cols={24}
+            placeholder={JSON.stringify(placeHolderSong, null, 2)}
+          />
+          <button onClick={() => handleBatchJob(batchContent)} className="primary-btn">
+            Add All
+          </button>
+          <button onClick={handleCloseBatchModal} className="negative-btn">
+            Cancel
+          </button>
         </div>
       </Modal>
       <Sidepanel
