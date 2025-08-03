@@ -225,7 +225,7 @@ const ReferencePage: React.FC = () => {
             {!search && currentPage === 1 ? <AddCard onClick={startAdd} /> : null}
             {paginatedReferences.map((reference) => (
               <ReferenceCard
-                key={reference.name}
+                key={reference.value}
                 reference={reference}
                 onEdit={() => {
                   startEdit(reference);
