@@ -11,5 +11,13 @@ export default defineConfig({
         changeOrigin: true,
       }
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/backlog.js',
+        assetFileNames: 'assets/backlog.[ext]'
+      }
+    }
   }
-})
+});
