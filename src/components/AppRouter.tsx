@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route, HashRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SongPage from './pages/SongPage';
 import HomePage from './pages/HomePage';
@@ -34,7 +34,7 @@ const queryClient = new QueryClient({
 function AppRouter() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
+      <HashRouter>
         <Navigation />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -57,7 +57,7 @@ function AppRouter() {
           <Route path="/notes" element={<NotePage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
-      </Router>
+      </HashRouter>
     </QueryClientProvider>
   );
 }
