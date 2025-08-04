@@ -1,3 +1,4 @@
+import type { Song } from "../model/library";
 import type { Password, PasswordHistory } from "../model/password";
 
 export const getCSV = (records: object[]) => {
@@ -32,4 +33,23 @@ export const capitalizeEachWord = (text: string) => {
 
 export const checkIfDuplicateId = (listOfIds: string[], currentId: string) => {
   return listOfIds.some(id => id.toLowerCase() === currentId.toLowerCase())
+}
+
+export const getSongsFromBatchData = (data: string): Song[] => {
+  return data
+    .split('\n')
+    .filter(Boolean)
+    .map(songstr => {
+      const [band, name, rank = 1, link = '', tags = ''] = songstr.split(";");
+
+      return {
+        id: name + band,
+        name,
+        album: '',
+        band,
+        rank: Number(rank),
+        link,
+        tags
+      }
+    });
 }

@@ -11,7 +11,7 @@ import SongCard from '../atoms/Song/SongCard';
 import SongForm from '../atoms/Song/SongForm';
 import { DefaultSong, type Song } from '../../model/library';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars, getSongsFromBatchData } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -36,7 +36,8 @@ const placeHolderSong = [
     link: 'Url to song (optional)',
     tags: 'Comma separated tag (optional)',
   }
-]
+];
+const placeHolderSongAsText = 'band;name;rank;link;tags';
 
 const SongPage: React.FC = () => {
   const { data: songs = [], isLoading: isLoadingSongs } = useLoadRecordsByType<Song>('songs');
@@ -62,6 +63,7 @@ const SongPage: React.FC = () => {
   const [showTableView, setShowTableView] = useState(false);
   const [showBatchModal, setShowBatchModal] = useState(false);
   const [batchContent, setBatchContent] = useState('');
+  const [isBatchContentString, setIsBatchContentString] = useState(true);
 
   const filteredSongs = songs.filter((s: Song) => {
     if (searchBy === 'tags') {
@@ -116,10 +118,11 @@ const SongPage: React.FC = () => {
   }, [isError]);
 
 
-  const handleBatchJob = async (batch: string) => {
+  const handleBatchJob = async (batch: string, isStringFormat: boolean) => {
     try {
-      const batchSongs: Song[] = JSON.parse(batch);
+      const batchSongs: Song[] = isStringFormat ? getSongsFromBatchData(batch) : JSON.parse(batch);
       const completeList = songs;
+      const duplicateList: Song[] = [];
       const allSongIds = songs.map(i => i.id);
       batchSongs.forEach(song => {
         const newSong = {
@@ -134,9 +137,12 @@ const SongPage: React.FC = () => {
         if (!isThereADuplicate) {
           completeList.push(newSong);
         } else {
-          console.error('Duplicate', song);
+          duplicateList.push(newSong);
         }
       });
+      if (duplicateList.length > 0) {
+        console.error('Duplicate List', duplicateList);
+      }
 
       mutate({ payload: JSON.stringify(completeList), type: 'songs' });
     } catch (e) {
@@ -421,7 +427,13 @@ const SongPage: React.FC = () => {
       </Modal>
       <Modal isOpen={showBatchModal} onClose={handleCloseBatchModal} title="Add Songs In Batch">
         <div className="modal-data-display">
-          <div>Enter valid json array matching Song interface</div>
+          <div>
+            <label>
+              Is String Format?
+              <input type='checkbox' checked={isBatchContentString} onClick={() => { setIsBatchContentString(!isBatchContentString) }} />
+            </label>
+          </div>
+          <div>{isBatchContentString ? 'Enter each song line by line matching format' : 'Enter valid json array matching Song interface'}</div>
           <textarea
             className="form-input"
             name="batch-content"
@@ -429,9 +441,9 @@ const SongPage: React.FC = () => {
             onChange={handleBatchContentChange}
             rows={24}
             cols={24}
-            placeholder={JSON.stringify(placeHolderSong, null, 2)}
+            placeholder={isBatchContentString ? placeHolderSongAsText : JSON.stringify(placeHolderSong, null, 2)}
           />
-          <button onClick={() => handleBatchJob(batchContent)} className="primary-btn">
+          <button onClick={() => handleBatchJob(batchContent, isBatchContentString)} className="primary-btn">
             Add All
           </button>
           <button onClick={handleCloseBatchModal} className="negative-btn">
