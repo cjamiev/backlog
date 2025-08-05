@@ -4,6 +4,7 @@ import { mockedCountdowns } from "./countdowns";
 import { mockedFavorites } from "./favorites";
 import { mockedFilms } from "./films";
 import { mockedGames } from "./games";
+import { mockedPurchases } from "./purchases";
 import { mockedNotes } from "./notes";
 import { mockedProjects } from "./projects";
 import { mockedShows } from "./shows";
@@ -33,6 +34,10 @@ export const mockedData = [{
 {
   type: 'books',
   data: mockedBooks,
+},
+{
+  type: 'purchases',
+  data: mockedPurchases,
 },
 {
   type: 'projects',

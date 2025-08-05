@@ -8,6 +8,7 @@ export const entertainmentTypes = [
 ];
 
 export const trackerTypes = [
+  'purchases',
   'projects',
   'countdowns',
   'contacts',
