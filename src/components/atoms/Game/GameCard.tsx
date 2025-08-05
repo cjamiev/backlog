@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Game } from '../../../model/library';
+import { type Game } from '../../../model/entertainment';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface GameCardProps {

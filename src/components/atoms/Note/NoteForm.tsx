@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Note } from '../../../model/library';
+import type { Note } from '../../../model/tracker';
 
 interface NoteFormProps {
   onSubmit: (form: Note) => void;

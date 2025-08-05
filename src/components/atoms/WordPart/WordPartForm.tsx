@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultWordPart, type WordPart, WORD_PART_TYPE } from '../../../model/library';
+import { DefaultWordPart, type WordPart, WORD_PART_TYPE } from '../../../model/gamedev';
 
 interface WordPartFormProps {
   onSubmit: (form: WordPart) => void;

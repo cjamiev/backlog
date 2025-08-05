@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import GameCard from '../atoms/Game/GameCard';
 import GameForm from '../atoms/Game/GameForm';
-import { DefaultGame, type Game } from '../../model/library';
+import { DefaultGame, type Game } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

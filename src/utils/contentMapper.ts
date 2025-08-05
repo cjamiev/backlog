@@ -1,4 +1,4 @@
-import type { Song } from "../model/library";
+import type { Song } from "../model/entertainment";
 import type { Password, PasswordHistory } from "../model/password";
 
 export const getCSV = (records: object[]) => {

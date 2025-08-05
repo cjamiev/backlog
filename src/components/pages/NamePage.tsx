@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import NameCard from '../atoms/Name/NameCard';
 import NameForm from '../atoms/Name/NameForm';
-import { DefaultName, type Name } from '../../model/library';
+import { DefaultName, type Name } from '../../model/gamedev';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

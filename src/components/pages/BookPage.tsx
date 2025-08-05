@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import BookCard from '../atoms/Book/BookCard';
 import BookForm from '../atoms/Book/BookForm';
-import { bookTypes, DefaultBook, type Book } from '../../model/library';
+import { bookTypes, DefaultBook, type Book } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

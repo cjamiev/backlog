@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { serviceType, type Show } from '../../../model/library';
+import { serviceType, type Show } from '../../../model/entertainment';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface ShowFormProps {

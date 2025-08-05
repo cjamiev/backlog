@@ -1,4 +1,4 @@
-import type { Show } from '../model/library';
+import type { Show } from '../model/entertainment';
 
 export const mockedShows: Show[] = [
   {

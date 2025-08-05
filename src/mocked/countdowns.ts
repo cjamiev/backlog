@@ -1,4 +1,4 @@
-import { type Countdown } from '../model/library';
+import { type Countdown } from '../model/tracker';
 
 export const mockedCountdowns: Countdown[] = [
   {

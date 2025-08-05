@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Contact } from '../../../model/library';
+import type { Contact } from '../../../model/tracker';
 
 interface ContactFormProps {
   onSubmit: (form: Contact) => void;

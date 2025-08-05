@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import ReferenceCard from '../atoms/Reference/ReferenceCard';
 import ReferenceForm from '../atoms/Reference/ReferenceForm';
-import { DefaultReference, type Reference } from '../../model/library';
+import { DefaultReference, type Reference } from '../../model/gamedev';
 import { copyContents } from '../../utils/copyToClipboard';
 import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

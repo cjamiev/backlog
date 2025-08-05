@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import PhraseCard from '../atoms/Phrase/PhraseCard';
 import PhraseForm from '../atoms/Phrase/PhraseForm';
-import { DefaultPhrase, type Phrase } from '../../model/library';
+import { DefaultPhrase, type Phrase } from '../../model/gamedev';
 import { copyContents } from '../../utils/copyToClipboard';
 import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

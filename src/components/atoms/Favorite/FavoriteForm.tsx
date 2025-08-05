@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultFavorite, type Favorite } from '../../../model/library';
+import { DefaultFavorite, type Favorite } from '../../../model/entertainment';
 
 interface FavoriteFormProps {
   onSubmit: (form: Favorite) => void;

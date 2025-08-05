@@ -7,7 +7,7 @@ import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';
 import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
-import { DefaultContact, type Contact } from '../../model/library';
+import { DefaultContact, type Contact } from '../../model/tracker';
 import ContactCard from '../atoms/Contact/ContactCard';
 import ContactForm from '../atoms/Contact/ContactForm';
 import { copyContents } from '../../utils/copyToClipboard';

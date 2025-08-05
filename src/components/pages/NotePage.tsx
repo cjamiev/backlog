@@ -6,7 +6,7 @@ import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';
 import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
-import { DefaultNote, type Note } from '../../model/library';
+import { DefaultNote, type Note } from '../../model/tracker';
 import NoteCard from '../atoms/Note/NoteCard';
 import NoteForm from '../atoms/Note/NoteForm';
 import { copyContents } from '../../utils/copyToClipboard';

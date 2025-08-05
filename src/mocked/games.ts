@@ -1,4 +1,4 @@
-import type { Game } from "../model/library";
+import type { Game } from "../model/entertainment";
 
 export const mockedGames: Game[] = [
   {

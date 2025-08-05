@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultGame, type Game } from '../../../model/library';
+import { DefaultGame, type Game } from '../../../model/entertainment';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface GameFormProps {

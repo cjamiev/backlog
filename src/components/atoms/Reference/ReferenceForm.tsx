@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultReference, type Reference } from '../../../model/library';
+import { DefaultReference, type Reference } from '../../../model/gamedev';
 
 interface ReferenceFormProps {
   onSubmit: (form: Reference) => void;

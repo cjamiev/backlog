@@ -1,4 +1,4 @@
-import { type Project } from '../model/library';
+import { type Project } from '../model/tracker';
 
 export const mockedProjects: Project[] = [
   {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Reference } from '../../../model/library';
+import { type Reference } from '../../../model/gamedev';
 
 interface ReferenceCardProps {
   reference: Reference;

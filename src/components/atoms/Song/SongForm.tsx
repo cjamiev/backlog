@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultSong, type Song } from '../../../model/library';
+import { DefaultSong, type Song } from '../../../model/entertainment';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface SongFormProps {

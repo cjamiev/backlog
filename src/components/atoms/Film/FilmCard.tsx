@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Film } from '../../../model/library';
+import { type Film } from '../../../model/entertainment';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface FilmCardProps {

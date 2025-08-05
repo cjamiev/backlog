@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import FilmCard from '../atoms/Film/FilmCard';
 import FilmForm from '../atoms/Film/FilmForm';
-import { DefaultFilm, serviceType, type Film } from '../../model/library';
+import { DefaultFilm, serviceType, type Film } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

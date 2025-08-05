@@ -1,4 +1,4 @@
-import { type Note } from '../model/library'
+import { type Note } from '../model/tracker'
 
 export const mockedNotes: Note[] = [
   {

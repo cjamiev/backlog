@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultPhrase, type Phrase } from '../../../model/library';
+import { DefaultPhrase, type Phrase } from '../../../model/gamedev';
 
 interface PhraseFormProps {
   onSubmit: (form: Phrase) => void;

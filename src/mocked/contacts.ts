@@ -1,4 +1,4 @@
-import type { Contact } from "../model/library";
+import type { Contact } from '../model/tracker';
 
 export const mockedContacts: Contact[] = [{
   name: 'Chris Varughese',

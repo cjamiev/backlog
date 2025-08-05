@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import WordPartCard from '../atoms/WordPart/WordPartCard';
 import WordPartForm from '../atoms/WordPart/WordPartForm';
-import { DefaultWordPart, type WordPart } from '../../model/library';
+import { DefaultWordPart, type WordPart } from '../../model/gamedev';
 import { copyContents } from '../../utils/copyToClipboard';
 import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

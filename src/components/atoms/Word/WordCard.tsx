@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Word } from '../../../model/library';
+import { type Word } from '../../../model/gamedev';
 
 interface WordCardProps {
   word: Word;

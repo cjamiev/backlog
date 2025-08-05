@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultProject, type Project } from '../../../model/library';
+import { DefaultProject, type Project } from '../../../model/tracker';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface ProjectFormProps {

@@ -8,7 +8,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import ProjectCard from '../atoms/Project/ProjectCard';
 import ProjectForm from '../atoms/Project/ProjectForm';
-import { DefaultProject, type Project } from '../../model/library';
+import { DefaultProject, type Project } from '../../model/tracker';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

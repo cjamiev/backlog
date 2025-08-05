@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { bookTypes, DefaultBook, type Book } from '../../../model/library';
+import { bookTypes, DefaultBook, type Book } from '../../../model/entertainment';
 
 interface BookFormProps {
   onSubmit: (form: Book) => void;

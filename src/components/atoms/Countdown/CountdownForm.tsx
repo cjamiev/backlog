@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultCountdown, type Countdown } from '../../../model/library';
+import { DefaultCountdown, type Countdown } from '../../../model/tracker';
 
 interface CountdownFormProps {
   onSubmit: (form: Countdown) => void;

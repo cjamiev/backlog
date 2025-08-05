@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import SongCard from '../atoms/Song/SongCard';
 import SongForm from '../atoms/Song/SongForm';
-import { DefaultSong, type Song } from '../../model/library';
+import { DefaultSong, type Song } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars, getSongsFromBatchData } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { type WordPart, WORD_PART_TYPE } from '../../../model/library';
+import { type WordPart, WORD_PART_TYPE } from '../../../model/gamedev';
 
 interface WordPartCardProps {
   wordPart: WordPart;

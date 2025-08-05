@@ -1,4 +1,4 @@
-import { type Song } from '../model/library';
+import { type Song } from '../model/entertainment';
 
 export const mockedSongs: Song[] = [
   {

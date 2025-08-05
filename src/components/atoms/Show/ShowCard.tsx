@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Show } from '../../../model/library';
+import type { Show } from '../../../model/entertainment';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface ShowCardProps {

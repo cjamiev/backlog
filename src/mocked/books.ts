@@ -1,4 +1,4 @@
-import type { Book } from '../model/library';
+import type { Book } from '../model/entertainment';
 
 export const mockedBooks: Book[] = [
   {

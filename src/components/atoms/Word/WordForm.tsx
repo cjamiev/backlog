@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultWord, type Word, WORD_TYPE } from '../../../model/library';
+import { DefaultWord, type Word, WORD_TYPE } from '../../../model/gamedev';
 
 interface WordFormProps {
   onSubmit: (form: Word) => void;

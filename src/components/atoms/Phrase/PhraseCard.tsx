@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Phrase } from '../../../model/library';
+import { type Phrase } from '../../../model/gamedev';
 
 interface PhraseCardProps {
   phrase: Phrase;

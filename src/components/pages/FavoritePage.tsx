@@ -5,7 +5,7 @@ import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';
 import Footer from '../atoms/Footer';
 import FavoriteForm from '../atoms/Favorite/FavoriteForm';
-import { DefaultFavorite, type Favorite } from '../../model/library';
+import { DefaultFavorite, type Favorite } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import FavoriteList from '../atoms/Favorite/FavoriteList';

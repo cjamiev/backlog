@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultName, type Name, GENDER_TYPE } from '../../../model/library';
+import { DefaultName, type Name, GENDER_TYPE } from '../../../model/gamedev';
 
 interface NameFormProps {
   onSubmit: (form: Name) => void;

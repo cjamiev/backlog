@@ -1,5 +1,5 @@
 import React from 'react';
-import { type Project } from '../../../model/library';
+import { type Project } from '../../../model/tracker';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface ProjectCardProps {

@@ -1,4 +1,4 @@
-import { type Favorite } from '../model/library';
+import { type Favorite } from '../model/entertainment';
 
 export const mockedFavorites: Favorite[] = [
   {

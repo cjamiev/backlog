@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultFilm, serviceType, type Film } from '../../../model/library';
+import { DefaultFilm, serviceType, type Film } from '../../../model/entertainment';
 import { getRankStars } from '../../../utils/contentMapper';
 
 interface FilmFormProps {

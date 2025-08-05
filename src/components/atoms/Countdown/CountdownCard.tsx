@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import type { Countdown } from '../../../model/library';
+import type { Countdown } from '../../../model/tracker';
 import { Temporal } from "@js-temporal/polyfill";
 
 interface CountdownCardProps {

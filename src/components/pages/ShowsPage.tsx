@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import ShowCard from '../atoms/Show/ShowCard';
 import ShowForm from '../atoms/Show/ShowForm';
-import { DefaultShow, serviceType, type Show } from '../../model/library';
+import { DefaultShow, serviceType, type Show } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';

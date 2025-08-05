@@ -9,7 +9,7 @@ import Footer from '../atoms/Footer';
 import Pagination from '../atoms/Pagination';
 import CountdownCard from '../atoms/Countdown/CountdownCard';
 import CountdownForm from '../atoms/Countdown/CountdownForm';
-import { DefaultCountdown, type Countdown } from '../../model/library';
+import { DefaultCountdown, type Countdown } from '../../model/tracker';
 import { copyContents } from '../../utils/copyToClipboard';
 import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
