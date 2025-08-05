@@ -1,0 +1,117 @@
+import React, { useState, useEffect } from 'react';
+import { DefaultPurchase, type Purchase } from '../../../model/tracker';
+import { getRankStars } from '../../../utils/contentMapper';
+
+interface PurchaseFormProps {
+  onSubmit: (form: Purchase) => void;
+  initialValues?: Purchase;
+  cancelEdit: () => void;
+  allTags: string[];
+  isEditing: boolean;
+}
+
+function PurchaseForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: PurchaseFormProps) {
+  const [form, setForm] = useState<Purchase>(DefaultPurchase);
+
+  useEffect(() => {
+    if (initialValues) {
+      setForm(initialValues);
+    }
+  }, [initialValues]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: name === 'rank' ? Number(value) : value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(form);
+  };
+
+  const handleTagClick = (tag: string) => {
+    const currentTags = form.tags ? form.tags.split(',').map((t) => t.trim()) : [];
+    if (!currentTags.includes(tag)) {
+      const newTags = [...currentTags, tag].join(', ');
+      setForm((prev) => ({ ...prev, tags: newTags }));
+    }
+  };
+
+  return (
+    <form className="form-wrapper" onSubmit={handleSubmit}>
+      <label className="form-id">
+        Name:
+        <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
+        <a
+          className="form-id-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(form.name)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          G
+        </a>
+      </label>
+      <label className="form-label">
+        Description:
+        <textarea
+          className="form-input"
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          rows={3}
+        />
+      </label>
+      <label className="form-label">
+        Price:
+        <input
+          className="form-input"
+          type="text"
+          name="price"
+          value={form.price}
+          onChange={handleChange}
+          placeholder="e.g., $29.99"
+        />
+      </label>
+      <label className="form-label">
+        Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
+        <input
+          className="form-input"
+          type="range"
+          name="rank"
+          value={form.rank}
+          min={1}
+          max={5}
+          onChange={handleChange}
+        />
+      </label>
+      <label className="form-label">
+        Link:
+        <input className="form-input" type="text" name="link" value={form.link} onChange={handleChange} />
+      </label>
+      <label className="form-label">
+        Tags (comma separated):
+        <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
+      </label>
+      <div className="tags-wrapper">
+        <div className="tags-title">Available Tags:</div>
+        <div className="tags-container">
+          {allTags.map((tag, idx) => (
+            <button key={idx} className="tag-btn" type="button" onClick={() => handleTagClick(tag)}>
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="form-actions-wrapper">
+        <button className="form-submit" type="submit">
+          Submit
+        </button>
+        <button className="form-cancel-btn" onClick={cancelEdit}>
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
+export default PurchaseForm;

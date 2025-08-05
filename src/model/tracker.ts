@@ -1,3 +1,21 @@
+export interface Purchase {
+  name: string;
+  description: string;
+  price: string;
+  rank: number;
+  link: string;
+  tags: string;
+}
+
+export const DefaultPurchase: Purchase = {
+  name: '',
+  description: '',
+  price: '',
+  rank: 1,
+  link: '',
+  tags: ''
+}
+
 export interface Project {
   name: string;
   details: string;

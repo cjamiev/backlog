@@ -52,6 +52,7 @@ function Navigation() {
         <span className="nav-link">Tracker</span>
         {isTrackerHovered && (
           <div className="submenu">
+            <Link to="/purchases">Purchases</Link>
             <Link to="/projects">Projects</Link>
             <Link to="/passwords">Passwords</Link>
             <Link to="/countdowns">Countdowns</Link>

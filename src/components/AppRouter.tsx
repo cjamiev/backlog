@@ -12,6 +12,7 @@ import GamePage from './pages/GamePage';
 import BookPage from './pages/BookPage';
 import FilmPage from './pages/FilmPage';
 import ShowsPage from './pages/ShowsPage';
+import PurchasePage from './pages/PurchasePage';
 import ProjectPage from './pages/ProjectPage';
 import PasswordPage from './pages/PasswordPage';
 import CountdownPage from './pages/CountdownPage';
@@ -49,6 +50,7 @@ function AppRouter() {
           <Route path="/films" element={<FilmPage />} />
           <Route path="/shows" element={<ShowsPage />} />
           <Route path="/books" element={<BookPage />} />
+          <Route path="/purchases" element={<PurchasePage />} />
           <Route path="/projects" element={<ProjectPage />} />
           <Route path="/passwords" element={<PasswordPage />} />
           <Route path="/countdowns" element={<CountdownPage />} />
