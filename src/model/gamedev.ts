@@ -82,3 +82,21 @@ export const DefaultReference: Reference = {
   definition: '',
   tags: ''
 };
+
+export interface Interval {
+  name: string;
+  origin: string;
+  links: string;
+  details: string;
+  tags: string;
+  isCompleted: boolean;
+}
+
+export const DefaultInterval: Interval = {
+  name: '',
+  origin: '',
+  links: '',
+  details: '',
+  tags: '',
+  isCompleted: false
+};

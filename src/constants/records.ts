@@ -22,4 +22,5 @@ export const gamedevTypes = [
   'phrases',
   'references',
   'names',
+  'intervals'
 ]
