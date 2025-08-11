@@ -136,11 +136,12 @@ const PasswordPage: React.FC = () => {
   const handleBatchJob = async (batch: string, isStringFormat: boolean) => {
     try {
       const batchPasswords: Password[] = isStringFormat ? getPasswordsFromBatchData(batch) : JSON.parse(batch);
-      const completeList = passwords;
+      const completeList: Password[] = [];
       const duplicateList: Password[] = [];
       const allPasswordIds = passwords.map(i => i.id);
       batchPasswords.forEach(password => {
         const newPassword = {
+          ...DefaultPassword,
           ...password,
           id: capitalizeEachWord(password.id),
           createdDate: String(Date.now()),
