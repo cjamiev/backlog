@@ -258,11 +258,11 @@ const BookPage: React.FC = () => {
       <Footer>
         <div className='footer-btn-wrapper'>
           <div className='switch-wrapper'>
-            <label className='switch-label'>{showTableView ? 'Hide Table View' : 'Show Table View'}</label>
             <label className="switch">
               <input type="checkbox" onClick={toggleTableView} />
               <span className="slider round"></span>
             </label>
+            <label className='switch-label'>{showTableView ? 'Hide Table View' : 'Show Table View'}</label>
           </div>
           <button className="primary-btn" onClick={handleOpenCSVModal}>
             Show CSV
