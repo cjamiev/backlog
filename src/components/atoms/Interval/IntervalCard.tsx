@@ -14,7 +14,6 @@ const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onClone, 
     <div className="card-wrapper card-with-details-wrapper2">
       <div className="card-header">
         <h2 className="card-title">{interval.name}</h2>
-        <span className="card-label">Is Complete:</span> <span className="card-text">{interval.isCompleted ? 'Yes' : 'Nope'}</span>
       </div>
       <div className='card-body card-body-with-details'>
         <div>
@@ -33,6 +32,14 @@ const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onClone, 
               {index === 0 ? 'Main Link' : 'Alternative ' + index}
             </a>
           })}
+          <a
+            className="url-link"
+            href={`https://www.google.com/search?q=${encodeURIComponent(interval.name + ' song')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google
+          </a>
         </div>
         <div>
           <span className="card-label">Details:</span>
@@ -40,14 +47,6 @@ const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onClone, 
             {interval.details}
           </pre>
         </div>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(interval.name + ' song')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
         <div>
           {interval.tags.length ? (
             <div className="tags-container">

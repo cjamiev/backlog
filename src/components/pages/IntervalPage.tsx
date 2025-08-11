@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
 import Banner from '../atoms/Banner';
-import AddCard from '../atoms/AddCard';
 import Search from '../atoms/Search';
 import Modal from '../atoms/Modal';
 import Sidepanel from '../atoms/Sidepanel';

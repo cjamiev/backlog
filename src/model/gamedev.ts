@@ -89,7 +89,6 @@ export interface Interval {
   links: string;
   details: string;
   tags: string;
-  isCompleted: boolean;
 }
 
 export const DefaultInterval: Interval = {
@@ -97,6 +96,5 @@ export const DefaultInterval: Interval = {
   origin: '',
   links: '',
   details: '',
-  tags: '',
-  isCompleted: false
+  tags: ''
 };

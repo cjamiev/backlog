@@ -26,13 +26,6 @@ function IntervalForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
     }));
   };
 
-  const toggleComplete = () => {
-    setForm((prev) => ({
-      ...prev,
-      isCompleted: !prev.isCompleted
-    }));
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(form);
@@ -76,13 +69,6 @@ function IntervalForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
           rows={10}
         />
       </label>
-      <div className='form-switch-wrapper'>
-        <label className="switch">
-          <input type="checkbox" checked={form.isCompleted} onClick={toggleComplete} />
-          <span className="slider round"></span>
-        </label>
-        <label className='switch-label'>{form.isCompleted ? 'Completed' : 'Not Complete'}</label>
-      </div>
       <label className="form-label">
         Tags (comma separated):
         <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
