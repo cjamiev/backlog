@@ -15,21 +15,13 @@ const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onClon
       <div className="card-header">
         <h2 className="card-title">{reference.value}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Origin:</span> <span className="card-text">{reference.origin}</span>
         </div>
         <div>
           <span className="card-label">Definition:</span> <span className="card-text">{reference.definition}</span>
         </div>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(reference.value + ' reference')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
         <div>
           {reference.tags.length ? (
             <div className="tags-container">
@@ -42,6 +34,14 @@ const ReferenceCard: React.FC<ReferenceCardProps> = ({ reference, onEdit, onClon
             </div>
           ) : null}
         </div>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(reference.value + ' reference')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google Search
+        </a>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

@@ -15,7 +15,7 @@ const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{book.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Author: </span>
           <span className="card-text">{book.author}</span>

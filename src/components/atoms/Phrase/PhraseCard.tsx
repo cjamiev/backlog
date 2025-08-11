@@ -15,18 +15,10 @@ const PhraseCard: React.FC<PhraseCardProps> = ({ phrase, onEdit, onClone, onDele
       <div className="card-header">
         <h2 className="card-title">{phrase.value}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__xs'>
         <div>
           <span className="card-label">Origin:</span> <span className="card-text">{phrase.origin}</span>
         </div>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(phrase.value + ' phrase meaning')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
         <div>
           {phrase.tags.length ? (
             <div className="tags-container">
@@ -39,6 +31,14 @@ const PhraseCard: React.FC<PhraseCardProps> = ({ phrase, onEdit, onClone, onDele
             </div>
           ) : null}
         </div>
+        <a
+          className="url-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(phrase.value + ' phrase meaning')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Google Search
+        </a>
       </div>
       <div className="card-footer">
         <button className="primary-btn" onClick={onClone}>

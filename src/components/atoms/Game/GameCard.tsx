@@ -16,7 +16,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{game.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__xs'>
         <div>
           <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(game.rank)}</span>
         </div>

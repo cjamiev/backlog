@@ -15,7 +15,7 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onEdit, onClone, onD
       <div className="card-header">
         <h2 className="card-title">{contact.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Phone:</span> <span className="card-text">{contact.phone}</span>
         </div>

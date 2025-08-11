@@ -15,21 +15,10 @@ const WordCard: React.FC<WordCardProps> = ({ word, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{word.value}</h2>
       </div>
-      <div className='card-body'>
-        <div>
-          <span className="card-label">Definition:</span> <span className="card-text">{word.definition}</span>
-        </div>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Type:</span> <span className="card-text">{word.type}</span>
         </div>
-        <a
-          className="url-link"
-          href={`https://www.google.com/search?q=${encodeURIComponent(word.value + ' definition')}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Google
-        </a>
         <div>
           {word.tags.length ? (
             <div className="tags-container">
@@ -41,6 +30,20 @@ const WordCard: React.FC<WordCardProps> = ({ word, onEdit, onClone, onDelete, on
               ))}
             </div>
           ) : null}
+        </div>
+        <div>
+          <span className="card-label">Definition:</span>
+          <span className="card-text">{word.definition}</span>
+        </div>
+        <div>
+          <a
+            className="url-link"
+            href={`https://www.google.com/search?q=${encodeURIComponent(word.value + ' definition')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Google Search
+          </a>
         </div>
       </div>
       <div className="card-footer">

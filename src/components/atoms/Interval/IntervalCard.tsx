@@ -11,16 +11,24 @@ interface IntervalCardProps {
 
 const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onClone, onDelete, onHandleClickTag }) => {
   return (
-    <div className="card-wrapper card-with-details-wrapper2">
+    <div className="card-wrapper">
       <div className="card-header">
         <h2 className="card-title">{interval.name}</h2>
       </div>
-      <div className='card-body card-body-with-details'>
+      <div className='card-body card-body__lg'>
         <div>
           <span className="card-label">Origin:</span> <span className="card-text">{interval.origin}</span>
         </div>
         <div>
           <span className="card-label">Links:</span>
+          <a
+            className="url-link"
+            href={`https://www.google.com/search?q=${encodeURIComponent(interval.name + ' song')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            G
+          </a>
           {interval.links.split(',').map((link, index) => {
             return <a
               key={link}
@@ -32,14 +40,6 @@ const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onClone, 
               {index === 0 ? 'Main Link' : 'Alternative ' + index}
             </a>
           })}
-          <a
-            className="url-link"
-            href={`https://www.google.com/search?q=${encodeURIComponent(interval.name + ' song')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Google
-          </a>
         </div>
         <div>
           <span className="card-label">Details:</span>

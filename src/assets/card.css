@@ -6,18 +6,7 @@
   background: #fff;
   transition: transform 0.15s, box-shadow 0.15s;
   width: 400px;
-  height: 300px;
   position: relative;
-}
-
-.card-with-details-wrapper {
-  width: 800px;
-  height: 600px;
-}
-
-.card-with-details-wrapper2 {
-  width: 400px;
-  height: 600px;
 }
 
 .card-wrapper:hover {
@@ -49,16 +38,36 @@
 .card-title {
   margin: 0;
   color: var(--color-primary);
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-title:hover {
+  width: fit-content;
+  overflow: visible;
+  background: white;
 }
 
 .card-body {
   overflow: hidden;
   position: relative;
-  height: 200px;
 }
 
-.card-body-with-details {
+.card-body__xs {
+  height: 120px;
+}
+
+.card-body__sm {
+  height: 170px;
+}
+
+.card-body__md {
+  height: 250px;
+}
+
+.card-body__lg {
   height: 475px;
+  margin: 10px 0px;
 }
 
 .card-text {

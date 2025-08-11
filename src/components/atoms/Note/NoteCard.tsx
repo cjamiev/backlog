@@ -10,16 +10,14 @@ interface NoteCardProps {
 
 const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onHandleClickTag }) => {
   return (
-    <div className="card-wrapper card-with-details-wrapper">
+    <div className="card-wrapper">
       <div className="card-header">
         <h2 className="card-title">{note.name}</h2>
       </div>
-      <div className='card-body card-body-with-details'>
+      <div className='card-body card-body__lg'>
         <div>
-          <span className="card-label">Created:</span> <span className="card-text">{note.createdDate}</span>
-        </div>
-        <div>
-          <span className="card-label">Updated:</span> <span className="card-text">{note.updatedDate}</span>
+          <span className="card-label">Created:</span> <span className="card-text">{note.createdDate.slice(4, 16)}</span>
+          <span className="card-label">Updated:</span> <span className="card-text">{note.updatedDate.slice(4, 16)}</span>
         </div>
         {note.tags.length ? (
           <div className="tags-container">

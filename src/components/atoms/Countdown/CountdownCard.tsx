@@ -57,7 +57,7 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClon
       <div className="card-header">
         <h2 className="card-title">{countdown.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Target Date:</span>
           <span className="card-text"> {formatDate(countdown.date)}</span>

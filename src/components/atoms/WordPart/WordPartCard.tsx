@@ -32,7 +32,7 @@ const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onClone, 
           {getTypeIcon(wordPart.type)} {wordPart.type}
         </span>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Definition:</span>
           <span className="card-text">{wordPart.definition}</span>

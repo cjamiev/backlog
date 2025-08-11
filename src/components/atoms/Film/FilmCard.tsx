@@ -16,7 +16,7 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{film.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(film.rank)}</span>
         </div>

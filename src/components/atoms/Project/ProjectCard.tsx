@@ -11,11 +11,11 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onEdit, onDelete, onHandleClickTag }) => {
   return (
-    <div className="card-wrapper card-with-details-wrapper">
+    <div className="card-wrapper">
       <div className="card-header">
         <h2 className="card-title">{project.name}</h2>
       </div>
-      <div className='card-body-with-details'>
+      <div className='card-body__lg'>
         <div>
           <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(project.rank)}</span>
         </div>

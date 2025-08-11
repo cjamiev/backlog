@@ -24,7 +24,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onDelete,
       <div className="card-header">
         <h2 className="card-title">{password.id}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Username:</span>
           <span className="card-text">{password.username}</span>

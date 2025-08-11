@@ -16,7 +16,7 @@ const PurchaseCard: React.FC<PurchaseCardProps> = ({ purchase, onEdit, onClone, 
       <div className="card-header">
         <h2 className="card-title">{purchase.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__md'>
         <div>
           <span className="card-label">Description:</span> <span className="card-text">{purchase.description}</span>
         </div>

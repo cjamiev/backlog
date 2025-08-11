@@ -16,7 +16,7 @@ const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{song.name}</h2>
       </div>
-      <div className='card-body'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Album:</span> <span className="card-text">{song.album}</span>
         </div>
