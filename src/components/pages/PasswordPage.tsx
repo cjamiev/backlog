@@ -9,7 +9,7 @@ import Pagination from '../atoms/Pagination';
 import PasswordCard from '../atoms/Password/PasswordCard';
 import PasswordForm from '../atoms/Password/PasswordForm';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getPasswordsFromBatchData } from '../../utils/contentMapper';
 import { useAddNewPassword, useLoadPasswords, useUpdatePassword } from '../../api/password-service';
 import { DefaultPassword, type Password } from '../../model/password';
 import { getPasswordHistory } from '../../utils/contentMapper';
@@ -26,6 +26,19 @@ const passwordSortByOptions = [
   { value: 'id', label: 'id' },
   { value: 'createdDate', label: 'Created Date' }
 ];
+
+const placeHolderPassword: Password[] = [
+  {
+    "id": "Service/Website name",
+    "username": "username",
+    "password": "password",
+    "url": "Url to service",
+    "tags": "comma separated values",
+    "history": "",
+    "createdDate": ""
+  }
+];
+const placeHolderPasswordAsText = 'id;username;password;url;tags';
 
 const PasswordPage: React.FC = () => {
   const { data: passwords = [], isLoading: isLoadingPasswords } = useLoadPasswords();
@@ -49,6 +62,10 @@ const PasswordPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
+
+  const [showBatchModal, setShowBatchModal] = useState(false);
+  const [batchContent, setBatchContent] = useState('');
+  const [isBatchContentString, setIsBatchContentString] = useState(true);
 
   const filteredPasswords = passwords.filter((p: Password) => {
     if (searchBy === 'username') {
@@ -115,6 +132,43 @@ const PasswordPage: React.FC = () => {
       setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
     }
   }, [isUpdatePasswordError]);
+
+  const handleBatchJob = async (batch: string, isStringFormat: boolean) => {
+    try {
+      const batchPasswords: Password[] = isStringFormat ? getPasswordsFromBatchData(batch) : JSON.parse(batch);
+      const completeList = passwords;
+      const duplicateList: Password[] = [];
+      const allPasswordIds = passwords.map(i => i.id);
+      batchPasswords.forEach(password => {
+        const newPassword = {
+          ...password,
+          id: capitalizeEachWord(password.id),
+          createdDate: String(Date.now()),
+          history: "[]"
+        }
+        const isThereADuplicate = checkIfDuplicateId(allPasswordIds, newPassword.id);
+        if (!isThereADuplicate) {
+          completeList.push(newPassword);
+        } else {
+          duplicateList.push(newPassword);
+        }
+      });
+      if (duplicateList.length > 0) {
+        console.error('Duplicate List', duplicateList);
+      }
+
+      completeList.forEach((password: Password) => {
+        newPasswordMutate({ payload: password });
+      });
+    } catch (e) {
+      console.error(e);
+      setShowBanner({ isVisible: true, type: 'error', message: 'Error parsing JSON Data for Password' });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    } finally {
+      setShowBatchModal(false);
+      setBatchContent('');
+    }
+  };
 
   const handleAddPassword = (form: Password) => {
     const isThereADuplicate = checkIfDuplicateId(passwords.map(i => i.id), form.id);
@@ -218,6 +272,11 @@ const PasswordPage: React.FC = () => {
     setSearch(tag);
     setShowTagsModal(false);
   };
+  const handleOpenBatchModal = () => setShowBatchModal(true);
+  const handleCloseBatchModal = () => setShowBatchModal(false);
+  const handleBatchContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setBatchContent(e.target.value);
+  }
 
   const handlePrevious = () => {
     setCurrentPage((p) => Math.max(1, p - 1));
@@ -274,6 +333,7 @@ const PasswordPage: React.FC = () => {
           <button className="primary-btn" onClick={handleOpenTagsModal}>
             Select A Tag
           </button>
+          <button className="primary-btn" onClick={handleOpenBatchModal}>Add Batch</button>
         </div>
         <Pagination
           totalPages={totalPages}
@@ -329,6 +389,32 @@ const PasswordPage: React.FC = () => {
               </button>
             ))}
           </div>
+        </div>
+      </Modal>
+      <Modal isOpen={showBatchModal} onClose={handleCloseBatchModal} title="Add Passwords In Batch">
+        <div className="modal-data-display">
+          <div>
+            <label>
+              Is String Format?
+              <input type='checkbox' checked={isBatchContentString} onClick={() => { setIsBatchContentString(!isBatchContentString) }} />
+            </label>
+          </div>
+          <div>{isBatchContentString ? 'Enter each password line by line matching format' : 'Enter valid json array matching Password interface'}</div>
+          <textarea
+            className="form-input"
+            name="batch-content"
+            value={batchContent}
+            onChange={handleBatchContentChange}
+            rows={24}
+            cols={24}
+            placeholder={isBatchContentString ? placeHolderPasswordAsText : JSON.stringify(placeHolderPassword, null, 2)}
+          />
+          <button onClick={() => handleBatchJob(batchContent, isBatchContentString)} className="primary-btn">
+            Add All
+          </button>
+          <button onClick={handleCloseBatchModal} className="negative-btn">
+            Cancel
+          </button>
         </div>
       </Modal>
       <Sidepanel

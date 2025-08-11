@@ -35,6 +35,25 @@ export const checkIfDuplicateId = (listOfIds: string[], currentId: string) => {
   return listOfIds.some(id => id.toLowerCase() === currentId.toLowerCase())
 }
 
+export const getPasswordsFromBatchData = (data: string): Password[] => {
+  return data
+    .split('\n')
+    .filter(Boolean)
+    .map(songstr => {
+      const [id, username, password, url = '', tags = ''] = songstr.split(";");
+
+      return {
+        id,
+        username,
+        password,
+        url,
+        tags,
+        history: '',
+        createdDate: ''
+      }
+    });
+}
+
 export const getSongsFromBatchData = (data: string): Song[] => {
   return data
     .split('\n')

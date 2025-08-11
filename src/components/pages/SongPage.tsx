@@ -273,7 +273,7 @@ const SongPage: React.FC = () => {
 
   const handleOpenBatchModal = () => setShowBatchModal(true);
   const handleCloseBatchModal = () => setShowBatchModal(false);
-  const handleBatchContentChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleBatchContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBatchContent(e.target.value);
   }
 
