@@ -17,7 +17,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onEdit, onDelete, onHandleCli
       <div className='card-body card-body__lg'>
         <div>
           <span className="card-label">Created:</span> <span className="card-text">{note.createdDate.slice(4, 16)}</span>
-          <span className="card-label">Updated:</span> <span className="card-text">{note.updatedDate.slice(4, 16)}</span>
+          <span className="card-label">{note.updatedDate ? 'Updated:' : ''}</span> <span className="card-text">{note.updatedDate.slice(4, 16)}</span>
         </div>
         {note.tags.length ? (
           <div className="tags-container">

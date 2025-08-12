@@ -64,7 +64,6 @@ export const getSongsFromBatchData = (data: string): Song[] => {
       return {
         id: name + band,
         name,
-        album: '',
         band,
         rank: Number(rank),
         link,

@@ -30,7 +30,6 @@ const placeHolderSong = [
   {
     id: 'Overriden by name + band',
     name: 'Song Name (required)',
-    album: 'Album (optional)',
     band: 'Band Name (required)',
     rank: 1,
     link: 'Url to song (optional)',
@@ -129,7 +128,6 @@ const SongPage: React.FC = () => {
           ...song,
           id: capitalizeEachWord(song.name) + capitalizeEachWord(song.band),
           name: capitalizeEachWord(song.name),
-          album: capitalizeEachWord(song.album),
           band: capitalizeEachWord(song.band),
           rank: song.rank > 5 ? 5 : song.rank < 1 ? 1 : song.rank
         }
@@ -164,7 +162,6 @@ const SongPage: React.FC = () => {
       ...form,
       id: capitalizeEachWord(form.name) + capitalizeEachWord(form.band),
       name: capitalizeEachWord(form.name),
-      album: capitalizeEachWord(form.album),
       band: capitalizeEachWord(form.band),
     };
     setIsPanelOpen(false);
@@ -193,7 +190,6 @@ const SongPage: React.FC = () => {
         ? {
           ...form,
           name: capitalizeEachWord(form.name),
-          album: capitalizeEachWord(form.album),
           band: capitalizeEachWord(form.band),
         }
         : s

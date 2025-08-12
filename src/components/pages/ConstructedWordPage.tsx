@@ -47,8 +47,6 @@ const ConstructedWordPage: React.FC = () => {
   const filteredWords = words.filter((w: Word) => {
     if (searchBy === 'tags') {
       return w.tags.split(',').some((tag) => tag.toLowerCase().includes(search.toLowerCase()));
-    } else if (searchBy === 'type') {
-      return w.type.toLowerCase().includes(search.toLowerCase());
     } else {
       return w.value.toLowerCase().includes(search.toLowerCase());
     }

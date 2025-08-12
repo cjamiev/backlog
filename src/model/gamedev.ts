@@ -18,23 +18,15 @@ export const DefaultName: Name = {
   tags: ''
 };
 
-export enum WORD_TYPE {
-  NOUN = 'Noun',
-  ADJECTIVE = 'Adjective',
-  VERB = 'Verb'
-}
-
 export interface Word {
   value: string;
   definition: string;
-  type: WORD_TYPE;
   tags: string;
 }
 
 export const DefaultWord: Word = {
   value: '',
   definition: '',
-  type: WORD_TYPE.NOUN,
   tags: ''
 };
 

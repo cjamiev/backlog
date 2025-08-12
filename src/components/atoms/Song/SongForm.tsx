@@ -52,10 +52,6 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: S
         </a>
       </label>
       <label className="form-label">
-        Album:
-        <input className="form-input" type="text" name="album" value={form.album} onChange={handleChange} />
-      </label>
-      <label className="form-label">
         Band:
         <input disabled={isEditing} className="form-input" type="text" name="band" value={form.band} onChange={handleChange} required />
       </label>

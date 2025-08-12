@@ -17,9 +17,6 @@ const WordCard: React.FC<WordCardProps> = ({ word, onEdit, onClone, onDelete, on
       </div>
       <div className='card-body card-body__sm'>
         <div>
-          <span className="card-label">Type:</span> <span className="card-text">{word.type}</span>
-        </div>
-        <div>
           {word.tags.length ? (
             <div className="tags-container">
               <span className="card-label">Tags:</span>

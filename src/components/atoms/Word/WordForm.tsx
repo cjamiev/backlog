@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DefaultWord, type Word, WORD_TYPE } from '../../../model/gamedev';
+import { DefaultWord, type Word } from '../../../model/gamedev';
 
 interface WordFormProps {
   onSubmit: (form: Word) => void;
@@ -54,14 +54,6 @@ function WordForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: W
           onChange={handleChange}
           rows={3}
         />
-      </label>
-      <label className="form-label">
-        Type:
-        <select className="form-input" name="type" value={form.type} onChange={handleChange}>
-          <option value={WORD_TYPE.NOUN}>Noun</option>
-          <option value={WORD_TYPE.ADJECTIVE}>Adjective</option>
-          <option value={WORD_TYPE.VERB}>Verb</option>
-        </select>
       </label>
       <label className="form-label">
         Tags (comma separated):

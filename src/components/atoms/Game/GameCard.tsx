@@ -16,12 +16,12 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onClone, onDelete, on
       <div className="card-header">
         <h2 className="card-title">{game.name}</h2>
       </div>
-      <div className='card-body card-body__xs'>
+      <div className='card-body card-body__sm'>
         <div>
           <span className="card-label">Rank:</span> <span className="card-text">{getRankStars(game.rank)}</span>
         </div>
         <div>
-          <span className="card-label">Lowest Price:</span> <span className="card-text">{game.lowestPrice}</span>
+          <span className="card-label">Price:</span> <span className="card-text">{game.lowestPrice}</span>
         </div>
         <div>
           {game.tags.length ? (

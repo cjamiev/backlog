@@ -1,7 +1,6 @@
 export interface Song {
-  id: string; // name + album
+  id: string; // name + band
   name: string;
-  album: string;
   band: string;
   rank: number;
   link: string;
@@ -11,7 +10,6 @@ export interface Song {
 export const DefaultSong: Song = {
   id: '',
   name: '',
-  album: '',
   band: '',
   rank: 1,
   link: '',
