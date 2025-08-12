@@ -150,9 +150,10 @@ const IntervalPage: React.FC = () => {
     const newInterval = {
       ...form,
       name: capitalizeEachWord(form.name),
+      origin: capitalizeEachWord(form.origin)
     };
 
-    const isThereADuplicate = checkIfDuplicateId(intervals.map(i => i.name), form.name);
+    const isThereADuplicate = checkIfDuplicateId(intervals.map(i => i.name + i.origin), newInterval.name + newInterval.origin);
     if (!isThereADuplicate) {
       const updatedIntervals = [newInterval, ...intervals];
       handleSubmit(updatedIntervals);
@@ -169,7 +170,7 @@ const IntervalPage: React.FC = () => {
 
   const handleEditInterval = (form: Interval) => {
     const updatedIntervals = intervals.map((i) =>
-      i.name === form.name
+      i.name + i.origin === form.name + form.origin
         ? form : i
     );
 
