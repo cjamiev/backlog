@@ -78,7 +78,7 @@ export const getIntervalsFromBatchData = (data: string): Interval[] => {
     .split('\n')
     .filter(Boolean)
     .map(songstr => {
-      const [name, origin, links, details = '', tags = ''] = songstr.split(";");
+      const [origin, name, links, details = '', tags = ''] = songstr.split(";");
 
       return {
         name,

@@ -31,7 +31,7 @@ const placeHolderInterval = [
     tags: 'Comma separated tag (optional)',
   }
 ];
-const placeHolderIntervalAsText = 'name;origin;links;details;tags;';
+const placeHolderIntervalAsText = 'origin;name;links;details;tags;';
 
 const IntervalPage: React.FC = () => {
   const { data: intervals = [], isLoading: isLoadingIntervals } = useLoadRecordsByType<Interval>('intervals');
@@ -65,7 +65,7 @@ const IntervalPage: React.FC = () => {
     } else if (searchBy === 'origin') {
       return i.origin.toLowerCase().includes(search.toLowerCase());
     } else {
-      return i.tags.toLowerCase().includes(search.toLowerCase());
+      return i.name.toLowerCase().includes(search.toLowerCase());
     }
   });
 
@@ -113,7 +113,7 @@ const IntervalPage: React.FC = () => {
       const batchIntervals: Interval[] = isStringFormat ? getIntervalsFromBatchData(batch) : JSON.parse(batch);
       const completeList = intervals;
       const duplicateList: Interval[] = [];
-      const allIntervalIds = intervals.map(i => i.name);
+      const allIntervalIds = intervals.map(i => i.name + i.origin);
       batchIntervals.forEach(interval => {
         const newInterval = {
           ...DefaultInterval,
@@ -124,7 +124,7 @@ const IntervalPage: React.FC = () => {
           details: interval.details,
           tags: interval.tags,
         }
-        const isThereADuplicate = checkIfDuplicateId(allIntervalIds, newInterval.name);
+        const isThereADuplicate = checkIfDuplicateId(allIntervalIds, newInterval.name + newInterval.origin);
         if (!isThereADuplicate) {
           completeList.push(newInterval);
         } else {

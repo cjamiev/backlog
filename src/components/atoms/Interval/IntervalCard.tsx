@@ -42,12 +42,6 @@ const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onDelete,
           })}
         </div>
         <div>
-          <span className="card-label">Details:</span>
-          <pre className='card-details'>
-            {interval.details}
-          </pre>
-        </div>
-        <div>
           {interval.tags.length ? (
             <div className="tags-container">
               <span className="card-label">Tags:</span>
@@ -58,6 +52,12 @@ const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onDelete,
               ))}
             </div>
           ) : null}
+        </div>
+        <div>
+          <span className="card-label">Details:</span>
+          <pre className='card-details'>
+            {interval.details}
+          </pre>
         </div>
       </div>
       <div className="card-footer">
