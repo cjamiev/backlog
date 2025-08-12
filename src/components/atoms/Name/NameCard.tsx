@@ -4,12 +4,12 @@ import { type Name } from '../../../model/gamedev';
 interface NameCardProps {
   name: Name;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -44,9 +44,6 @@ const NameCard: React.FC<NameCardProps> = ({ name, onEdit, onClone, onDelete, on
         </a>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

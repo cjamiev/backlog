@@ -4,12 +4,12 @@ import type { Contact } from '../../../model/tracker';
 interface ContactCardProps {
   contact: Contact;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const ContactCard: React.FC<ContactCardProps> = ({ contact, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const ContactCard: React.FC<ContactCardProps> = ({ contact, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -41,9 +41,6 @@ const ContactCard: React.FC<ContactCardProps> = ({ contact, onEdit, onClone, onD
         ) : null}
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

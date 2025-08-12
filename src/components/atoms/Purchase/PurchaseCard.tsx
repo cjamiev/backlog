@@ -5,12 +5,12 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface PurchaseCardProps {
   purchase: Purchase;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const PurchaseCard: React.FC<PurchaseCardProps> = ({ purchase, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const PurchaseCard: React.FC<PurchaseCardProps> = ({ purchase, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -58,9 +58,6 @@ const PurchaseCard: React.FC<PurchaseCardProps> = ({ purchase, onEdit, onClone, 
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

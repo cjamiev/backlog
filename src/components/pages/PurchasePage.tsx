@@ -136,10 +136,9 @@ const PurchasePage: React.FC = () => {
     setEditForm(DefaultPurchase);
   };
 
-  const startEdit = (selectedPurchase: Purchase, isClone?: boolean) => {
+  const startEdit = (selectedPurchase: Purchase) => {
     setEditForm(selectedPurchase);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -237,9 +236,6 @@ const PurchasePage: React.FC = () => {
                 purchase={purchase}
                 onEdit={() => {
                   startEdit(purchase);
-                }}
-                onClone={() => {
-                  startEdit(purchase, true);
                 }}
                 onDelete={() => handleDeletePurchase(purchase)}
                 onHandleClickTag={handleClickTag}

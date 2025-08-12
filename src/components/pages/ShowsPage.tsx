@@ -136,10 +136,9 @@ const ShowsPage: React.FC = () => {
     setEditForm(DefaultShow);
   };
 
-  const startEdit = (selectedShow: Show, isClone?: boolean) => {
+  const startEdit = (selectedShow: Show) => {
     setEditForm(selectedShow);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -237,9 +236,6 @@ const ShowsPage: React.FC = () => {
                 show={show}
                 onEdit={() => {
                   startEdit(show);
-                }}
-                onClone={() => {
-                  startEdit(show, true);
                 }}
                 onDelete={() => handleDeleteShow(show)}
                 onHandleClickTag={handleClickTag}

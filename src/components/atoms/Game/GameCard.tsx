@@ -5,12 +5,12 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface GameCardProps {
   game: Game;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -71,9 +71,6 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onClone, onDelete, on
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

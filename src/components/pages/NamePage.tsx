@@ -131,10 +131,9 @@ const NamePage: React.FC = () => {
     setEditForm(DefaultName);
   };
 
-  const startEdit = (selectedName: Name, isClone?: boolean) => {
+  const startEdit = (selectedName: Name) => {
     setEditForm(selectedName);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -228,9 +227,6 @@ const NamePage: React.FC = () => {
                 name={name}
                 onEdit={() => {
                   startEdit(name);
-                }}
-                onClone={() => {
-                  startEdit(name, true);
                 }}
                 onDelete={() => handleDeleteName(name)}
                 onHandleClickTag={handleClickTag}

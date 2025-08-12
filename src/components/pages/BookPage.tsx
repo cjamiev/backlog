@@ -134,10 +134,9 @@ const BookPage: React.FC = () => {
     setEditForm(DefaultBook);
   };
 
-  const startEdit = (selectedBook: Book, isClone?: boolean) => {
+  const startEdit = (selectedBook: Book) => {
     setEditForm(selectedBook);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -235,9 +234,6 @@ const BookPage: React.FC = () => {
                 book={book}
                 onEdit={() => {
                   startEdit(book);
-                }}
-                onClone={() => {
-                  startEdit(book, true);
                 }}
                 onDelete={() => handleDeleteBook(book)}
                 onHandleClickTag={handleClickTag}

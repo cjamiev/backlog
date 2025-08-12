@@ -119,10 +119,9 @@ const WordPartPage: React.FC = () => {
     setEditForm(DefaultWordPart);
   };
 
-  const startEdit = (selectedWordPart: WordPart, isClone?: boolean) => {
+  const startEdit = (selectedWordPart: WordPart) => {
     setEditForm(selectedWordPart);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -204,9 +203,6 @@ const WordPartPage: React.FC = () => {
                 wordPart={wordPart}
                 onEdit={() => {
                   startEdit(wordPart);
-                }}
-                onClone={() => {
-                  startEdit(wordPart, true);
                 }}
                 onDelete={() => handleDeleteWordPart(wordPart)}
               />

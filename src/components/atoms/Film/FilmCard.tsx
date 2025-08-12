@@ -5,12 +5,12 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface FilmCardProps {
   film: Film;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const FilmCard: React.FC<FilmCardProps> = ({ film, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const FilmCard: React.FC<FilmCardProps> = ({ film, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -48,9 +48,6 @@ const FilmCard: React.FC<FilmCardProps> = ({ film, onEdit, onClone, onDelete, on
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

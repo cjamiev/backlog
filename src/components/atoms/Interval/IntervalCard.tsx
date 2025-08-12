@@ -4,12 +4,12 @@ import { type Interval } from '../../../model/gamedev';
 interface IntervalCardProps {
   interval: Interval;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -61,9 +61,6 @@ const IntervalCard: React.FC<IntervalCardProps> = ({ interval, onEdit, onClone, 
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

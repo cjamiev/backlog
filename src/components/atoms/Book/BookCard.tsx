@@ -4,12 +4,12 @@ import type { Book } from '../../../model/entertainment';
 interface BookCardProps {
   book: Book;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -48,9 +48,6 @@ const BookCard: React.FC<BookCardProps> = ({ book, onEdit, onClone, onDelete, on
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

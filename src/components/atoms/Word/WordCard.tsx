@@ -4,12 +4,12 @@ import { type Word } from '../../../model/gamedev';
 interface WordCardProps {
   word: Word;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const WordCard: React.FC<WordCardProps> = ({ word, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const WordCard: React.FC<WordCardProps> = ({ word, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -44,9 +44,6 @@ const WordCard: React.FC<WordCardProps> = ({ word, onEdit, onClone, onDelete, on
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

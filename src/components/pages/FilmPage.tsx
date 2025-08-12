@@ -136,10 +136,9 @@ const FilmPage: React.FC = () => {
     setEditForm(DefaultFilm);
   };
 
-  const startEdit = (selectedFilm: Film, isClone?: boolean) => {
+  const startEdit = (selectedFilm: Film) => {
     setEditForm(selectedFilm);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -237,9 +236,6 @@ const FilmPage: React.FC = () => {
                 film={film}
                 onEdit={() => {
                   startEdit(film);
-                }}
-                onClone={() => {
-                  startEdit(film, true);
                 }}
                 onDelete={() => handleDeleteFilm(film)}
                 onHandleClickTag={handleClickTag}

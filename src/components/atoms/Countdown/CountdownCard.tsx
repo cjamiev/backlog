@@ -5,12 +5,12 @@ import { Temporal } from "@js-temporal/polyfill";
 interface CountdownCardProps {
   countdown: Countdown;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onDelete, onHandleClickTag }) => {
   const [timeLeft, setTimeLeft] = useState<string>('');
 
   useEffect(() => {
@@ -80,9 +80,6 @@ const CountdownCard: React.FC<CountdownCardProps> = ({ countdown, onEdit, onClon
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

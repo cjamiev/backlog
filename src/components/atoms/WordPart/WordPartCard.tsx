@@ -4,11 +4,11 @@ import { type WordPart, WORD_PART_TYPE } from '../../../model/gamedev';
 interface WordPartCardProps {
   wordPart: WordPart;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
 }
 
-const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onClone, onDelete }) => {
+const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onDelete }) => {
   const getTypeIcon = (type: WORD_PART_TYPE): string => {
     switch (type) {
       case WORD_PART_TYPE.SUFFIX:
@@ -47,9 +47,6 @@ const WordPartCard: React.FC<WordPartCardProps> = ({ wordPart, onEdit, onClone, 
         </a>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

@@ -136,10 +136,9 @@ const GamePage: React.FC = () => {
     setEditForm(DefaultGame);
   };
 
-  const startEdit = (selectedGame: Game, isClone?: boolean) => {
+  const startEdit = (selectedGame: Game) => {
     setEditForm(selectedGame);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -237,9 +236,6 @@ const GamePage: React.FC = () => {
                 game={game}
                 onEdit={() => {
                   startEdit(game);
-                }}
-                onClone={() => {
-                  startEdit(game, true);
                 }}
                 onDelete={() => handleDeleteGame(game)}
                 onHandleClickTag={handleClickTag}

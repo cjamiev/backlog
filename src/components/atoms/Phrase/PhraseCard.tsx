@@ -4,12 +4,12 @@ import { type Phrase } from '../../../model/gamedev';
 interface PhraseCardProps {
   phrase: Phrase;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const PhraseCard: React.FC<PhraseCardProps> = ({ phrase, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const PhraseCard: React.FC<PhraseCardProps> = ({ phrase, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -41,9 +41,6 @@ const PhraseCard: React.FC<PhraseCardProps> = ({ phrase, onEdit, onClone, onDele
         </a>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

@@ -123,13 +123,9 @@ const PhrasePage: React.FC = () => {
     setEditForm(DefaultPhrase);
   };
 
-  const startEdit = (selectedPhrase: Phrase, isClone?: boolean) => {
-    setEditForm({
-      ...selectedPhrase,
-      value: isClone ? selectedPhrase.value + ' copy' : selectedPhrase.value,
-    });
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+  const startEdit = (selectedPhrase: Phrase) => {
+    setEditForm(selectedPhrase);
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -223,9 +219,6 @@ const PhrasePage: React.FC = () => {
                 phrase={phrase}
                 onEdit={() => {
                   startEdit(phrase);
-                }}
-                onClone={() => {
-                  startEdit(phrase, true);
                 }}
                 onDelete={() => handleDeletePhrase(phrase)}
                 onHandleClickTag={handleClickTag}

@@ -135,10 +135,9 @@ const ContactPage: React.FC = () => {
     setEditForm(DefaultContact);
   };
 
-  const startEdit = (selectedContact: Contact, isClone?: boolean) => {
+  const startEdit = (selectedContact: Contact) => {
     setEditForm(selectedContact);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -234,9 +233,6 @@ const ContactPage: React.FC = () => {
                 contact={contact}
                 onEdit={() => {
                   startEdit(contact);
-                }}
-                onClone={() => {
-                  startEdit(contact, true);
                 }}
                 onDelete={() => handleDeleteContact(contact)}
                 onHandleClickTag={handleClickTag}

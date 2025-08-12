@@ -5,12 +5,11 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface SongCardProps {
   song: Song;
   onEdit: () => void;
-  onClone: () => void;
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -63,9 +62,6 @@ const SongCard: React.FC<SongCardProps> = ({ song, onEdit, onClone, onDelete, on
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

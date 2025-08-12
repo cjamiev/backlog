@@ -127,10 +127,9 @@ const IntervalPage: React.FC = () => {
     setEditForm(DefaultInterval);
   };
 
-  const startEdit = (selectedInterval: Interval, isClone?: boolean) => {
+  const startEdit = (selectedInterval: Interval) => {
     setEditForm(selectedInterval);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -224,9 +223,6 @@ const IntervalPage: React.FC = () => {
                 interval={interval}
                 onEdit={() => {
                   startEdit(interval);
-                }}
-                onClone={() => {
-                  startEdit(interval, true);
                 }}
                 onDelete={() => handleDeleteInterval(interval)}
                 onHandleClickTag={handleClickTag}

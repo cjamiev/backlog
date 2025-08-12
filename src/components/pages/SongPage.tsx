@@ -201,13 +201,9 @@ const SongPage: React.FC = () => {
     setEditForm(DefaultSong);
   };
 
-  const startEdit = (selectedSong: Song, isClone?: boolean) => {
-    setEditForm({
-      ...selectedSong,
-      id: isClone ? selectedSong.name + selectedSong.band + ' copy' : selectedSong.name + selectedSong.band,
-    });
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+  const startEdit = (selectedSong: Song) => {
+    setEditForm(selectedSong);
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -311,9 +307,6 @@ const SongPage: React.FC = () => {
                 song={song}
                 onEdit={() => {
                   startEdit(song);
-                }}
-                onClone={() => {
-                  startEdit(song, true);
                 }}
                 onDelete={() => handleDeleteSong(song)}
                 onHandleClickTag={handleClickTag}

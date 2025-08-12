@@ -129,13 +129,9 @@ const ReferencePage: React.FC = () => {
     setEditForm(DefaultReference);
   };
 
-  const startEdit = (selectedReference: Reference, isClone?: boolean) => {
-    setEditForm({
-      ...selectedReference,
-      value: isClone ? selectedReference.value + ' Copy' : selectedReference.value,
-    });
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+  const startEdit = (selectedReference: Reference) => {
+    setEditForm(selectedReference);
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -229,9 +225,6 @@ const ReferencePage: React.FC = () => {
                 reference={reference}
                 onEdit={() => {
                   startEdit(reference);
-                }}
-                onClone={() => {
-                  startEdit(reference, true);
                 }}
                 onDelete={() => handleDeleteReference(reference)}
                 onHandleClickTag={handleClickTag}

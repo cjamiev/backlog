@@ -127,10 +127,9 @@ const ConstructedWordPage: React.FC = () => {
     setEditForm(DefaultWord);
   };
 
-  const startEdit = (selectedWord: Word, isClone?: boolean) => {
+  const startEdit = (selectedWord: Word) => {
     setEditForm(selectedWord);
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -224,9 +223,6 @@ const ConstructedWordPage: React.FC = () => {
                 word={word}
                 onEdit={() => {
                   startEdit(word);
-                }}
-                onClone={() => {
-                  startEdit(word, true);
                 }}
                 onDelete={() => handleDeleteWord(word)}
                 onHandleClickTag={handleClickTag}

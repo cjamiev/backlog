@@ -5,12 +5,12 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface ShowCardProps {
   show: Show;
   onEdit: () => void;
-  onClone: () => void;
+
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
 
-const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, onHandleClickTag }) => {
+const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onDelete, onHandleClickTag }) => {
   return (
     <div className="card-wrapper">
       <div className="card-header">
@@ -49,9 +49,6 @@ const ShowCard: React.FC<ShowCardProps> = ({ show, onEdit, onClone, onDelete, on
         </div>
       </div>
       <div className="card-footer">
-        <button className="primary-btn" onClick={onClone}>
-          Clone
-        </button>
         <button className="primary-btn" onClick={onEdit}>
           Edit
         </button>

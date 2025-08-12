@@ -133,13 +133,9 @@ const CountdownPage: React.FC = () => {
     setEditForm(DefaultCountdown);
   };
 
-  const startEdit = (selectedCountdown: Countdown, isClone?: boolean) => {
-    setEditForm({
-      ...selectedCountdown,
-      name: isClone ? selectedCountdown.name + ' copy' : selectedCountdown.name,
-    });
-    setIsEditing(!isClone);
-    setIsAddMode(Boolean(isClone));
+  const startEdit = (selectedCountdown: Countdown) => {
+    setEditForm(selectedCountdown);
+    setIsEditing(true);
     setIsPanelOpen(true);
   };
 
@@ -233,9 +229,6 @@ const CountdownPage: React.FC = () => {
                 countdown={countdown}
                 onEdit={() => {
                   startEdit(countdown);
-                }}
-                onClone={() => {
-                  startEdit(countdown, true);
                 }}
                 onDelete={() => handleDeleteCountdown(countdown)}
                 onHandleClickTag={handleClickTag}
