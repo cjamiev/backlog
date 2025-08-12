@@ -207,7 +207,7 @@ const IntervalPage: React.FC = () => {
 
   const confirmDeleteInterval = () => {
     if (intervalToDelete) {
-      const updatedIntervals = intervals.filter((i) => i.name !== intervalToDelete.name);
+      const updatedIntervals = intervals.filter((i) => !(i.name === intervalToDelete.name && i.origin === intervalToDelete.origin));
 
       mutate({ payload: JSON.stringify(updatedIntervals), type: 'intervals' });
       setShowDeleteModal(false);
