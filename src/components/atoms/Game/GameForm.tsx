@@ -68,8 +68,8 @@ function GameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: G
         <input
           className="form-input"
           type="text"
-          name="lowestPrice"
-          value={form.lowestPrice}
+          name="price"
+          value={form.price}
           onChange={handleChange}
           placeholder="e.g., $29.99"
         />
