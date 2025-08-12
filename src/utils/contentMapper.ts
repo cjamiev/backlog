@@ -1,4 +1,5 @@
 import type { Song } from "../model/entertainment";
+import type { Interval } from "../model/gamedev";
 import type { Password, PasswordHistory } from "../model/password";
 
 export const getCSV = (records: object[]) => {
@@ -71,3 +72,21 @@ export const getSongsFromBatchData = (data: string): Song[] => {
       }
     });
 }
+
+export const getIntervalsFromBatchData = (data: string): Interval[] => {
+  return data
+    .split('\n')
+    .filter(Boolean)
+    .map(songstr => {
+      const [name, origin, links, details = '', tags = ''] = songstr.split(";");
+
+      return {
+        name,
+        origin,
+        links,
+        details,
+        tags
+      }
+    });
+}
+

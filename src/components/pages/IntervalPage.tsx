@@ -10,7 +10,7 @@ import IntervalCard from '../atoms/Interval/IntervalCard';
 import IntervalForm from '../atoms/Interval/IntervalForm';
 import { DefaultInterval, type Interval } from '../../model/gamedev';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { capitalizeEachWord, checkIfDuplicateId, getCSV, getIntervalsFromBatchData, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -21,6 +21,17 @@ const intervalSearchByOptions = [
   { value: 'tags', label: 'Tags' }
 ];
 const intervalSortByOptions: { value: string; label: string }[] = [];
+
+const placeHolderInterval = [
+  {
+    name: 'Name (required)',
+    origin: 'origin (required)',
+    links: 'link comma seperated',
+    details: 'details',
+    tags: 'Comma separated tag (optional)',
+  }
+];
+const placeHolderIntervalAsText = 'name;origin;links;details;tags;';
 
 const IntervalPage: React.FC = () => {
   const { data: intervals = [], isLoading: isLoadingIntervals } = useLoadRecordsByType<Interval>('intervals');
@@ -43,6 +54,10 @@ const IntervalPage: React.FC = () => {
   const [showBanner, setShowBanner] = useState<{ isVisible: boolean; type: string, message: string }>({ isVisible: false, type: 'success', message: '' });
   const [currentPage, setCurrentPage] = useState(1);
   const [showTagsModal, setShowTagsModal] = useState(false);
+
+  const [showBatchModal, setShowBatchModal] = useState(false);
+  const [batchContent, setBatchContent] = useState('');
+  const [isBatchContentString, setIsBatchContentString] = useState(true);
 
   const filteredIntervals = intervals.filter((i: Interval) => {
     if (searchBy === 'tags') {
@@ -91,6 +106,44 @@ const IntervalPage: React.FC = () => {
 
   const handleSubmit = async (payload: Interval[]) => {
     mutate({ payload: JSON.stringify(payload), type: 'intervals' })
+  };
+
+  const handleBatchJob = async (batch: string, isStringFormat: boolean) => {
+    try {
+      const batchIntervals: Interval[] = isStringFormat ? getIntervalsFromBatchData(batch) : JSON.parse(batch);
+      const completeList = intervals;
+      const duplicateList: Interval[] = [];
+      const allIntervalIds = intervals.map(i => i.name);
+      batchIntervals.forEach(interval => {
+        const newInterval = {
+          ...DefaultInterval,
+          ...interval,
+          name: capitalizeEachWord(interval.name),
+          origin: capitalizeEachWord(interval.origin),
+          links: interval.links,
+          details: interval.details,
+          tags: interval.tags,
+        }
+        const isThereADuplicate = checkIfDuplicateId(allIntervalIds, newInterval.name);
+        if (!isThereADuplicate) {
+          completeList.push(newInterval);
+        } else {
+          duplicateList.push(newInterval);
+        }
+      });
+      if (duplicateList.length > 0) {
+        console.error('Duplicate List', duplicateList);
+      }
+
+      mutate({ payload: JSON.stringify(completeList), type: 'intervals' });
+    } catch (e) {
+      console.error(e);
+      setShowBanner({ isVisible: true, type: 'error', message: 'Error parsing JSON Data for Interval' });
+      setTimeout(() => setShowBanner(DEFAULT_BANNER_PROPS), 2500);
+    } finally {
+      setShowBatchModal(false);
+      setBatchContent('');
+    }
   };
 
   const handleAddInterval = (form: Interval) => {
@@ -189,6 +242,11 @@ const IntervalPage: React.FC = () => {
     setSearch(tag);
     setShowTagsModal(false);
   };
+  const handleOpenBatchModal = () => setShowBatchModal(true);
+  const handleCloseBatchModal = () => setShowBatchModal(false);
+  const handleBatchContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setBatchContent(e.target.value);
+  }
 
   const handlePrevious = () => {
     setCurrentPage((p) => Math.max(1, p - 1));
@@ -248,6 +306,7 @@ const IntervalPage: React.FC = () => {
           <button className="primary-btn" onClick={handleOpenTagsModal}>
             Select A Tag
           </button>
+          <button className="primary-btn" onClick={handleOpenBatchModal}>Add Batch</button>
         </div>
         <Pagination
           totalPages={totalPages}
@@ -301,6 +360,32 @@ const IntervalPage: React.FC = () => {
               </button>
             ))}
           </div>
+        </div>
+      </Modal>
+      <Modal isOpen={showBatchModal} onClose={handleCloseBatchModal} title="Add Intervals In Batch">
+        <div className="modal-data-display">
+          <div>
+            <label>
+              Is String Format?
+              <input type='checkbox' checked={isBatchContentString} onClick={() => { setIsBatchContentString(!isBatchContentString) }} />
+            </label>
+          </div>
+          <div>{isBatchContentString ? 'Enter each interval line by line matching format' : 'Enter valid json array matching Interval interface'}</div>
+          <textarea
+            className="form-input"
+            name="batch-content"
+            value={batchContent}
+            onChange={handleBatchContentChange}
+            rows={24}
+            cols={24}
+            placeholder={isBatchContentString ? placeHolderIntervalAsText : JSON.stringify(placeHolderInterval, null, 2)}
+          />
+          <button onClick={() => handleBatchJob(batchContent, isBatchContentString)} className="primary-btn">
+            Add All
+          </button>
+          <button onClick={handleCloseBatchModal} className="negative-btn">
+            Cancel
+          </button>
         </div>
       </Modal>
       <Sidepanel
