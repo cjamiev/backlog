@@ -17,7 +17,7 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
     if (initialValues) {
       setForm({
         ...initialValues,
-        type: favoriteTypes[0],
+        type: initialValues.type ?? favoriteTypes[0],
       });
     }
   }, [initialValues, favoriteTypes]);
