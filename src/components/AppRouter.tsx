@@ -22,6 +22,7 @@ import WordPartPage from './pages/WordPartPage';
 import ContactPage from './pages/ContactPage';
 import NotePage from './pages/NotePage';
 import Navigation from './Navigation';
+import ErrorPage from './pages/ErrorPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -60,6 +61,7 @@ function AppRouter() {
           <Route path="/contacts" element={<ContactPage />} />
           <Route path="/notes" element={<NotePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </HashRouter>
     </QueryClientProvider>
