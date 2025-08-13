@@ -63,7 +63,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit
         name="details"
         value={form.details}
         onChange={handleChange}
-        rows={24}
+        rows={32}
         required
       />
       <label className="form-label">
