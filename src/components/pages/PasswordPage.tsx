@@ -35,7 +35,8 @@ const placeHolderPassword: Password[] = [
     "url": "Url to service",
     "tags": "comma separated values",
     "history": "",
-    "createdDate": ""
+    "createdDate": "",
+    "notes": ""
   }
 ];
 const placeHolderPasswordAsText = 'id;username;password;url;tags';

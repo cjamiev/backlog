@@ -24,7 +24,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onDelete,
       <div className="card-header">
         <h2 className="card-title">{password.id}</h2>
       </div>
-      <div className='card-body card-body__sm'>
+      <div className='card-body card-body__md'>
         <div>
           <span className="card-label">Username:</span>
           <span className="card-text">{password.username}</span>
@@ -48,6 +48,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ password, onEdit, onDelete,
         </div>
         <div>
           <span className="card-label">Created:</span> <span className="card-text">{new Date(Number(password.createdDate)).toDateString()}</span>
+        </div>
+        <div>
+          <span className="card-label">Notes:</span> <span className="card-text">{password.notes}</span>
         </div>
         <div>
           {password.tags.length ? (

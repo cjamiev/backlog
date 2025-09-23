@@ -114,6 +114,16 @@ function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
         />
       </label>
       <label className="form-label">
+        Notes:
+        <textarea
+          className="form-input"
+          name="notes"
+          value={form.notes}
+          onChange={handleChange}
+          rows={3}
+        />
+      </label>
+      <label className="form-label">
         Tags (comma separated):
         <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
       </label>

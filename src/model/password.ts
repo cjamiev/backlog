@@ -11,6 +11,7 @@ export interface Password {
   createdDate: string;
   tags: string;
   history: string;
+  notes: string;
 }
 
 export const DefaultPassword: Password = {
@@ -20,5 +21,6 @@ export const DefaultPassword: Password = {
   url: '',
   createdDate: '',
   tags: '',
-  history: ''
+  history: '',
+  notes: ''
 }
