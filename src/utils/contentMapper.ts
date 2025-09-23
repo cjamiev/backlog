@@ -40,8 +40,8 @@ export const getPasswordsFromBatchData = (data: string): Password[] => {
   return data
     .split('\n')
     .filter(Boolean)
-    .map(songstr => {
-      const [id, username, password, url = '', tags = ''] = songstr.split(";");
+    .map(passwordstr => {
+      const [id, username, password, url = '', tags = ''] = passwordstr.split(";");
 
       return {
         id,
@@ -50,7 +50,8 @@ export const getPasswordsFromBatchData = (data: string): Password[] => {
         url,
         tags,
         history: '',
-        createdDate: ''
+        createdDate: '',
+        notes: ''
       }
     });
 }
@@ -77,8 +78,8 @@ export const getIntervalsFromBatchData = (data: string): Interval[] => {
   return data
     .split('\n')
     .filter(Boolean)
-    .map(songstr => {
-      const [origin, name, links, details = '', tags = ''] = songstr.split(";");
+    .map(intervalstr => {
+      const [origin, name, links, details = '', tags = ''] = intervalstr.split(";");
 
       return {
         name,
