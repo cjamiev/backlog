@@ -194,7 +194,16 @@ const PasswordPage: React.FC = () => {
   };
 
   const handleEditPassword = (form: Password) => {
-    updatePasswordMutate({ payload: form });
+    const previousPasswordState = passwords.find(p => p.id === form.id) ?? DefaultPassword;
+    const isUpdatingPasswordValue = previousPasswordState.password !== form.password;
+
+    updatePasswordMutate({
+      payload: {
+        ...form,
+        createdDate: isUpdatingPasswordValue ? String(Date.now()) : form.createdDate,
+        history: isUpdatingPasswordValue ? getPasswordHistory(form, previousPasswordState.password) : form.history
+      }
+    });
     setIsPanelOpen(false);
     setIsAddMode(false);
     setIsEditing(false);
@@ -203,13 +212,7 @@ const PasswordPage: React.FC = () => {
 
   const startEdit = (selectedPassword: Password) => {
     setEditForm({
-      id: selectedPassword.id,
-      username: selectedPassword.username,
-      password: selectedPassword.password,
-      createdDate: String(Date.now()),
-      url: selectedPassword.url,
-      tags: selectedPassword.tags,
-      history: getPasswordHistory(selectedPassword)
+      ...selectedPassword
     });
     setIsEditing(true);
     setIsPanelOpen(true);

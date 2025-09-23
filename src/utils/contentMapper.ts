@@ -14,9 +14,9 @@ export const getJSON = (records: object[]) => {
   return JSON.stringify(records, null, 2);
 };
 
-export const getPasswordHistory = (selectedPassword: Password): string => {
+export const getPasswordHistory = (selectedPassword: Password, previousPasswordValue: string): string => {
   const currentPasswordHistory: PasswordHistory[] = JSON.parse(selectedPassword.history);
-  const updatePasswordHistory: PasswordHistory[] = currentPasswordHistory.concat({ password: selectedPassword.password, createdDate: selectedPassword.createdDate });
+  const updatePasswordHistory: PasswordHistory[] = currentPasswordHistory.concat({ password: previousPasswordValue, createdDate: selectedPassword.createdDate });
 
   return JSON.stringify(updatePasswordHistory);
 }
