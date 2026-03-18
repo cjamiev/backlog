@@ -1,4 +1,43 @@
+import { useState } from "react";
+import { useLoadRecordsByType } from "../../api/library-service";
+import type { Song } from "../../model/entertainment";
+
+const getCurrentSongData = (song: Song) => {
+  if (!song) {
+    return { title: '', link: '' };
+  }
+
+  const { name, band, link } = song;
+  if (link.includes('watch?v=')) {
+    return { title: name + ' ' + band, link: link.replace('watch?v=', 'embed/') }
+  }
+  if (link.includes('youtu.be')) {
+    return { title: name + ' ' + band, link: link.replace('youtu.be', 'youtube.com/embed') }
+  }
+
+  return { title: song.name + ' ' + song.band, link: song.link }
+}
+
 const HomePage: React.FC = () => {
+  const { data: songs = [], isLoading: isLoadingSongs } = useLoadRecordsByType<Song>('songs');
+  const [currentSongIdx, setCurrentPage] = useState(0);
+  const [search, setSearch] = useState('');
+
+  const playableSongs = songs.filter(s => !!s.link && !s.tags.includes('segment'));
+  const clickableSongs = playableSongs.filter(s =>
+    s.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
+    s.band.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+  );
+  const { title, link } = getCurrentSongData(playableSongs[currentSongIdx]);
+
+  const onSearchChange = (filter: string) => {
+    setSearch(filter);
+  };
+
+  const handleSelectSong = (index: number) => {
+    setCurrentPage(index);
+  }
+
   return (
     <div className="page-wrapper">
       <h1 className="page-title">Home</h1>
@@ -12,6 +51,32 @@ const HomePage: React.FC = () => {
         <div className="home-notes">
           This demo version uses local storage to simulate CRUD operations.  It also contains mocked examples.
         </div>
+
+        {!isLoadingSongs ? (
+          <div >
+            <div>
+              <span className="card-label">Title: </span> {title}
+              <span className="card-label"> Link: </span> {link}
+            </div>
+            <iframe autoFocus width="800" height="600" src={link} title="description">Bring It</iframe>
+            <div>
+              <input
+                className="search-bar"
+                type="text"
+                placeholder={'Search by Name/Band'}
+                value={search}
+                onChange={(e) => onSearchChange(e.target.value)}
+              />
+              {clickableSongs.length > 0 ? <div className="home-song-list">
+                {clickableSongs.map((s, idx) => {
+                  return <button className="home-song-btn" onClick={() => { handleSelectSong(idx) }}>{s.name} - {s.band}</button>
+                })}
+              </div> : <div>No Songs Found</div>}
+            </div>
+          </div>
+        ) : (
+          <div className="loading-container">Loading...</div>
+        )}
       </div>
     </div>
   );

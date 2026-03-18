@@ -41,9 +41,17 @@ function WordForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: W
 
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
-      <label className="form-label">
+      <label className="form-id">
         Word:
         <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
+        <a
+          className="form-id-link"
+          href={`https://www.google.com/search?q=${encodeURIComponent(form.value + ' definition')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          G
+        </a>
       </label>
       <label className="form-label">
         Definition:

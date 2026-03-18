@@ -10,3 +10,23 @@
 .home-tag-line {
     margin-bottom: 12px;
 }
+
+.home-song-list {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  max-width: 400px;
+  overflow-y: scroll;
+}
+
+.home-song-btn {
+  background: white;
+  border: none;
+  cursor: pointer;
+}
+
+.home-song-btn:hover {
+  background: black;
+  color: white;
+}
