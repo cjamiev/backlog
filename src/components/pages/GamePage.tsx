@@ -22,7 +22,8 @@ const gameSearchByOptions = [
 ];
 const gameSortByOptions = [
   { value: 'name', label: 'Name' },
-  { value: 'rank', label: 'Rank' }
+  { value: 'rank', label: 'Rank' },
+  { value: 'year', label: 'Year' }
 ];
 
 const GamePage: React.FC = () => {
@@ -59,6 +60,11 @@ const GamePage: React.FC = () => {
   const sortedGames = [...filteredGames].sort((a, b) => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);
+    } else if (sortBy === 'year') {
+      const aYear = Number(a.year ?? 0);
+      const bYear = Number(b.year ?? 0);
+
+      return bYear - aYear;
     } else {
       return b.rank - a.rank;
     }
@@ -310,18 +316,18 @@ const GamePage: React.FC = () => {
       </Modal>
       <Modal isOpen={showCSVModal} onClose={handleCloseCSVModal} title="CSV Export">
         <div className="modal-data-display">
-          <button onClick={() => copyContents(getCSV(games))} className="modal-copy-btn">
+          <button onClick={() => copyContents(getCSV(sortedGames))} className="modal-copy-btn">
             Copy
           </button>
-          <pre className="modal-data-content">{getCSV(games)}</pre>
+          <pre className="modal-data-content">{getCSV(sortedGames)}</pre>
         </div>
       </Modal>
       <Modal isOpen={showJSONModal} onClose={handleCloseJSONModal} title="JSON Export">
         <div className="modal-data-display">
-          <button onClick={() => copyContents(getJSON(games))} className="modal-copy-btn">
+          <button onClick={() => copyContents(getJSON(sortedGames))} className="modal-copy-btn">
             Copy
           </button>
-          <pre className="modal-data-content">{getJSON(games)}</pre>
+          <pre className="modal-data-content">{getJSON(sortedGames)}</pre>
         </div>
       </Modal>
       <Modal isOpen={showTagsModal} onClose={handleCloseTagsModal} title="All Tags">

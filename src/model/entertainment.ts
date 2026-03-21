@@ -78,7 +78,7 @@ export const DefaultShow: Show = {
 export interface Game {
   name: string;
   rank: number;
-  lowestPrice?: string;
+  year: string;
   price: string;
   tags: string;
 }
@@ -86,7 +86,8 @@ export interface Game {
 export const DefaultGame: Game = {
   name: '',
   rank: 1,
-  price: "",
+  year: '',
+  price: '',
   tags: ''
 }
 

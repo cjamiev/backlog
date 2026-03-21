@@ -75,6 +75,17 @@ function GameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: G
         />
       </label>
       <label className="form-label">
+        Year Released:
+        <input
+          className="form-input"
+          type="text"
+          name="year"
+          value={form.year}
+          onChange={handleChange}
+          placeholder="1988"
+        />
+      </label>
+      <label className="form-label">
         Tags (comma separated):
         <input type="text" name="tags" value={form.tags} onChange={handleChange} className="form-input" />
       </label>

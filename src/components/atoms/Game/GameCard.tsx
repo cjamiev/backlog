@@ -5,7 +5,6 @@ import { getRankStars } from '../../../utils/contentMapper';
 interface GameCardProps {
   game: Game;
   onEdit: () => void;
-
   onDelete: () => void;
   onHandleClickTag: (tag: string) => void;
 }
@@ -22,6 +21,9 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onDelete, onHandleCli
         </div>
         <div>
           <span className="card-label">Price:</span> <span className="card-text">{game.price}</span>
+        </div>
+        <div>
+          <span className="card-label">Year:</span> <span className="card-text">{game.year}</span>
         </div>
         <div>
           {game.tags.length ? (
