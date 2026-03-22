@@ -56,9 +56,9 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: F
           G
         </a>
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input

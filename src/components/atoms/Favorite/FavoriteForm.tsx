@@ -60,9 +60,9 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
           G
         </a>
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Link:
         <input

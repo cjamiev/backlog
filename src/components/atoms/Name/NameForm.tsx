@@ -51,9 +51,9 @@ function NameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: N
         Name:
         <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Gender:
         <select className="form-input" name="gender" value={form.gender} onChange={handleChange}>

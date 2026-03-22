@@ -51,9 +51,9 @@ function IntervalForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
         Name:
         <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Origin:
         <input disabled={isEditing} className="form-input" type="text" name="origin" value={form.origin} onChange={handleChange} required />

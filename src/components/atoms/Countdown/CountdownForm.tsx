@@ -55,9 +55,9 @@ function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing
         Countdown Name:
         <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Target Date:
         <input className="form-input" type="date" name="date" value={form.date} onChange={handleChange} required />

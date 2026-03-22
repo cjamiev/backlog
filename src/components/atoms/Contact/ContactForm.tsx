@@ -54,9 +54,9 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, initialValues, canc
           required
         />
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Phone:
         <input

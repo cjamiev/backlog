@@ -56,9 +56,9 @@ function PurchaseForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
           G
         </a>
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Description:
         <textarea

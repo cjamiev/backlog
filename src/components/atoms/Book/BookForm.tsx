@@ -60,9 +60,9 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: B
         Author:
         <input type="text" name="author" value={form.author} onChange={handleChange} className="form-input" />
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Type:
         <select className="form-input" name="type" value={form.type} onChange={handleChange} required>

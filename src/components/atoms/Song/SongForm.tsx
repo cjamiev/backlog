@@ -60,9 +60,9 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: S
         Band:
         <input disabled={isEditing} className="form-input" type="text" name="band" value={form.band} onChange={handleChange} required />
       </label>
-      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+      {!isEditing && <button className="form-capitalize-btn" onClick={handleCapitalize}>
         Capitalize
-      </button>
+      </button>}
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input
