@@ -9,7 +9,7 @@ import Pagination from '../atoms/Pagination';
 import PasswordCard from '../atoms/Password/PasswordCard';
 import PasswordForm from '../atoms/Password/PasswordForm';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getPasswordsFromBatchData } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON, getPasswordsFromBatchData } from '../../utils/contentMapper';
 import { useAddNewPassword, useLoadPasswords, useUpdatePassword } from '../../api/password-service';
 import { DefaultPassword, type Password } from '../../model/password';
 import { getPasswordHistory } from '../../utils/contentMapper';
@@ -144,7 +144,7 @@ const PasswordPage: React.FC = () => {
         const newPassword = {
           ...DefaultPassword,
           ...password,
-          id: capitalizeEachWord(password.id),
+          id: password.id,
           createdDate: String(Date.now()),
           history: "[]"
         }
@@ -178,7 +178,7 @@ const PasswordPage: React.FC = () => {
       newPasswordMutate({
         payload: {
           ...form,
-          id: capitalizeEachWord(form.id),
+          id: form.id,
           createdDate: String(Date.now()),
           history: '[]'
         }

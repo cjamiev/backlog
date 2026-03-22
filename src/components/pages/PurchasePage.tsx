@@ -11,7 +11,7 @@ import PurchaseCard from '../atoms/Purchase/PurchaseCard';
 import PurchaseForm from '../atoms/Purchase/PurchaseForm';
 import { DefaultPurchase, type Purchase } from '../../model/tracker';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -100,14 +100,9 @@ const PurchasePage: React.FC = () => {
   };
 
   const handleAddPurchase = (form: Purchase) => {
-    const newPurchase = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(purchases.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedPurchases = [newPurchase, ...purchases];
+      const updatedPurchases = [form, ...purchases];
       handleSubmit(updatedPurchases);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -123,10 +118,7 @@ const PurchasePage: React.FC = () => {
   const handleEditPurchase = (form: Purchase) => {
     const updatedPurchases = purchases.map((g) =>
       g.name === form.name
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+        ? form
         : g
     );
     handleSubmit(updatedPurchases);

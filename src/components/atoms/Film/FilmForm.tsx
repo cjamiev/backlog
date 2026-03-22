@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultFilm, serviceType, type Film } from '../../../model/entertainment';
-import { getRankStars } from '../../../utils/contentMapper';
+import { capitalizeEachWord, getRankStars } from '../../../utils/contentMapper';
 
 interface FilmFormProps {
   onSubmit: (form: Film) => void;
@@ -37,6 +37,11 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: F
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
@@ -51,6 +56,9 @@ function FilmForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: F
           G
         </a>
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input

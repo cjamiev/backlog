@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { bookTypes, DefaultBook, type Book } from '../../../model/entertainment';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface BookFormProps {
   onSubmit: (form: Book) => void;
@@ -36,6 +37,11 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: B
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name), author: capitalizeEachWord(form.author) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
@@ -54,6 +60,9 @@ function BookForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: B
         Author:
         <input type="text" name="author" value={form.author} onChange={handleChange} className="form-input" />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Type:
         <select className="form-input" name="type" value={form.type} onChange={handleChange} required>

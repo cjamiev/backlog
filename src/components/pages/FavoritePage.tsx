@@ -7,7 +7,7 @@ import Footer from '../atoms/Footer';
 import FavoriteForm from '../atoms/Favorite/FavoriteForm';
 import { DefaultFavorite, type Favorite } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import FavoriteList from '../atoms/Favorite/FavoriteList';
 import AddFavoriteCard from '../atoms/Favorite/AddFavoriteCard';
 import { useLoadRecordsByType, useUpdateRecordsByType } from '../../api/library-service';
@@ -108,14 +108,9 @@ const FavoritePage: React.FC = () => {
   };
 
   const handleAddFavorite = (form: Favorite) => {
-    const newFavorite = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(favorites.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedFavorites = [newFavorite, ...favorites];
+      const updatedFavorites = [form, ...favorites];
       handleSubmit(updatedFavorites);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -131,10 +126,7 @@ const FavoritePage: React.FC = () => {
   const handleEditFavorite = (form: Favorite) => {
     const updatedFavorites = favorites.map((f) =>
       f.name === form.name && f.link === form.link
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+        ? form
         : f
     );
     handleSubmit(updatedFavorites);

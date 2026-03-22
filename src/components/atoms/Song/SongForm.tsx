@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultSong, type Song } from '../../../model/entertainment';
-import { getRankStars } from '../../../utils/contentMapper';
+import { capitalizeEachWord, getRankStars } from '../../../utils/contentMapper';
 
 interface SongFormProps {
   onSubmit: (form: Song) => void;
@@ -37,6 +37,11 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: S
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name), band: capitalizeEachWord(form.band) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
@@ -55,6 +60,9 @@ function SongForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: S
         Band:
         <input disabled={isEditing} className="form-input" type="text" name="band" value={form.band} onChange={handleChange} required />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input

@@ -11,7 +11,7 @@ import { DefaultContact, type Contact } from '../../model/tracker';
 import ContactCard from '../atoms/Contact/ContactCard';
 import ContactForm from '../atoms/Contact/ContactForm';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -99,14 +99,9 @@ const ContactPage: React.FC = () => {
   };
 
   const handleAddContact = (form: Contact) => {
-    const newContact = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(contacts.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedContacts = [newContact, ...contacts];
+      const updatedContacts = [form, ...contacts];
       handleSubmit(updatedContacts);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -122,10 +117,7 @@ const ContactPage: React.FC = () => {
   const handleEditContact = (form: Contact) => {
     const updatedContacts = contacts.map((c) =>
       c.name === form.name && c.email === form.email
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+        ? form
         : c
     );
     handleSubmit(updatedContacts);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultPassword, type Password } from '../../../model/password';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface PasswordFormProps {
   onSubmit: (form: Password) => void;
@@ -51,12 +52,20 @@ function PasswordForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.id) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Service/Website Name:
         <input disabled={isEditing} className="form-input" type="text" name="id" value={form.id} onChange={handleChange} required />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Username/Email:
         <input

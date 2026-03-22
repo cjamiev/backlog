@@ -11,7 +11,7 @@ import CountdownCard from '../atoms/Countdown/CountdownCard';
 import CountdownForm from '../atoms/Countdown/CountdownForm';
 import { DefaultCountdown, type Countdown } from '../../model/tracker';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -100,14 +100,9 @@ const CountdownPage: React.FC = () => {
   };
 
   const handleAddCountdown = (form: Countdown) => {
-    const newCountdown = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
-    const isThereADuplicate = checkIfDuplicateId(countdowns.map(i => i.name), newCountdown.name);
+    const isThereADuplicate = checkIfDuplicateId(countdowns.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedCountdowns = [newCountdown, ...countdowns];
+      const updatedCountdowns = [form, ...countdowns];
       handleSubmit(updatedCountdowns);
       setIsPanelOpen(false);
       setIsAddMode(false);

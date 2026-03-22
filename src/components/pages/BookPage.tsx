@@ -11,7 +11,7 @@ import BookCard from '../atoms/Book/BookCard';
 import BookForm from '../atoms/Book/BookForm';
 import { bookTypes, DefaultBook, type Book } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -96,15 +96,9 @@ const BookPage: React.FC = () => {
   };
 
   const handleAddBook = (form: Book) => {
-    const newBook = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-      author: capitalizeEachWord(form.author),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(books.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedBooks = [newBook, ...books];
+      const updatedBooks = [form, ...books];
       handleSubmit(updatedBooks);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -120,11 +114,7 @@ const BookPage: React.FC = () => {
   const handleEditBook = (form: Book) => {
     const updatedBooks = books.map((b) =>
       b.name === form.name
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-          author: capitalizeEachWord(form.author),
-        }
+        ? form
         : b
     );
     handleSubmit(updatedBooks);

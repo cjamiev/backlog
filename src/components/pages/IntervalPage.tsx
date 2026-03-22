@@ -10,7 +10,7 @@ import IntervalCard from '../atoms/Interval/IntervalCard';
 import IntervalForm from '../atoms/Interval/IntervalForm';
 import { DefaultInterval, type Interval } from '../../model/gamedev';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getIntervalsFromBatchData, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getIntervalsFromBatchData, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -118,11 +118,6 @@ const IntervalPage: React.FC = () => {
         const newInterval = {
           ...DefaultInterval,
           ...interval,
-          name: capitalizeEachWord(interval.name),
-          origin: capitalizeEachWord(interval.origin),
-          links: interval.links,
-          details: interval.details,
-          tags: interval.tags,
         }
         const isThereADuplicate = checkIfDuplicateId(allIntervalIds, newInterval.name + newInterval.origin);
         if (!isThereADuplicate) {
@@ -147,15 +142,9 @@ const IntervalPage: React.FC = () => {
   };
 
   const handleAddInterval = (form: Interval) => {
-    const newInterval = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-      origin: capitalizeEachWord(form.origin)
-    };
-
-    const isThereADuplicate = checkIfDuplicateId(intervals.map(i => i.name + i.origin), newInterval.name + newInterval.origin);
+    const isThereADuplicate = checkIfDuplicateId(intervals.map(i => i.name + i.origin), form.name + form.origin);
     if (!isThereADuplicate) {
-      const updatedIntervals = [newInterval, ...intervals];
+      const updatedIntervals = [form, ...intervals];
       handleSubmit(updatedIntervals);
       setIsPanelOpen(false);
       setIsAddMode(false);

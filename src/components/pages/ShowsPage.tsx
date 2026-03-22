@@ -11,7 +11,7 @@ import ShowCard from '../atoms/Show/ShowCard';
 import ShowForm from '../atoms/Show/ShowForm';
 import { DefaultShow, serviceType, type Show } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -100,14 +100,9 @@ const ShowsPage: React.FC = () => {
   };
 
   const handleAddShow = (form: Show) => {
-    const newShow = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(shows.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedShows = [newShow, ...shows];
+      const updatedShows = [form, ...shows];
       handleSubmit(updatedShows);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -123,10 +118,7 @@ const ShowsPage: React.FC = () => {
   const handleEditShow = (form: Show) => {
     const updatedShows = shows.map((s) =>
       s.name === form.name
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+        ? form
         : s
     );
     handleSubmit(updatedShows);

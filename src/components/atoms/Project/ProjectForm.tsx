@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultProject, type Project } from '../../../model/tracker';
-import { getRankStars } from '../../../utils/contentMapper';
+import { capitalizeEachWord, getRankStars } from '../../../utils/contentMapper';
 
 interface ProjectFormProps {
   onSubmit: (form: Project) => void;
@@ -37,12 +37,20 @@ function ProjectForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Project Name:
         <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Details:
       </label>

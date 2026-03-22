@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultName, type Name, GENDER_TYPE } from '../../../model/gamedev';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface NameFormProps {
   onSubmit: (form: Name) => void;
@@ -39,12 +40,20 @@ function NameForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing }: N
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, value: capitalizeEachWord(form.value) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Name:
         <input disabled={isEditing} className="form-input" type="text" name="value" value={form.value} onChange={handleChange} required />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Gender:
         <select className="form-input" name="gender" value={form.gender} onChange={handleChange}>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultFavorite, type Favorite } from '../../../model/entertainment';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface FavoriteFormProps {
   onSubmit: (form: Favorite) => void;
@@ -40,6 +41,11 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
@@ -54,6 +60,9 @@ function FavoriteForm({ onSubmit, initialValues, cancelEdit, favoriteTypes, allT
           G
         </a>
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Link:
         <input

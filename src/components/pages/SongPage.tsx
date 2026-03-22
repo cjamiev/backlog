@@ -11,7 +11,7 @@ import SongCard from '../atoms/Song/SongCard';
 import SongForm from '../atoms/Song/SongForm';
 import { DefaultSong, type Song } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars, getSongsFromBatchData } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON, getRankStars, getSongsFromBatchData } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -126,9 +126,7 @@ const SongPage: React.FC = () => {
       batchSongs.forEach(song => {
         const newSong = {
           ...song,
-          id: capitalizeEachWord(song.name) + capitalizeEachWord(song.band),
-          name: capitalizeEachWord(song.name),
-          band: capitalizeEachWord(song.band),
+          id: song.name + song.band,
           rank: song.rank > 5 ? 5 : song.rank < 1 ? 1 : song.rank
         }
         const isThereADuplicate = checkIfDuplicateId(allSongIds, newSong.id);
@@ -160,9 +158,7 @@ const SongPage: React.FC = () => {
   const handleAddSong = (form: Song) => {
     const newSong = {
       ...form,
-      id: capitalizeEachWord(form.name) + capitalizeEachWord(form.band),
-      name: capitalizeEachWord(form.name),
-      band: capitalizeEachWord(form.band),
+      id: form.name + form.band,
     };
     setIsPanelOpen(false);
     setIsAddMode(false);
@@ -187,11 +183,7 @@ const SongPage: React.FC = () => {
   const handleEditSong = (form: Song) => {
     const updatedSongs = songs.map((s) =>
       s.id === form.id
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-          band: capitalizeEachWord(form.band),
-        }
+        ? form
         : s
     );
     handleSubmit(updatedSongs);

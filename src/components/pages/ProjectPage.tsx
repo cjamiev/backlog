@@ -10,7 +10,7 @@ import ProjectCard from '../atoms/Project/ProjectCard';
 import ProjectForm from '../atoms/Project/ProjectForm';
 import { DefaultProject, type Project } from '../../model/tracker';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -104,14 +104,9 @@ const ProjectPage: React.FC = () => {
   };
 
   const handleAddProject = (form: Project) => {
-    const newProject = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
-    const isThereADuplicate = checkIfDuplicateId(projects.map(i => i.name), newProject.name);
+    const isThereADuplicate = checkIfDuplicateId(projects.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedProjects = [newProject, ...projects];
+      const updatedProjects = [form, ...projects];
       handleSubmit(updatedProjects);
       setIsPanelOpen(false);
       setIsAddMode(false);

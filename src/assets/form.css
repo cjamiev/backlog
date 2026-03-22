@@ -122,6 +122,24 @@
   background: var(--color-primary);
 }
 
+.form-capitalize-btn {
+  margin-bottom: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  background: var(--color-secondary);
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  width: 30%;
+  transition: background-color 0.2s;
+}
+
+.form-capitalize-btn:hover {
+  background: var(--color-primary);
+}
+
 .tags-wrapper {
   margin-top: 8px;
   margin-bottom: 16px;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultPurchase, type Purchase } from '../../../model/tracker';
-import { getRankStars } from '../../../utils/contentMapper';
+import { capitalizeEachWord, getRankStars } from '../../../utils/contentMapper';
 
 interface PurchaseFormProps {
   onSubmit: (form: Purchase) => void;
@@ -37,6 +37,11 @@ function PurchaseForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-id">
@@ -51,6 +56,9 @@ function PurchaseForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
           G
         </a>
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Description:
         <textarea

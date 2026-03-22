@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Note } from '../../../model/tracker';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface NoteFormProps {
   onSubmit: (form: Note) => void;
@@ -42,6 +43,11 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
@@ -55,6 +61,9 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, initialValues, cancelEdit
           required
         />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Details:
       </label>

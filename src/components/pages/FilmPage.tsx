@@ -11,7 +11,7 @@ import FilmCard from '../atoms/Film/FilmCard';
 import FilmForm from '../atoms/Film/FilmForm';
 import { DefaultFilm, serviceType, type Film } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -100,14 +100,9 @@ const FilmPage: React.FC = () => {
   };
 
   const handleAddFilm = (form: Film) => {
-    const newFilm = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(films.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedFilms = [newFilm, ...films];
+      const updatedFilms = [form, ...films];
       handleSubmit(updatedFilms);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -123,10 +118,7 @@ const FilmPage: React.FC = () => {
   const handleEditFilm = (form: Film) => {
     const updatedFilms = films.map((f) =>
       f.name === form.name
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+        ? form
         : f
     );
     handleSubmit(updatedFilms);

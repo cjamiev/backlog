@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultInterval, type Interval } from '../../../model/gamedev';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface IntervalFormProps {
   onSubmit: (form: Interval) => void;
@@ -39,12 +40,20 @@ function IntervalForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing 
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Name:
         <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Origin:
         <input disabled={isEditing} className="form-input" type="text" name="origin" value={form.origin} onChange={handleChange} required />

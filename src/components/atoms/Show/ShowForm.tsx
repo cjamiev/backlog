@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { serviceType, type Show } from '../../../model/entertainment';
-import { getRankStars } from '../../../utils/contentMapper';
+import { capitalizeEachWord, getRankStars } from '../../../utils/contentMapper';
 
 interface ShowFormProps {
   onSubmit: (show: Show) => void;
@@ -37,6 +37,11 @@ const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form onSubmit={handleSubmit} className="form-wrapper">
       <label className="form-id">
@@ -51,6 +56,9 @@ const ShowForm: React.FC<ShowFormProps> = ({ onSubmit, initialValues, cancelEdit
           G
         </a>
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Rank: <span className="form-rank-text">{getRankStars(form.rank)}</span>
         <input

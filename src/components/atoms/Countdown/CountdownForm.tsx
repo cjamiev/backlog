@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DefaultCountdown, type Countdown } from '../../../model/tracker';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface CountdownFormProps {
   onSubmit: (form: Countdown) => void;
@@ -43,12 +44,20 @@ function CountdownForm({ onSubmit, initialValues, cancelEdit, allTags, isEditing
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
         Countdown Name:
         <input disabled={isEditing} className="form-input" type="text" name="name" value={form.name} onChange={handleChange} required />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Target Date:
         <input className="form-input" type="date" name="date" value={form.date} onChange={handleChange} required />

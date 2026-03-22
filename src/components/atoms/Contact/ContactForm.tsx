@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Contact } from '../../../model/tracker';
+import { capitalizeEachWord } from '../../../utils/contentMapper';
 
 interface ContactFormProps {
   onSubmit: (form: Contact) => void;
@@ -35,6 +36,11 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, initialValues, canc
     }
   };
 
+  const handleCapitalize = (e: React.FormEvent) => {
+    e.preventDefault();
+    setForm((prev) => ({ ...prev, name: capitalizeEachWord(form.name) }));
+  }
+
   return (
     <form className="form-wrapper" onSubmit={handleSubmit}>
       <label className="form-label">
@@ -48,6 +54,9 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, initialValues, canc
           required
         />
       </label>
+      <button className="form-capitalize-btn" onClick={handleCapitalize}>
+        Capitalize
+      </button>
       <label className="form-label">
         Phone:
         <input

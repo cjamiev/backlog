@@ -11,7 +11,7 @@ import NameCard from '../atoms/Name/NameCard';
 import NameForm from '../atoms/Name/NameForm';
 import { DefaultName, type Name } from '../../model/gamedev';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -95,14 +95,9 @@ const NamePage: React.FC = () => {
   };
 
   const handleAddName = (form: Name) => {
-    const newName = {
-      ...form,
-      name: capitalizeEachWord(form.value),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(names.map(i => i.value), form.value);
     if (!isThereADuplicate) {
-      const updatedNames = [newName, ...names];
+      const updatedNames = [form, ...names];
       handleSubmit(updatedNames);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -118,10 +113,7 @@ const NamePage: React.FC = () => {
   const handleEditName = (form: Name) => {
     const updatedNames = names.map((n) =>
       n.value === form.value
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.value),
-        }
+        ? form
         : n
     );
     handleSubmit(updatedNames);

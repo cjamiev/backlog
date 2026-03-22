@@ -10,7 +10,7 @@ import { DefaultNote, type Note } from '../../model/tracker';
 import NoteCard from '../atoms/Note/NoteCard';
 import NoteForm from '../atoms/Note/NoteForm';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -92,14 +92,9 @@ const NotePage: React.FC = () => {
   };
 
   const handleAddNote = (form: Note) => {
-    const newNote = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(notes.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedNotes = [newNote, ...notes];
+      const updatedNotes = [form, ...notes];
       handleSubmit(updatedNotes);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -115,10 +110,7 @@ const NotePage: React.FC = () => {
   const handleEditNote = (form: Note) => {
     const updatedNotes = notes.map((n) =>
       n.name === form.name
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+        ? form
         : n
     );
     handleSubmit(updatedNotes);

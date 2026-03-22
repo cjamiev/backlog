@@ -11,7 +11,7 @@ import GameCard from '../atoms/Game/GameCard';
 import GameForm from '../atoms/Game/GameForm';
 import { DefaultGame, type Game } from '../../model/entertainment';
 import { copyContents } from '../../utils/copyToClipboard';
-import { capitalizeEachWord, checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
+import { checkIfDuplicateId, getCSV, getJSON, getRankStars } from '../../utils/contentMapper';
 import { BANNER_MESSAGES } from '../../constants/messages';
 import { DEFAULT_BANNER_PROPS } from '../../constants/props';
 
@@ -112,14 +112,9 @@ const GamePage: React.FC = () => {
   };
 
   const handleAddGame = (form: Game) => {
-    const newGame = {
-      ...form,
-      name: capitalizeEachWord(form.name),
-    };
-
     const isThereADuplicate = checkIfDuplicateId(games.map(i => i.name), form.name);
     if (!isThereADuplicate) {
-      const updatedGames = [newGame, ...games];
+      const updatedGames = [form, ...games];
       handleSubmit(updatedGames);
       setIsPanelOpen(false);
       setIsAddMode(false);
@@ -135,10 +130,7 @@ const GamePage: React.FC = () => {
   const handleEditGame = (form: Game) => {
     const updatedGames = games.map((g) =>
       g.name === form.name
-        ? {
-          ...form,
-          name: capitalizeEachWord(form.name),
-        }
+        ? form
         : g
     );
     handleSubmit(updatedGames);
