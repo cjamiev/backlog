@@ -23,6 +23,7 @@ const gameSearchByOptions = [
 const gameSortByOptions = [
   { value: 'name', label: 'Name' },
   { value: 'rank', label: 'Rank' },
+  { value: 'price', label: 'Price' },
   { value: 'year', label: 'Year' }
 ];
 
@@ -60,11 +61,16 @@ const GamePage: React.FC = () => {
   const sortedGames = [...filteredGames].sort((a, b) => {
     if (sortBy === 'name') {
       return a.name.localeCompare(b.name);
-    } else if (sortBy === 'year') {
-      const aYear = Number(a.year ?? 0);
-      const bYear = Number(b.year ?? 0);
+    } else if (sortBy === 'price') {
+      const aPrice = Number((a.price || '1000').replace('$', ''));
+      const bPrice = Number((b.price || '1000').replace('$', ''));
 
-      return bYear - aYear;
+      return aPrice - bPrice;
+    } else if (sortBy === 'year') {
+      const aYear = Number(a.year || '0');
+      const bYear = Number(b.year || '0');
+
+      return aYear - bYear;
     } else {
       return b.rank - a.rank;
     }
