@@ -23,7 +23,8 @@ const HomePage: React.FC = () => {
   const [currentSongIdx, setCurrentPage] = useState(0);
   const [search, setSearch] = useState('');
 
-  const playableSongs = songs.filter(s => !!s.link && !s.tags.includes('segment'));
+  const playableSongs = songs.filter(s => !!s.link && !s.tags.includes('segment'))
+    .sort((a, b) => (a.band.localeCompare(b.band)));
   const clickableSongs = playableSongs.filter(s =>
     s.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ||
     s.band.toLocaleLowerCase().includes(search.toLocaleLowerCase())
@@ -34,7 +35,8 @@ const HomePage: React.FC = () => {
     setSearch(filter);
   };
 
-  const handleSelectSong = (index: number) => {
+  const handleSelectSong = (name: string, band: string) => {
+    const index = playableSongs.findIndex(s => s.name === name && s.band === band);
     setCurrentPage(index);
   }
 
@@ -68,8 +70,8 @@ const HomePage: React.FC = () => {
                 onChange={(e) => onSearchChange(e.target.value)}
               />
               {clickableSongs.length > 0 ? <div className="home-song-list">
-                {clickableSongs.map((s, idx) => {
-                  return <button className="home-song-btn" onClick={() => { handleSelectSong(idx) }}>{s.name} - {s.band}</button>
+                {clickableSongs.map((s) => {
+                  return <button className="home-song-btn" onClick={() => { handleSelectSong(s.name, s.band) }}>{s.name} - {s.band}</button>
                 })}
               </div> : <div>No Songs Found</div>}
             </div>
